@@ -21,20 +21,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-
+app.use(express.static(path.join(__dirname, '/dist')));
 
 app.use('/api/users', users); // <-- note we're calling this API
 
-
-/**
- * Development Settings
- */
-// if ('development' == app.get('env')) {
-//     app.use(express.static(path.join(__dirname, '../client/.tmp')));
-//     app.use(express.static(path.join(__dirname, '../client/app')));
-// }
-
-app.use(express.static(path.join(__dirname, '/dist')));
+// Catch all other routes and return the index file
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
 
 
 // catch 404 and forward to error handler
