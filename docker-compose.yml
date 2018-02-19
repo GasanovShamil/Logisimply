@@ -1,0 +1,16 @@
+version: '3'
+services:
+  web:
+    image: gasanov/nodemon:1.1
+    working_dir: /app
+    volumes:
+      - ./server/:/app
+    ports:
+      - "3000:3000"
+    links:
+      - mongo
+    command: npm run dev
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
