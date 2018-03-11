@@ -9,12 +9,19 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './components/home/home.component';
 import { UserService } from "./services/user.service";
-
+import { LoginComponent } from './components/login/login.component';
+import {AuthGuard} from './components/guards/auth-guard.guard';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import {MediaMatcher} from '@angular/cdk/layout';
+import { ContactComponent } from './components/contact/contact.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    LoginComponent,
+    DashboardComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +31,9 @@ import { UserService } from "./services/user.service";
     AppRoutingModule
   ],
   providers: [
-    UserService
+    UserService,
+    AuthGuard,
+    MediaMatcher
   ],
   bootstrap: [AppComponent]
 })
