@@ -13,7 +13,8 @@ import { LoginComponent } from './components/login/login.component';
 import {AuthGuard} from './components/guards/auth-guard.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MediaMatcher} from '@angular/cdk/layout';
-import { ContactComponent } from './components/contact/contact.component';
+import { ContactsComponent } from './components/contacts/contacts.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ContactComponent } from './components/contact/contact.component';
     HomeComponent,
     LoginComponent,
     DashboardComponent,
-    ContactComponent
+    ContactsComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule,

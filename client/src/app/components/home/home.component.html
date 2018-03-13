@@ -1,56 +1,16 @@
-<div class="container" [class.is-mobile]="mobileQuery.matches">
-  <mat-toolbar color="primary" class="toolbar">
-    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="app-name">Logisimply</h1>
-    <span class="fill-remaining-space"></span>
-    <button i18n mat-button color="accent" (click)="logout()">Logout</button>
-  </mat-toolbar>
-<mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-  <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-    <mat-nav-list>
-      <h3 i18n mat-subheader>Section 1</h3>
-      <a i18n mat-list-item routerLink="/dashboard" color="primary">Dashboard</a>
-      <a i18n mat-list-item routerLink="/contact" color="primary">Contacts</a>
-      <mat-divider></mat-divider>
-      <h3 i18n mat-subheader>Section 2</h3>
-      <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title i18n>Folders</mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-list-item *ngFor="let folder of folders">
-          <mat-icon mat-list-icon i18n>folder</mat-icon>
-          <h4 mat-line>{{folder.name}}</h4>
-          <p mat-line> {{folder.updated | date}} </p>
-        </mat-list-item>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title i18n>Folders</mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-list-item *ngFor="let folder of folders">
-          <mat-icon mat-list-icon i18n>folder</mat-icon>
-          <h4 mat-line>{{folder.name}}</h4>
-          <p mat-line> {{folder.updated | date}} </p>
-        </mat-list-item>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title i18n>Folders</mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-list-item *ngFor="let folder of folders">
-          <mat-icon mat-list-icon>folder</mat-icon>
-          <h4 mat-line>{{folder.name}}</h4>
-          <p mat-line> {{folder.updated | date}} </p>
-        </mat-list-item>
-      </mat-expansion-panel>
-      </mat-accordion>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-</div>
-
-
+<mat-card class="example-card">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title i18n>Home</mat-card-title>
+  </mat-card-header>
+  <img mat-card-image src="https://www.cnx-software.com/wp-content/uploads/2010/11/in-home-display-example-mentor-embedded-inflexion.png" alt="Photo of contacts">
+  <mat-card-content>
+    <p i18n>
+      Hello! This is our future Home component.
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button i18n mat-button>LIKE</button>
+    <button  i18n mat-button>SHARE</button>
+  </mat-card-actions>
+</mat-card>

@@ -5,15 +5,17 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from './components/login/login.component';
 import {AuthGuard} from "./components/guards/auth-guard.guard";
 import {DashboardComponent} from "./components/dashboard/dashboard.component";
-import {ContactComponent} from "./components/contact/contact.component";
+import {ContactsComponent} from "./components/contacts/contacts.component";
+import {NavigationComponent} from "./components/navigation/navigation.component";
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
-    path: '', canActivate: [AuthGuard], component: HomeComponent,
+    path: '', canActivate: [AuthGuard], component: NavigationComponent,
     children: [
-      {path: '', canActivate: [AuthGuard], redirectTo: '/dashboard', pathMatch: 'full' },
+      {path: '', canActivate: [AuthGuard], redirectTo: '/home', pathMatch: 'full' },
+      { path: 'home', canActivate: [AuthGuard], component: HomeComponent},
       { path: 'dashboard', canActivate: [AuthGuard], component: DashboardComponent},
-      { path: 'contact', canActivate: [AuthGuard], component: ContactComponent}
+      { path: 'contacts', canActivate: [AuthGuard], component: ContactsComponent}
     ]
   }
 ];
