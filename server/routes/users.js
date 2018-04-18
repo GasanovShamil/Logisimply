@@ -10,9 +10,9 @@ router.post('/addUser', function(req, res) {
     let addUser = req.body;
     userModel.create(addUser, function (err) {
         if (err)
-            res.json({status:'error',message:err});
+            res.json({status:400,message:err});
         else
-            res.json({status:'success'});
+            res.json({status:200});
     });
 
 });
