@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 
 var users = require('./routes/users');
+var login = require('./routes/login');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/dist')));
 
 app.use('/api/users', users); // <-- note we're calling this API
+app.use('/api/login', login);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

@@ -4,6 +4,7 @@ const userSchema = mongoose.Schema ({
     lastname: String,
     firstname: String,
     activityType: String,
+    activityField: String,
     categoryType: String,
     activityEntitled: String,
     activityStarted: String,
@@ -13,7 +14,9 @@ const userSchema = mongoose.Schema ({
     town: String,
     country: String,
     emailAddress: String,
-    password: String
+    password: String,
+    status: String,
+    activationToken: String
 });
 
 module.exports = mongoose.model('User', userSchema);
