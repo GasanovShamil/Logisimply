@@ -51,7 +51,7 @@ router.post('/', function(req, res) {
     let emailUser = req.body.email;
     let passwordUser = req.body.password;
     if (emailUser && passwordUser) {
-        userModel.findOne({emailAddress:emailUser}, function (err, user) {
+        userModel.findOne({emailAddress:emailUser}, function (err, é) {
             if (err) {
                 res.status(400).json({message: "Cette adresse email n'est associée à aucun compte"});
             } else {

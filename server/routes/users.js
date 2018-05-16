@@ -3,6 +3,7 @@ var router = express.Router();
 var userModel = require('../models/User');
 const mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
+var mailer = require('mailer');
 mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
 
 // Create a users
@@ -23,6 +24,8 @@ router.post('/addUser', function(req, res) {
                             res.status(400).json({message: err});
                         } else {
                             res.status(200).json({message: "Compte créé avec succès"});
+                            let url = "http://google.com";
+                            mailer.sendActivationUrl({emailAddress: addUser.emailAddress, firstname: addUser.firstname}, url);
                         }
                     });
                 }
@@ -50,18 +53,6 @@ router.get('/activate/:token', function(req, res) {
             res.status(200).json({message: "Votre compte a été activé"});
         }
     });
-
-    // userModel.findOneAndUpdate({status: "inactif", activationToken: activationToken}, function (err, user){
-    //     if (err)
-    //         res.status(500).json({message: err});
-    //     else if (user.length === 0)
-    //         res.status(400).json({message: "Ce token ne correspond à aucun compte"});
-    //     else {
-    //         user[0].status = "actif";
-    //         user[0].activationToken = "";
-    //         res.status(200).json({});
-    //     }
-    // });
 });
 
 module.exports = router;
