@@ -9,14 +9,6 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-// var mailOptions = {
-//     from: '"Fred Foo ?" <foo@blurdybloop.com>',
-//     to: 'bar@blurdybloop.com, baz@blurdybloop.com',
-//     subject: 'Hello ✔',
-//     text: 'Hello world ?',
-//     html: '<b>Hello world ?</b>'
-// };
-
 function sendActivationUrl(user, url) {
     var mailOptions = {
         from: '"Administrateur Logisimply" <contact.logisimply@gmail.com>',
@@ -28,7 +20,7 @@ function sendActivationUrl(user, url) {
 
     transporter.sendMail(mailOptions, function(err, info) {
         if (err){
-            return console.log("KO : " + err);
+            console.log("KO : " + err);
         } else {
             console.log("OK : " + info.response);
         }
