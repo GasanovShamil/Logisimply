@@ -139,5 +139,4 @@ function sendPassword(user) {
     });
 }
 
-
 module.exports = router;

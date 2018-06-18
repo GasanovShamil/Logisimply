@@ -9,6 +9,7 @@ var swaggerJSDoc = require('swagger-jsdoc');
 
 var users = require('./routes/users');
 var login = require('./routes/login');
+var test = require('./routes/test');
 //var customers = require('./routes/customers');
 
 var app = express();// swagger definition
@@ -33,12 +34,6 @@ var options = {
 // initialize swagger-jsdoc
 var swaggerSpec = swaggerJSDoc(options);
 
-// serve swagger
-app.get('/swagger.json', function(req, res) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-});
-
 app.use(cors());
 
 // uncomment after placing your favicon in /public
@@ -49,11 +44,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, '/dist')));
-app.use(express.static(path.join(__dirname, '/public')));
 
 app.use('/api/users', users); // <-- note we're calling this API
 app.use('/api/login', login);
+app.use('/api/test', test);
 //app.use('api/customers', customers);
+
+// serve swagger
+app.get('/swagger.json', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -77,6 +78,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 
 module.exports = app;

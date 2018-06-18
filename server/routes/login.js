@@ -34,6 +34,7 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         schema:
  *           token: String
  */
+
 router.post('/', function(req, res) {
     let emailUser = req.body.email;
     let passwordUser = req.body.password;
@@ -45,10 +46,12 @@ router.post('/', function(req, res) {
                 switch(user.status){
                     case "banni":
                         res.status(403).json({message: "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr"});
-                        break;
+                    break;
+
                     case "inactif":
                         res.status(403).json({message: "Vous devez activer votre compte, un email vous a été envoyé à votre adresse"});
-                        break;
+                    break;
+
                     case "actif":
                         if (user.password === md5(passwordUser)) {
                             let loggedUser = {
@@ -66,7 +69,7 @@ router.post('/', function(req, res) {
                         } else {
                             res.status(400).json({message: "Le mot de passe est incorrect"});
                         }
-                        break;
+                    break;
                 }
             }
         });
