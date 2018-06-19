@@ -21,7 +21,7 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         description: An error message because the account is inactive or banned
  *         schema:
  *           message: String
-*        500:
+ *       500:
  *         description: An error message on token's generation
  *         schema:
  *           message: String
