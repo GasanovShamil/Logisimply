@@ -34,7 +34,6 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         schema:
  *           token: String
  */
-
 router.post('/', function(req, res) {
     let emailUser = req.body.email;
     let passwordUser = req.body.password;
