@@ -41,22 +41,14 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         schema:
  *           $ref: '#/definitions/Login'
  *     responses:
- *       403:
- *         description: An error message because the account is inactive or banned
- *         schema:
- *           message: String
  *       500:
  *         description: An error message on token's generation
- *         schema:
- *           message: String
+ *       403:
+ *         description: An error message because the account is inactive or banned
  *       400:
  *         description: An error message because the password is incorrect
- *         schema:
- *           message: String
  *       200:
  *         description: A validation token
- *         schema:
- *           token: String
  */
 router.post('/', function(req, res) {
     let emailUser = req.body.email;

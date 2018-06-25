@@ -54,21 +54,17 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         type: string
  *       activationToken:
  *         type: string
- *   NewUser:
- *     allOf:
- *       - $ref: '#/definitions/User'
- *       - type: object
- *         required:
- *           - lastname
- *           - firstname
- *           - activityEntitled
- *           - activityStarted
- *           - sirenSiret
- *           - address
- *           - zipCode
- *           - town
- *           - emailAddress
- *           - password
+ *     required:
+ *       - lastname
+ *       - firstname
+ *       - activityEntitled
+ *       - activityStarted
+ *       - sirenSiret
+ *       - address
+ *       - zipCode
+ *       - town
+ *       - emailAddress
+ *       - password
  *   EmailUser:
  *     type: object
  *     required:
@@ -83,6 +79,16 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *     properties:
  *       token:
  *         type: string
+ *   UpdateUser:
+ *     type: object
+ *     required:
+ *       - token
+ *       - user
+ *     properties:
+ *       token:
+ *         type: string
+ *       user:
+ *         $ref: '#/definitions/User'
  */
 
 /**
@@ -95,13 +101,12 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: user
- *         description: User object
+ *       - description: User object
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/NewUser'
+ *           $ref: '#/definitions/User'
  *     responses:
  *       400:
  *         description: Error
@@ -182,8 +187,8 @@ router.get('/activate/:token', function(req, res) {
  *     description: New password for the user
  *     produces:
  *       - application/json
- *     requestBody:
- *         description: A valid email
+ *     parameters:
+ *       - description: A valid email
  *         in: body
  *         required: true
  *         type: object
@@ -224,8 +229,7 @@ router.post('/forgetPassword', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: email
- *         description: A valid email
+ *       - description: A valid email
  *         in: body
  *         required: true
  *         type: object
@@ -264,8 +268,7 @@ router.post('/resendActivationUrl', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: token
- *         description: User's token
+ *       - description: User's token
  *         in: body
  *         required: true
  *         type: object
@@ -290,7 +293,32 @@ router.post('/me', function(req, res) {
     });
 });
 
-// Update user's field
+/**
+ * @swagger
+ * /users/update:
+ *   post:
+ *     tags:
+ *       - Users
+ *     description: Update logged user's information
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: User's token
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/UpdateUser'
+ *     responses:
+ *       500:
+ *         description: An error message on user's update
+ *       403:
+ *         description: An error message because user is logged out
+ *       200:
+ *         description: The current user object
+ *         schema:
+ *           $ref: '#/definitions/User'
+ */
 router.put('/update', function(req, res) {
     jwt.verify(req.body.token, "zkfgjrezfj852", function(err, decoded) {
         if (err) {
@@ -299,6 +327,8 @@ router.put('/update', function(req, res) {
         } else {
             let updateUser = req.body.user;
             updateUser.password = md5(updateUser.password);
+            updateUser.status = decoded.status;
+            updateUser.activationToken = decoded.activationToken;
 
             userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
                 if (err) {
