@@ -9,13 +9,37 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
 
 /**
  * @swagger
- * /api/login:
+ * definition:
+ *   Login:
+ *     type: object
+ *     required:
+ *       - email
+ *       - password
+ *     properties:
+ *       email:
+ *         type: string
+ *       password:
+ *         type: string
+ *         format: password
+ */
+
+/**
+ * @swagger
+ * /login:
  *   post:
  *     tags:
- *       - Login
+ *       - Users
  *     description: Log a user
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: login
+ *         description: Login object
+ *         in:  body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/Login'
  *     responses:
  *       403:
  *         description: An error message because the account is inactive or banned
@@ -48,20 +72,14 @@ router.post('/', function(req, res) {
                     break;
 
                     case "inactif":
-                        res.status(403).json({message: "Vous devez activer votre compte, un email vous a été envoyé à votre adresse"});
+                        res.status(403).json({message: "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"});
                     break;
 
                     case "actif":
                         if (user.password === md5(passwordUser)) {
-                            let loggedUser = {
-                                name: user.name,
-                                firstname: user.firstname,
-                                _id: user.id
-                            };
-
-                            jwt.sign(loggedUser, "zkfgjrezfj852", (err, token) => {
+                            jwt.sign(JSON.stringify(user), "zkfgjrezfj852", function(err, token) {
                                 if (err)
-                                    res.status(500).json({message: "Erreur lors de la génération du token"});
+                                    res.status(500).json({message: "Erreur lors de la génération du token : " + err});
                                 else
                                     res.status(200).json({token: token});
                             });
@@ -73,7 +91,7 @@ router.post('/', function(req, res) {
             }
         });
     } else {
-        res.json({status: 400, message: 'Login et/ou mot de passe non renseignés !'});
+        res.json({status: 400, message: "Login et/ou mot de passe non renseignés !"});
     }
 });
 

@@ -15,13 +15,103 @@ var transporter = nodemailer.createTransport({
 
 mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
 
-// Create a users
-router.post('/addUser', function(req, res) {
+/**
+ * @swagger
+ * definition:
+ *   User:
+ *     type: object
+ *     properties:
+ *       lastname:
+ *         type: string
+ *       firstname:
+ *         type: string
+ *       activityType:
+ *         type: string
+ *       activityField:
+ *         type: string
+ *       categoryType:
+ *         type: string
+ *       activityEntitled:
+ *         type: string
+ *       activityStarted:
+ *         type: string
+ *       sirenSiret:
+ *         type: string
+ *       address:
+ *         type: string
+ *       zipCode:
+ *         type: string
+ *       town:
+ *         type: string
+ *       country:
+ *         type: string
+ *       emailAddress:
+ *         type: string
+ *       password:
+ *         type: string
+ *         format: password
+ *       status:
+ *         type: string
+ *       activationToken:
+ *         type: string
+ *   NewUser:
+ *     allOf:
+ *       - $ref: '#/definitions/User'
+ *       - type: object
+ *         required:
+ *           - lastname
+ *           - firstname
+ *           - activityEntitled
+ *           - activityStarted
+ *           - sirenSiret
+ *           - address
+ *           - zipCode
+ *           - town
+ *           - emailAddress
+ *           - password
+ *   EmailUser:
+ *     type: object
+ *     required:
+ *       - email
+ *     properties:
+ *       email:
+ *         type: string
+ *   TokenUser:
+ *     type: object
+ *     required:
+ *       - token
+ *     properties:
+ *       token:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     tags:
+ *       - Users
+ *     description: Create a user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: user
+ *         description: User object
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/NewUser'
+ *     responses:
+ *       400:
+ *         description: Error
+ *       200:
+ *         description: Success
+ */
+router.post('/register', function(req, res) {
     let addUser = req.body;
     addUser.status = "inactif";
     addUser.activationToken = md5(req.body.emailAddress);
-    console.log(addUser.password);
-    console.log(md5(addUser.password));
     addUser.password = md5(addUser.password);
 
     if (addUser.firstname && addUser.lastname && addUser.activityEntitled && addUser.activityStarted && addUser.sirenSiret && addUser.address && addUser.zipCode && addUser.town) {
@@ -50,7 +140,23 @@ router.post('/addUser', function(req, res) {
     }
 });
 
-// Activate user
+/**
+ * @swagger
+ * /users/activate/{token}:
+ *   get:
+ *     tags:
+ *       - Users
+ *     description: Activate a user
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       400:
+ *         description: Error
+ *       200:
+ *         description: Success
+ */
 router.get('/activate/:token', function(req, res) {
     let activationToken = req.params.token;
     userModel.findOne({status: "inactif", activationToken: activationToken}, function (err, user){
@@ -67,7 +173,30 @@ router.get('/activate/:token', function(req, res) {
     });
 });
 
-// Forget password
+/**
+ * @swagger
+ * /users/forgetPassword:
+ *   post:
+ *     tags:
+ *       - Users
+ *     description: New password for the user
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *         description: A valid email
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/EmailUser'
+ *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       400:
+ *         description: An error message because the email doesn't exist
+ *       200:
+ *         description: A new password has been sent by email
+ */
 router.post('/forgetPassword', function(req, res) {
     let emailUser = req.body.emailAddress;
     userModel.findOne({status: "actif", emailAddress: emailUser}, function (err, user){
@@ -85,7 +214,31 @@ router.post('/forgetPassword', function(req, res) {
     });
 });
 
-// Resend activation url
+/**
+ * @swagger
+ * /users/resendActivationUrl:
+ *   post:
+ *     tags:
+ *       - Users
+ *     description: The activation's link is resend to the user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: email
+ *         description: A valid email
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/EmailUser'
+ *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       400:
+ *         description: An error message because the account is already activate or user doesn't exist
+ *       200:
+ *         description: The new activation link is sent
+ */
 router.post('/resendActivationUrl', function(req, res) {
     let emailUser = req.body.emailAddress;
     userModel.findOne({status: "inactif", emailAddress: emailUser}, function (err, user){
@@ -101,32 +254,60 @@ router.post('/resendActivationUrl', function(req, res) {
     });
 });
 
+/**
+ * @swagger
+ * /users/me:
+ *   post:
+ *     tags:
+ *       - Users
+ *     description: Get logged user's information
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: User's token
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/TokenUser'
+ *     responses:
+ *       403:
+ *         description: An error message because user is logged out
+ *       200:
+ *         description: The current user object
+ *         schema:
+ *           $ref: '#/definitions/User'
+ */
 router.post('/me', function(req, res) {
-    let token = req.body;
-
-    userModel.find({userData: token.activationToken}, function (err, user) {
-
+    jwt.verify(req.body.token, "zkfgjrezfj852", function(err, decoded) {
+        if (err) {
+            let url = "http://" + req.headers.host + "/login";
+            res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
+        } else {
+            res.status(200).json(decoded);
+        };
     });
 });
 
 // Update user's field
-router.put('/updateUser/:id', function(req, res) {
-    let id = req.params.id;
-    let updateUser = req.body;
+router.put('/update', function(req, res) {
+    jwt.verify(req.body.token, "zkfgjrezfj852", function(err, decoded) {
+        if (err) {
+            let url = "http://" + req.headers.host + "/login";
+            res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
+        } else {
+            let updateUser = req.body.user;
+            updateUser.password = md5(updateUser.password);
 
-    userModel.findByIdAndUpdate(id, updateUser, null, function(err, user){
-        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regex.test(String(updateUser.emailAddress).toLowerCase())) {
-            userModel.find({emailAddress: updateUser.emailAddress}, function (err, user) {
-                if (!err && user.length !== 0) {
-                    res.status(400).json({message: "Cette adresse email est déjà associée à un compte"});
+            userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
+                if (err) {
+                    res.status(500).json({message: "Problème lors de la mise à jour du compte"});
                 } else {
-                    res.status(200).json({message: "Les informations de l'utilisateurs ont été mises à jour avec succès"});
+                    res.status(200).json({message: "RESEND TOKEN !!!!!!!!!!!!!!!!!!!"});
                 }
             });
-        } else {
-            res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
-        }
+        };
     });
 });
 
