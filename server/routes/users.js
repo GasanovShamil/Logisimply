@@ -101,6 +101,35 @@ router.post('/resendActivationUrl', function(req, res) {
     });
 });
 
+router.post('/me', function(req, res) {
+    let token = req.body;
+
+    userModel.find({userData: token.activationToken}, function (err, user) {
+
+    });
+});
+
+// Update user's field
+router.put('/updateUser/:id', function(req, res) {
+    let id = req.params.id;
+    let updateUser = req.body;
+
+    userModel.findByIdAndUpdate(id, updateUser, null, function(err, user){
+        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (regex.test(String(updateUser.emailAddress).toLowerCase())) {
+            userModel.find({emailAddress: updateUser.emailAddress}, function (err, user) {
+                if (!err && user.length !== 0) {
+                    res.status(400).json({message: "Cette adresse email est déjà associée à un compte"});
+                } else {
+                    res.status(200).json({message: "Les informations de l'utilisateurs ont été mises à jour avec succès"});
+                }
+            });
+        } else {
+            res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        }
+    });
+});
+
 function sendActivationUrl(user, url) {
 
     var mailOptions = {
