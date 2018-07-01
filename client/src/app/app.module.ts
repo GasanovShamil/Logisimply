@@ -15,6 +15,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { SignupComponent } from './components/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { NavigationComponent } from './components/navigation/navigation.componen
     LoginComponent,
     DashboardComponent,
     ContactsComponent,
-    NavigationComponent
+    NavigationComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
