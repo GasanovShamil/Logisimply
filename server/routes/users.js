@@ -72,24 +72,37 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *     properties:
  *       email:
  *         type: string
- *   TokenUser:
- *     type: object
- *     required:
- *       - token
- *     properties:
- *       token:
- *         type: string
- *   UpdateUser:
- *     type: object
- *     required:
- *       - token
- *       - user
- *     properties:
- *       token:
- *         type: string
- *       user:
- *         $ref: '#/definitions/User'
  */
+
+function sendActivationUrl(user, url) {
+    var mailOptions = {
+        from: 'contact.logisimply@gmail.com',
+        to: user.emailAddress,
+        subject: "Activation de votre compte Logisimply",
+        text: "Bonjour " + user.firstname + ", veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : " + url,
+        html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err) console.log("sendActivationUrl KO " + user.emailAddress + " : " + err);
+        else console.log("sendActivationUrl OK " + user.emailAddress + " : " + info.response);
+    });
+}
+
+function sendPassword(user) {
+    var mailOptions = {
+        from: 'contact.logisimply@gmail.com',
+        to: user.emailAddress,
+        subject: "Votre nouveau mot de passe",
+        text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
+        html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+        if (err) console.log("sendPassword KO " + user.emailAddress + " : " + err);
+        else console.log("sendPassword OK " + user.emailAddress + " : " + info.response);
+    });
+}
 
 /**
  * @swagger
@@ -258,22 +271,34 @@ router.post('/resendActivationUrl', function(req, res) {
     });
 });
 
+router.use((req, res, next) => {
+    const bearerHeader = req.get('Authorization');
+    if (typeof bearerHeader !== 'undefined') {
+        const bearer = bearerHeader.split(' ');
+        const bearerToken = bearer[1];
+        jwt.verify(bearerToken, 'zkfgjrezfj852', (err, decoded) => {
+            if(err){
+                let url = "http://" + req.headers.host + "/login";
+                res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
+            } else {
+                req.loggedUser = decoded;
+                next();
+            }
+        });
+    } else {
+        res.sendStatus(403);
+    }
+});
+
 /**
  * @swagger
  * /users/me:
- *   post:
+ *   get:
  *     tags:
  *       - Users
  *     description: Get logged user's information
  *     produces:
  *       - application/json
- *     parameters:
- *       - description: User's token
- *         in: body
- *         required: true
- *         type: object
- *         schema:
- *           $ref: '#/definitions/TokenUser'
  *     responses:
  *       403:
  *         description: An error message because user is logged out
@@ -282,15 +307,8 @@ router.post('/resendActivationUrl', function(req, res) {
  *         schema:
  *           $ref: '#/definitions/User'
  */
-router.post('/me', function(req, res) {
-    jwt.verify(req.body.token, "zkfgjrezfj852", function(err, decoded) {
-        if (err) {
-            let url = "http://" + req.headers.host + "/login";
-            res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
-        } else {
-            res.status(200).json(decoded);
-        };
-    });
+router.get('/me', function(req, res) {
+    res.status(200).json(req.loggedUser);
 });
 
 /**
@@ -308,7 +326,7 @@ router.post('/me', function(req, res) {
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/UpdateUser'
+ *           $ref: '#/definitions/User'
  *     responses:
  *       500:
  *         description: An error message on user's update
@@ -320,63 +338,23 @@ router.post('/me', function(req, res) {
  *           $ref: '#/definitions/User'
  */
 router.put('/update', function(req, res) {
-    jwt.verify(req.body.token, "zkfgjrezfj852", function(err, decoded) {
-        if (err) {
-            let url = "http://" + req.headers.host + "/login";
-            res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
-        } else {
-            let updateUser = req.body.user;
-            updateUser.password = md5(updateUser.password);
-            updateUser.status = decoded.status;
-            updateUser.activationToken = decoded.activationToken;
+    let updateUser = req.body;
+    updateUser.password = md5(updateUser.password);
+    updateUser.status = req.loggedUser.status;
+    updateUser.activationToken = req.loggedUser.activationToken;
 
-            userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
-                if (err) {
-                    res.status(500).json({message: "Problème lors de la mise à jour du compte"});
-                } else {
-                    res.status(200).json({message: "RESEND TOKEN !!!!!!!!!!!!!!!!!!!"});
-                }
+    userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
+        if (err) {
+            res.status(500).json({message: "Problème lors de la mise à jour du compte"});
+        } else {
+            jwt.sign(JSON.stringify(updateUser), "zkfgjrezfj852", function(err, token) {
+                if (err)
+                    res.status(500).json({message: "Erreur lors de la génération du token : " + err});
+                else
+                    res.status(200).json({token: token});
             });
-        };
+        }
     });
 });
-
-function sendActivationUrl(user, url) {
-
-    var mailOptions = {
-        from: 'contact.logisimply@gmail.com',
-        to: user.emailAddress,
-        subject: "Activation de votre compte Logisimply",
-        text: "Bonjour " + user.firstname + ", veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : " + url,
-        html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
-    };
-
-    transporter.sendMail(mailOptions, function(err, info) {
-        if (err){
-            console.log("sendActivationUrl KO " + user.emailAddress + " : " + err);
-        } else {
-            console.log("sendActivationUrl OK " + user.emailAddress + " : " + info.response);
-        }
-    });
-}
-
-function sendPassword(user) {
-
-    var mailOptions = {
-        from: 'contact.logisimply@gmail.com',
-        to: user.emailAddress,
-        subject: "Votre nouveau mot de passe",
-        text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
-        html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
-    };
-
-    transporter.sendMail(mailOptions, function(err, info) {
-        if (err){
-            console.log("sendPassword KO " + user.emailAddress + " : " + err);
-        } else {
-            console.log("sendPassword OK " + user.emailAddress + " : " + info.response);
-        }
-    });
-}
 
 module.exports = router;

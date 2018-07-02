@@ -75,9 +75,7 @@ router.post('/', function(req, res) {
                                 else
                                     res.status(200).json({token: token});
                             });
-                        } else {
-                            res.status(400).json({message: "Le mot de passe est incorrect"});
-                        }
+                        } else res.status(400).json({message: "Le mot de passe est incorrect"});
                     break;
                 }
             }
