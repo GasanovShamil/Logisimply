@@ -69,7 +69,7 @@ router.post('/', function(req, res) {
 
                     case "actif":
                         if (user.password === md5(passwordUser)) {
-                            jwt.sign(JSON.stringify(user), "zkfgjrezfj852", function(err, token) {
+                            jwt.sign(JSON.stringify(user.shortUser()), "zkfgjrezfj852", function(err, token) {
                                 if (err)
                                     res.status(500).json({message: "Erreur lors de la génération du token : " + err});
                                 else

@@ -19,4 +19,22 @@ const userSchema = mongoose.Schema ({
     activationToken: String
 });
 
+userSchema.methods.shortUser = function shortUser() {
+    return {
+        lastname: this.lastname,
+        firstname: this.firstname,
+        activityType: this.activityType,
+        activityField: this.activityField,
+        categoryType: this.categoryType,
+        activityEntitled: this.activityEntitled,
+        activityStarted: this.activityStarted,
+        sirenSiret: this.sirenSiret,
+        address: this.address,
+        zipCode: this.zipCode,
+        town: this.town,
+        country: this.country,
+        emailAddress: this.emailAddress
+    }
+};
+
 module.exports = mongoose.model('User', userSchema);
