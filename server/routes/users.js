@@ -340,14 +340,12 @@ router.get('/me', function(req, res) {
 router.put('/update', function(req, res) {
     let updateUser = req.body;
     updateUser.password = md5(updateUser.password);
-    updateUser.status = req.loggedUser.status;
-    updateUser.activationToken = req.loggedUser.activationToken;
 
     userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
         if (err) {
             res.status(500).json({message: "Problème lors de la mise à jour du compte"});
         } else {
-            jwt.sign(JSON.stringify(updateUser), "zkfgjrezfj852", function(err, token) {
+            jwt.sign(JSON.stringify(updateUser.shortUser()), "zkfgjrezfj852", function(err, token) {
                 if (err)
                     res.status(500).json({message: "Erreur lors de la génération du token : " + err});
                 else
