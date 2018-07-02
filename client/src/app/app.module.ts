@@ -16,10 +16,12 @@ import { ContactsComponent } from './components/contacts/contacts.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import {JwtModule} from "@auth0/angular-jwt";
 import { AuthService } from './services/auth.service';
+import { SignupComponent } from './components/signup/signup.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
+
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ export function tokenGetter() {
     LoginComponent,
     DashboardComponent,
     ContactsComponent,
-    NavigationComponent
+    NavigationComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
