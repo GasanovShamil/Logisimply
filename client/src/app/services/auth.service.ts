@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-//import {JwtHelperService } from '@auth0/angular-jwt';
-//const config = require('../../../appconfig.json')
+import * as jwt_decode from "jwt-decode";
+//const config = require('../../../appconfig.json');
 import { User } from "../models/user";
+import {tap} from "rxjs/operators";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class AuthService {
@@ -10,36 +12,53 @@ export class AuthService {
   // private jwtHelper = new JwtHelperService();
   constructor(private http: HttpClient) { }
 
-  // isLogedIn(): boolean {
-  //   let user = localStorage.getItem('currentUser');
-  //   return (user)?true:false;
+  isLogedIn(): boolean {
+    let user = localStorage.getItem('currentUser');
+    return (user)?true:false;
+  }
+
+  getCurrentUser(): User {
+    let user = new User();
+    user = JSON.parse(localStorage.getItem('currentUser'));
+    return user;
+  }
+
+  login(loginData) {
+    return this.http.post("http://dockerhost:3000/api/login", loginData, {}).pipe(
+      tap(
+        data => {
+          let user = new User();
+          user = jwt_decode(data['token']).user;
+          localStorage.setItem("access_token" , data['token']);
+          localStorage.setItem("currentUser", JSON.stringify(user));
+        },
+        error => console.log(error)
+      )
+    )
+  }
+
+  // login(loginData) {
+  //   return this.http.post("http://dockerhost:3000/api/login", loginData, {})
   // }
-  //
-  // getCurrentUser(): User {
-  //   let user = new User();
-  //   user = JSON.parse(localStorage.getItem('currentUser'));
-  //   return user;
-  // }
-  //
-  // login(loginData : JSON) {
-  //   return this.http.post<any>("localhost:3000/login", loginData, {}).map(
-  //     token => {
-  //       let user = new User();
-  //       user = this.jwtHelper.decodeToken(token).user;
-  //       localStorage.setItem("access_token" , JSON.stringify(token));
-  //       localStorage.setItem("currentUser", JSON.stringify(user));
-  //     }
-  //   )
-  // }
-  //
-  // logout(){
-  //   localStorage.removeItem("access_token");
-  //   localStorage.removeItem("currentUser")
-  // }
+
+  logout(){
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("currentUser")
+  }
 
 
 
 }
+
+// .map(
+// token => {
+//   let decoded_token = jwtDecode(token).user;
+//   let user = new User();
+//   user = decoded_token.user;
+//   localStorage.setItem("access_token" , JSON.stringify(token));
+//   localStorage.setItem("currentUser", JSON.stringify(user));
+// }
+
 // .pipe(
 //   tap(
 //     data => function(){

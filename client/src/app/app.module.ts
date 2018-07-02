@@ -14,7 +14,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
-import {JwtModule} from "@auth0/angular-jwt";
 import { AuthService } from './services/auth.service';
 import { SignupComponent } from './components/signup/signup.component';
 
@@ -39,14 +38,7 @@ export function tokenGetter() {
     FormsModule,
     BrowserAnimationsModule,
     AppMaterialModule,
-    AppRoutingModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:3000'],
-        blacklistedRoutes: ['localhost:3000/login/', 'localhost:3000/signup/']
-      }
-    })
+    AppRoutingModule
   ],
   providers: [
     UserService,

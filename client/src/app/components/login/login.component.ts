@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import {FormControl, Validators} from '@angular/forms';
 import {User} from "../../models/user";
 import {AuthService} from "../../services/auth.service";
+import * as jwt_decode from "jwt-decode";
 
 @Component({
   selector: 'app-login',
@@ -17,19 +18,45 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
+  login() {
+    if(this.user.email && this.user.password ){
+      let loginData = {
+        'email' : this.user.email,
+        "password" : this.user.password
+      }
+      this.auth.login(loginData).subscribe(
+        data =>{
+          this.router.navigate(['/']);
+        }
+      );
+
+
+    }
+  }
  /* emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email,
   ]);*/
 
-  login() {
-    if(this.user.email == "admin@mail.com" && this.user.password == "admin"){
-      localStorage.setItem('isLoggedIn', 'true');
-      this.router.navigate(['/']);
-    }else{
-      localStorage.setItem('isLoggedIn', 'false');
-      this.router.navigate(['/']);
-    }
-
-  }
+  // login() {
+  //   if(this.user.email && this.user.password ){
+  //     let loginData = {
+  //       'email' : this.user.email,
+  //       "password" : this.user.password
+  //     }
+  //     this.auth.login(loginData).subscribe(
+  //       data =>{
+  //         let decoded_token = jwt_decode(data['token']);
+  //         console.log('DEBUG : '+data['token']);
+  //         let user = new User();
+  //         user = decoded_token.user;
+  //         localStorage.setItem("access_token" , JSON.stringify(data['token']));
+  //         localStorage.setItem("currentUser", JSON.stringify(user));
+  //         this.router.navigate(['/']);
+  //       }
+  //     );
+  //
+  //
+  //   }
+  // }
 }
