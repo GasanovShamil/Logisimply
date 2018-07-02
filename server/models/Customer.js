@@ -1,17 +1,18 @@
-// const mongoose = require('mongoose');
-//
-// const customerSchema = mongoose.Schema ({
-//     status: String,
-//     nom: String,
-//     prenom: String,
-//     civilite: String,
-//     formeJuridique: String,
-//     siret: String,
-//     emailClient: String,
-//     adresse: String,
-//     codePostal: String,
-//     ville: String,
-//     pays: String
-// });
-//
-// module.exports = mongoose.model('Customer', customerSchema);
+const mongoose = require('mongoose');
+
+const customerSchema = mongoose.Schema ({
+    type: String,
+    lastname: String,
+    firstname: String,
+    civility: String,
+    legalForm: String,
+    siret: String,
+    emailAddress: String,
+    address: String,
+    zipCode: String,
+    town: String,
+    country: String,
+    idUser: String
+});
+
+module.exports = mongoose.model('Customer', customerSchema);

@@ -10,7 +10,7 @@ var swaggerJSDoc = require('swagger-jsdoc');
 var users = require('./routes/users');
 var login = require('./routes/login');
 var test = require('./routes/test');
-//var customers = require('./routes/customers');
+var customers = require('./routes/customers');
 
 var app = express();// swagger definition
 var swaggerDefinition = {
@@ -49,7 +49,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/api/users', users); // <-- note we're calling this API
 app.use('/api/login', login);
 app.use('/api/test', test);
-//app.use('api/customers', customers);
+app.use('/api/customers', customers);
 
 // serve swagger
 app.get('/swagger.json', function(req, res) {

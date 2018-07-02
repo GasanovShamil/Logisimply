@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
 const mongoose = require('mongoose');
-var jwt = require('jsonwebtoken');
+var utils = require('../helpers/utils');
 var nodemailer = require('nodemailer');
+var jwt = require('jsonwebtoken');
 var md5 = require('md5');
 var transporter = nodemailer.createTransport({
     service:'gmail',
@@ -271,24 +272,7 @@ router.post('/resendActivationUrl', function(req, res) {
     });
 });
 
-router.use((req, res, next) => {
-    const bearerHeader = req.get('Authorization');
-    if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        jwt.verify(bearerToken, 'zkfgjrezfj852', (err, decoded) => {
-            if(err){
-                let url = "http://" + req.headers.host + "/login";
-                res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
-            } else {
-                req.loggedUser = decoded;
-                next();
-            }
-        });
-    } else {
-        res.sendStatus(403);
-    }
-});
+router.use(utils.isLogged);
 
 /**
  * @swagger
@@ -341,11 +325,11 @@ router.put('/update', function(req, res) {
     let updateUser = req.body;
     updateUser.password = md5(updateUser.password);
 
-    userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
+    userModel.findByIdAndUpdate(req.loggedUser._id, updateUser, null, function(err, user) {
         if (err) {
             res.status(500).json({message: "Problème lors de la mise à jour du compte"});
         } else {
-            jwt.sign(JSON.stringify(updateUser.shortUser()), "zkfgjrezfj852", function(err, token) {
+            jwt.sign(JSON.stringify(user.shortUser()), "zkfgjrezfj852", function(err, token) {
                 if (err)
                     res.status(500).json({message: "Erreur lors de la génération du token : " + err});
                 else
