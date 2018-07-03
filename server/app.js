@@ -1,3 +1,4 @@
+var config = require('./config.json');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -22,7 +23,7 @@ var swaggerDefinition = {
         version: '1.0.0',
         description: 'Demonstrating how to describe a RESTful API with Swagger',
     },
-    host: 'localhost:3000',
+    host: config.base_url,
     basePath: '/',
 };
 

@@ -1,3 +1,4 @@
+var config = require('../config.json');
 var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
@@ -14,8 +15,7 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-//mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
 
 /**
  * @swagger
@@ -76,7 +76,8 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         type: string
  */
 
-function sendActivationUrl(user, url) {
+function sendActivationUrl(user) {
+    let url = "http://" + config.base_url + "/api/users/activate/" + user.activationToken;
     var mailOptions = {
         from: 'contact.logisimply@gmail.com',
         to: user.emailAddress,
@@ -112,7 +113,7 @@ function sendPassword(user) {
 
 /**
  * @swagger
- * /users/register:
+ * /users/add:
  *   post:
  *     tags:
  *       - Users
@@ -132,7 +133,7 @@ function sendPassword(user) {
  *       200:
  *         description: Success
  */
-router.post('/register', function(req, res) {
+router.post('/add', function(req, res) {
     let addUser = req.body;
     addUser.status = "inactif";
     addUser.activationToken = md5(req.body.emailAddress);
@@ -149,8 +150,7 @@ router.post('/register', function(req, res) {
                         if (err)
                             res.status(400).json({message: err});
                         else {
-                            let url = "http://" + req.headers.host + "/api/users/activate/" + addUser.activationToken;
-                            sendActivationUrl({emailAddress: addUser.emailAddress, firstname: addUser.firstname}, url);
+                            sendActivationUrl({emailAddress: addUser.emailAddress, firstname: addUser.firstname, activationToken: addUser.activationToken});
                             res.status(200).json({message: "Compte créé avec succès"});
                         }
                     });
@@ -268,8 +268,7 @@ router.post('/resendActivationUrl', function(req, res) {
         else if (!user)
             res.status(400).json({message: "Aucun compte inactif ne correspond à cette adresse mail"});
         else {
-            let url = "http://" + req.headers.host + "/api/users/activate/" + user.activationToken;
-            sendActivationUrl({emailAddress: user.emailAddress, firstname: user.firstname}, url);
+            sendActivationUrl({emailAddress: user.emailAddress, firstname: user.firstname, activationToken: user.activationToken});
             res.status(200).json({message: "Un lien vous a été renvoyé à votre adresse email"});
         }
     });

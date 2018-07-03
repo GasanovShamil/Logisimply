@@ -1,11 +1,11 @@
+var config = require('../config.json');
 var express = require('express');
 var router = express.Router();
 var customerModel = require('../models/Customer');
 var utils = require('../helpers/utils');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-//mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
 
 /**
  * @swagger
@@ -37,20 +37,16 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         type: string
  *       idUser:
  *         type: string
- *   NewCustomer:
- *     allOf:
- *       - $ref: '#/definitions/Customer'
- *       - type: object
- *         required:
- *           - type
- *           - lastname
- *           - legalForm
- *           - siret
- *           - emailAddress
- *           - address
- *           - zipCode
- *           - town
- *           - idUser
+ *     required:
+ *       - type
+ *       - lastname
+ *       - legalForm
+ *       - siret
+ *       - emailAddress
+ *       - address
+ *       - zipCode
+ *       - town
+ *       - idUser
  */
 
 router.use(utils.isLogged);
@@ -71,7 +67,7 @@ router.use(utils.isLogged);
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/NewCustomer'
+ *           $ref: '#/definitions/Customer'
  *     responses:
  *       400:
  *         description: Error because customer already exists
