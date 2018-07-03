@@ -54,7 +54,7 @@ router.use(utils.isLogged);
 
 /**
  * @swagger
- * /providers:
+ * /providers/add:
  *   post:
  *     tags:
  *       - Providers
@@ -75,7 +75,7 @@ router.use(utils.isLogged);
  *       200:
  *         description: Success
  */
-router.post('/', function(req, res) {
+router.post('/add', function(req, res) {
     let addProvider = req.body;
     addProvider.idUser = req.loggedUser._id;
 
@@ -153,8 +153,8 @@ router.get('/:siret', function(req, res) {
 
 /**
  * @swagger
- * /providers:
- *   post:
+ * /providers/update:
+ *   put:
  *     tags:
  *       - Providers
  *     description: Update providers' information
@@ -175,7 +175,7 @@ router.get('/:siret', function(req, res) {
  *         schema:
  *           $ref: '#/definitions/Provider'
  */
-router.put('/', function(req, res) {
+router.put('/update', function(req, res) {
     let updateProvider = req.body;
 
     providerModel.findOneAndUpdate({_id: updateProvider._id, idUser: req.loggedUser._id}, updateProvider, null, function(err) {

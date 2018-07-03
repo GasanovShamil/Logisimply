@@ -57,7 +57,7 @@ router.use(utils.isLogged);
 
 /**
  * @swagger
- * /customers:
+ * /customers/add:
  *   post:
  *     tags:
  *       - Customers
@@ -78,7 +78,7 @@ router.use(utils.isLogged);
  *       200:
  *         description: Success
  */
-router.post('/', function(req, res) {
+router.post('/add', function(req, res) {
     let addCustomer = req.body;
     addCustomer.idUser = req.loggedUser._id;
     console.log('id' + req.loggedUser._id);
@@ -157,8 +157,8 @@ router.get('/:siret', function(req, res) {
 
 /**
  * @swagger
- * /customers:
- *   post:
+ * /customers/update:
+ *   put:
  *     tags:
  *       - Customers
  *     description: Update customers' information
@@ -179,7 +179,7 @@ router.get('/:siret', function(req, res) {
  *         schema:
  *           $ref: '#/definitions/Customer'
  */
-router.put('/', function(req, res) {
+router.put('/update', function(req, res) {
     let updateCustomer = req.body;
 
     customerModel.findOneAndUpdate({_id: updateCustomer._id, idUser: req.loggedUser._id}, updateCustomer, null, function(err) {
