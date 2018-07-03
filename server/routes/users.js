@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
 const mongoose = require('mongoose');
-var jwt = require('jsonwebtoken');
+var utils = require('../helpers/utils');
 var nodemailer = require('nodemailer');
+var jwt = require('jsonwebtoken');
 var md5 = require('md5');
 var transporter = nodemailer.createTransport({
     service:'gmail',
@@ -13,8 +14,8 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-//mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
+//mongoose.connect('mongodb://localhost:27017/logisimply');
 
 /**
  * @swagger
@@ -274,24 +275,7 @@ router.post('/resendActivationUrl', function(req, res) {
     });
 });
 
-router.use((req, res, next) => {
-    const bearerHeader = req.get('Authorization');
-    if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        jwt.verify(bearerToken, 'zkfgjrezfj852', (err, decoded) => {
-            if(err){
-                let url = "http://" + req.headers.host + "/login";
-                res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
-            } else {
-                req.loggedUser = decoded;
-                next();
-            }
-        });
-    } else {
-        res.sendStatus(403);
-    }
-});
+router.use(utils.isLogged);
 
 /**
  * @swagger
@@ -324,7 +308,7 @@ router.get('/me', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: User's token
+ *       - description: The user to update
  *         in: body
  *         required: true
  *         type: object
@@ -343,7 +327,6 @@ router.get('/me', function(req, res) {
 router.put('/update', function(req, res) {
     let updateUser = req.body;
     updateUser.password = md5(updateUser.password);
-
     userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
         if (err)
             res.status(500).json({message: "Problème lors de la mise à jour du compte"});

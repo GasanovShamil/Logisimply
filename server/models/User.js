@@ -21,6 +21,7 @@ const userSchema = mongoose.Schema ({
 
 userSchema.methods.shortUser = function shortUser() {
     return {
+        _id: this._id,
         lastname: this.lastname,
         firstname: this.firstname,
         activityType: this.activityType,
