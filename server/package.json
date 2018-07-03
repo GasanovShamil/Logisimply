@@ -7,12 +7,12 @@
     "dev": "nodemon -L ./bin/www"
   },
   "dependencies": {
-    "body-parser": "~1.18.2",
+    "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.9",
     "express": "~4.15.5",
-    "jade": "~1.11.0",
+    "ejs": "~2.5.7",
     "jsonwebtoken": "^8.2.1",
     "mailer": "file:librairies/mailer",
     "md5": "^2.2.1",
