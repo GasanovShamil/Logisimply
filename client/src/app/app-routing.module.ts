@@ -7,8 +7,10 @@ import {AuthGuard} from "./components/guards/auth-guard.guard";
 import {DashboardComponent} from "./components/dashboard/dashboard.component";
 import {ContactsComponent} from "./components/contacts/contacts.component";
 import {NavigationComponent} from "./components/navigation/navigation.component";
+import {SignupComponent} from "./components/signup/signup.component";
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
   {
     path: '', canActivate: [AuthGuard], component: NavigationComponent,
     children: [

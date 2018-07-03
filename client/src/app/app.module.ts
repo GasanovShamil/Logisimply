@@ -1,10 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule} from './app.material.module';
-
-
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './components/home/home.component';
@@ -15,6 +14,14 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { AuthService } from './services/auth.service';
+import { SignupComponent } from './components/signup/signup.component';
+import { AlertService } from './services/alert.service';
+import { AlertComponent } from './components/alert/alert.component';
+export function tokenGetter() {
+  return localStorage.getItem('access_token');
+}
+
 
 @NgModule({
   declarations: [
@@ -23,11 +30,15 @@ import { NavigationComponent } from './components/navigation/navigation.componen
     LoginComponent,
     DashboardComponent,
     ContactsComponent,
-    NavigationComponent
+    NavigationComponent,
+    SignupComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     AppMaterialModule,
     AppRoutingModule
@@ -35,7 +46,9 @@ import { NavigationComponent } from './components/navigation/navigation.componen
   providers: [
     UserService,
     AuthGuard,
-    MediaMatcher
+    MediaMatcher,
+    AuthService,
+    AlertService
   ],
   bootstrap: [AppComponent]
 })
