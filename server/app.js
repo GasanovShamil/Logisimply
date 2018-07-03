@@ -12,7 +12,10 @@ var login = require('./routes/login');
 var test = require('./routes/test');
 //var customers = require('./routes/customers');
 
-var app = express();// swagger definition
+var app = express();
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
 var swaggerDefinition = {
     info: {
         title: 'Node Swagger API',
@@ -46,7 +49,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/dist')));
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.use('/api/users', users); // <-- note we're calling this API
+app.use('/api/users', users);
 app.use('/api/login', login);
 app.use('/api/test', test);
 //app.use('api/customers', customers);
