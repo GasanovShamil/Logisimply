@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var md5 = require('md5');
 
-//mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
+//mongoose.connect('mongodb://localhost:27017/logisimply');
 
 /**
  * @swagger

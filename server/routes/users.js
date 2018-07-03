@@ -14,8 +14,8 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-//mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
+//mongoose.connect('mongodb://localhost:27017/logisimply');
 
 /**
  * @swagger
