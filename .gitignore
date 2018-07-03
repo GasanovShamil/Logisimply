@@ -37,6 +37,7 @@ node_modules/
 jspm_packages/
 server/package-lock.json
 client/package-lock.json
+package-lock.json
 
 .idea
 dist/
