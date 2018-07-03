@@ -159,4 +159,71 @@ router.get('/:siret', function(req, res) {
     });
 });
 
+/**
+ * @swagger
+ * /customers/update:
+ *   post:
+ *     tags:
+ *       - Customers
+ *     description: Update customers' information
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Customer's id
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/Customer'
+ *     responses:
+ *       500:
+ *         description: An error message on customer's update
+ *       200:
+ *         description: The customer's data is updated
+ *         schema:
+ *           $ref: '#/definitions/Customer'
+ */
+router.put('/update', function(req, res) {
+    let updateCustomer = req.body;
+
+    customerModel.findOneAndUpdate({_id: updateCustomer._id, idUser: req.loggedUser._id}, updateCustomer, null, function(err) {
+        if (err) {
+            res.status(500).json({message: "Problème lors de la mise à jour du client"});
+        } else {
+            res.status(200).json({message: "Client correctement modifié"});
+        }
+    });
+});
+
+/**
+ * @swagger
+ * /customers/{id]:
+ *   delete:
+ *     tags:
+ *       - Customers
+ *     description: Delete a customer
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Customer's id
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       500:
+ *         description: Error
+ *       200:
+ *         description: Success
+ */
+router.delete('/:id', function(req, res) {
+    let idCustomer = req.params.id;
+    customerModel.findOneAndRemove({_id: idCustomer, idUser: req.loggedUser._id}, function(err){
+        if (err)
+            res.status(500).json({message: "Problème lors de la suppression du client"});
+        else
+            res.status(200).json({message: "Client correctement supprimé"});
+    });
+});
+
 module.exports = router;

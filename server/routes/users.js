@@ -305,7 +305,7 @@ router.get('/me', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: User's token
+ *       - description: The user to update
  *         in: body
  *         required: true
  *         type: object
