@@ -7,16 +7,14 @@ module.exports = {
             const bearer = bearerHeader.split(' ');
             const bearerToken = bearer[1];
             jwt.verify(bearerToken, 'zkfgjrezfj852', (err, decoded) => {
-                if(err){
-                    let url = "http://" + req.headers.host + "/login";
-                    res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
-                } else {
+                if (err)
+                    res.sendStatus(403);
+                else {
                     req.loggedUser = decoded;
                     next();
                 }
             });
-        } else {
+        } else
             res.sendStatus(403);
-        }
     }
-}
+};
