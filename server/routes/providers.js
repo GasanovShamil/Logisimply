@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var customerModel = require('../models/Customer');
+var providerModel = require('../models/Provider');
 var utils = require('../helpers/utils');
 const mongoose = require('mongoose');
 
@@ -10,22 +10,20 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
 /**
  * @swagger
  * definition:
- *   Customer:
+ *   Provider:
  *     type: object
  *     properties:
- *       type:
- *         type: string
- *       lastname:
- *         type: string
- *       firstname:
- *         type: string
- *       civility:
+ *       companyName:
  *         type: string
  *       legalForm:
  *         type: string
  *       siret:
  *         type: string
+ *       telephone:
+ *         type: string
  *       emailAddress:
+ *         type: string
+ *       website:
  *         type: string
  *       address:
  *         type: string
@@ -37,13 +35,12 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         type: string
  *       idUser:
  *         type: string
- *   NewCustomer:
+ *   NewProvider:
  *     allOf:
- *       - $ref: '#/definitions/Customer'
+ *       - $ref: '#/definitions/Provider'
  *       - type: object
  *         required:
- *           - type
- *           - lastname
+ *           - companyName
  *           - legalForm
  *           - siret
  *           - emailAddress
@@ -57,21 +54,21 @@ router.use(utils.isLogged);
 
 /**
  * @swagger
- * /customers/add:
+ * /providers/add:
  *   post:
  *     tags:
- *       - Customers
- *     description: Create a customer
+ *       - Providers
+ *     description: Create a provider
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: customer
- *         description: Customer object
+ *       - name: provider
+ *         description: Provider object
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/NewCustomer'
+ *           $ref: '#/definitions/NewProvider'
  *     responses:
  *       400:
  *         description: Error because customer already exists
@@ -79,22 +76,21 @@ router.use(utils.isLogged);
  *         description: Success
  */
 router.post('/add', function(req, res) {
-    let addCustomer = req.body;
-    addCustomer.idUser = req.loggedUser._id;
-    console.log('id' + req.loggedUser._id);
+    let addProvider = req.body;
+    addProvider.idUser = req.loggedUser._id;
 
-    if (addCustomer.emailAddress && addCustomer.type && addCustomer.lastname && addCustomer.legalForm && addCustomer.siret && addCustomer.address && addCustomer.zipCode && addCustomer.town) {
+    if (addProvider.companyName && addProvider.legalForm && addProvider.siret && addProvider.telephone && addProvider.emailAddress && addProvider.website && addProvider.address && addProvider.zipCode && addProvider.town) {
         var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regex.test(String(addCustomer.emailAddress).toLowerCase())) {
-            customerModel.find({emailAddress: addCustomer.emailAddress, siret: addCustomer.siret, idUser: addCustomer.idUser}, function (err, user) {
-                if (!err && user.length !== 0)
-                    res.status(400).json({message: "Vous êtes déjà en relation avec ce client !"});
+        if (regex.test(String(addProvider.emailAddress).toLowerCase())) {
+            providerModel.find({emailAddress: addProvider.emailAddress, siret: addProvider.siret, idUser: addProvider.idUser}, function (err, provider) {
+                if (!err && provider.length !== 0)
+                    res.status(400).json({message: "Vous avez déjà créer ce fournisseur !"});
                 else {
-                    customerModel.create(addCustomer, function (err) {
+                    providerModel.create(addProvider, function (err) {
                         if (err)
                             res.status(400).json({message: err});
                         else
-                            res.status(200).json({message: "Client créé avec succès"});
+                            res.status(200).json({message: "Le fournisseur a été créé avec succès"});
                     });
                 }
             });
@@ -106,11 +102,11 @@ router.post('/add', function(req, res) {
 
 /**
  * @swagger
- * /customers:
+ * /providers:
  *   get:
  *     tags:
- *       - Customers
- *     description: Get my customers
+ *       - Providers
+ *     description: Get my providers
  *     produces:
  *       - application/json
  *     responses:
@@ -121,21 +117,21 @@ router.post('/add', function(req, res) {
  */
 router.get('/', function(req, res) {
     let myId = req.loggedUser._id;
-    customerModel.find({idUser: myId}, function (err, customers) {
+    providerModel.find({idUser: myId}, function (err, providers) {
         if (err)
             res.status(500).json({message: "Un problème est survenu."});
         else
-            res.status(200).json(customers);
+            res.status(200).json(providers);
     });
 });
 
 /**
  * @swagger
- * /customers/{siret}:
+ * /providers/{siret}:
  *   get:
  *     tags:
- *       - Customers
- *     description: Get my customers
+ *       - Providers
+ *     description: Get my providers
  *     produces:
  *       - application/json
  *     responses:
@@ -147,61 +143,61 @@ router.get('/', function(req, res) {
 router.get('/:siret', function(req, res) {
     let customerId = req.params.siret;
     let myId = req.loggedUser._id;
-    customerModel.findOne({idUser: myId, siret: customerId}, function (err, customer) {
+    providerModel.findOne({idUser: myId, siret: customerId}, function (err, providers) {
         if (err)
             res.status(500).json({message: "Un problème est survenu."});
         else
-            res.status(200).json(customer);
+            res.status(200).json(providers);
     });
 });
 
 /**
  * @swagger
- * /customers/update:
+ * /providers/update:
  *   put:
  *     tags:
- *       - Customers
- *     description: Update customers' information
+ *       - Providers
+ *     description: Update providers' information
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer's id
+ *       - description: Provider's id
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/Customer'
+ *           $ref: '#/definitions/Provider'
  *     responses:
  *       500:
- *         description: An error message on customer's update
+ *         description: An error message on provider's update
  *       200:
- *         description: The customer's data is updated
+ *         description: The provider's data is updated
  *         schema:
- *           $ref: '#/definitions/Customer'
+ *           $ref: '#/definitions/Provider'
  */
 router.put('/update', function(req, res) {
-    let updateCustomer = req.body;
+    let updateProvider = req.body;
 
-    customerModel.findOneAndUpdate({_id: updateCustomer._id, idUser: req.loggedUser._id}, updateCustomer, null, function(err) {
+    providerModel.findOneAndUpdate({_id: updateProvider._id, idUser: req.loggedUser._id}, updateProvider, null, function(err) {
         if (err)
-            res.status(500).json({message: "Problème lors de la mise à jour du client"});
+            res.status(500).json({message: "Problème lors de la mise à jour du fournisseur"});
         else
-            res.status(200).json({message: "Client correctement modifié"});
+            res.status(200).json({message: "Fournisseur correctement modifié"});
     });
 });
 
 /**
  * @swagger
- * /customers/{id]:
+ * /providers/{id]:
  *   delete:
  *     tags:
- *       - Customers
- *     description: Delete a customer
+ *       - Providers
+ *     description: Delete a provider
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: id
- *         description: Customer's id
+ *         description: Provider's id
  *         in: path
  *         required: true
  *         type: string
@@ -212,14 +208,14 @@ router.put('/update', function(req, res) {
  *         description: Success
  */
 router.delete('/:id', function(req, res) {
-    let idCustomer = req.params.id;
-    customerModel.findOneAndRemove({_id: idCustomer, idUser: req.loggedUser._id}, function(err, customer){
-        if (!customer)
-            res.status(400).json({message: "Ce client n'existe pas"});
+    let idProvider = req.params.id;
+    providerModel.findOneAndRemove({_id: idProvider, idUser: req.loggedUser._id}, function(err, provider){
+        if (!provider)
+            res.status(400).json({message: "Ce fournisseur n'existe pas"});
         else if (err)
-            res.status(500).json({message: "Problème lors de la suppression du client"});
+            res.status(500).json({message: "Problème lors de la suppression du fournisseur"});
         else
-            res.status(200).json({message: "Client correctement supprimé"});
+            res.status(200).json({message: "Fournisseur correctement supprimé"});
     });
 });
 

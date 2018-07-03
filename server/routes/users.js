@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
 const mongoose = require('mongoose');
-var jwt = require('jsonwebtoken');
+var utils = require('../helpers/utils');
 var nodemailer = require('nodemailer');
+var jwt = require('jsonwebtoken');
 var md5 = require('md5');
 var transporter = nodemailer.createTransport({
     service:'gmail',
@@ -14,6 +15,7 @@ var transporter = nodemailer.createTransport({
 });
 
 mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
+//mongoose.connect('mongodb://localhost:27017/logisimply');
 
 /**
  * @swagger
@@ -84,8 +86,10 @@ function sendActivationUrl(user, url) {
     };
 
     transporter.sendMail(mailOptions, function(err, info) {
-        if (err) console.log("sendActivationUrl KO " + user.emailAddress + " : " + err);
-        else console.log("sendActivationUrl OK " + user.emailAddress + " : " + info.response);
+        if (err)
+            console.log("sendActivationUrl KO " + user.emailAddress + " : " + err);
+        else
+            console.log("sendActivationUrl OK " + user.emailAddress + " : " + info.response);
     });
 }
 
@@ -99,8 +103,10 @@ function sendPassword(user) {
     };
 
     transporter.sendMail(mailOptions, function(err, info) {
-        if (err) console.log("sendPassword KO " + user.emailAddress + " : " + err);
-        else console.log("sendPassword OK " + user.emailAddress + " : " + info.response);
+        if (err)
+            console.log("sendPassword KO " + user.emailAddress + " : " + err);
+        else
+            console.log("sendPassword OK " + user.emailAddress + " : " + info.response);
     });
 }
 
@@ -136,13 +142,13 @@ router.post('/register', function(req, res) {
         var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (regex.test(String(addUser.emailAddress).toLowerCase())) {
             userModel.find({emailAddress: addUser.emailAddress}, function (err, user) {
-                if (!err && user.length !== 0) {
+                if (!err && user.length !== 0)
                     res.status(400).json({message: "Cette adresse email est déjà associée à un compte"});
-                } else {
+                else {
                     userModel.create(addUser, function (err) {
-                        if (err) {
+                        if (err)
                             res.status(400).json({message: err});
-                        } else {
+                        else {
                             let url = "http://" + req.headers.host + "/api/users/activate/" + addUser.activationToken;
                             sendActivationUrl({emailAddress: addUser.emailAddress, firstname: addUser.firstname}, url);
                             res.status(200).json({message: "Compte créé avec succès"});
@@ -150,12 +156,10 @@ router.post('/register', function(req, res) {
                     });
                 }
             });
-        } else {
+        } else
             res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
-        }
-    } else {
+    } else
         res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
-    }
 });
 
 /**
@@ -178,15 +182,15 @@ router.post('/register', function(req, res) {
 router.get('/activate/:token', function(req, res) {
     let activationToken = req.params.token;
     userModel.findOne({status: "inactif", activationToken: activationToken}, function (err, user){
-        if (err) {
-            res.status(500).json({message: err});
-        } else if (!user) {
-            res.status(400).json({message: "Aucun compte inactif ne correspond à ce jeton d'activation"});
-        } else {
+        if (err)
+            res.render("error", {message: err});
+        else if (!user)
+            res.render("error", {message: "Aucun compte inactif ne correspond à ce jeton d'activation"})
+        else {
             user.status = "actif";
             user.activationToken = "";
             user.save();
-            res.status(200).json({message: "Votre compte a été activé"});
+            res.render("activate", {user: user});
         }
     });
 });
@@ -218,11 +222,11 @@ router.get('/activate/:token', function(req, res) {
 router.post('/forgetPassword', function(req, res) {
     let emailUser = req.body.emailAddress;
     userModel.findOne({status: "actif", emailAddress: emailUser}, function (err, user){
-        if (err) {
+        if (err)
             res.status(500).json({message: err});
-        } else if (!user) {
+        else if (!user)
             res.status(400).json({message: "Aucun compte actif ne correspond à cette adresse mail"});
-        } else {
+        else {
             let newPassword = Math.floor(Math.random() * 999999) + 100000;
             user.password = md5("" + newPassword);
             user.save();
@@ -259,11 +263,11 @@ router.post('/forgetPassword', function(req, res) {
 router.post('/resendActivationUrl', function(req, res) {
     let emailUser = req.body.emailAddress;
     userModel.findOne({status: "inactif", emailAddress: emailUser}, function (err, user){
-        if (err) {
+        if (err)
             res.status(500).json({message: err});
-        } else if (!user) {
+        else if (!user)
             res.status(400).json({message: "Aucun compte inactif ne correspond à cette adresse mail"});
-        } else {
+        else {
             let url = "http://" + req.headers.host + "/api/users/activate/" + user.activationToken;
             sendActivationUrl({emailAddress: user.emailAddress, firstname: user.firstname}, url);
             res.status(200).json({message: "Un lien vous a été renvoyé à votre adresse email"});
@@ -271,24 +275,7 @@ router.post('/resendActivationUrl', function(req, res) {
     });
 });
 
-router.use((req, res, next) => {
-    const bearerHeader = req.get('Authorization');
-    if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        jwt.verify(bearerToken, 'zkfgjrezfj852', (err, decoded) => {
-            if(err){
-                let url = "http://" + req.headers.host + "/login";
-                res.status(403).json({message: "Vous devez d'abord vous connecter. Lien : " + url});
-            } else {
-                req.loggedUser = decoded;
-                next();
-            }
-        });
-    } else {
-        res.sendStatus(403);
-    }
-});
+router.use(utils.isLogged);
 
 /**
  * @swagger
@@ -321,7 +308,7 @@ router.get('/me', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: User's token
+ *       - description: The user to update
  *         in: body
  *         required: true
  *         type: object
@@ -340,11 +327,10 @@ router.get('/me', function(req, res) {
 router.put('/update', function(req, res) {
     let updateUser = req.body;
     updateUser.password = md5(updateUser.password);
-
     userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
-        if (err) {
+        if (err)
             res.status(500).json({message: "Problème lors de la mise à jour du compte"});
-        } else {
+        else {
             jwt.sign(JSON.stringify(updateUser.shortUser()), "zkfgjrezfj852", function(err, token) {
                 if (err)
                     res.status(500).json({message: "Erreur lors de la génération du token : " + err});

@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
-const customerSchema = mongoose.Schema ({
-    type: String,
-    lastname: String,
-    firstname: String,
-    civility: String,
+const providerSchema = mongoose.Schema ({
+    companyName: String,
     legalForm: String,
     siret: String,
+    telephone: String,
     emailAddress: String,
+    website: String,
     address: String,
     zipCode: String,
     town: String,
@@ -15,4 +14,4 @@ const customerSchema = mongoose.Schema ({
     idUser: String
 });
 
-module.exports = mongoose.model('Customer', customerSchema);
+module.exports = mongoose.model('Provider', providerSchema);

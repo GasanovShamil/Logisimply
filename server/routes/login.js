@@ -6,6 +6,7 @@ var jwt = require('jsonwebtoken');
 var md5 = require('md5');
 
 mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
+//mongoose.connect('mongodb://localhost:27017/logisimply');
 
 /**
  * @swagger
@@ -53,36 +54,42 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
 router.post('/', function(req, res) {
     let emailUser = req.body.email;
     let passwordUser = req.body.password;
+
     if (emailUser && passwordUser) {
-        userModel.findOne({emailAddress:emailUser}, function (err, user) {
-            if (err) {
-                res.status(400).json({message: "Cette adresse email n'est associée à aucun compte"});
-            } else {
-                switch(user.status){
-                    case "banni":
-                        res.status(403).json({message: "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr"});
-                    break;
+        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (regex.test(String(emailUser).toLowerCase())) {
+            userModel.findOne({emailAddress: emailUser}, function (err, user) {
+                if (err)
+                    res.status(400).json({message: "Un problème est survenu lors de la connexion"});
+                else if (!user)
+                    res.status(400).json({message: "Cette adresse email n'est associée à aucun compte"});
+                else {
+                    switch (user.status) {
+                        case "banni":
+                            res.status(403).json({message: "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr"});
+                            break;
 
-                    case "inactif":
-                        res.status(403).json({message: "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"});
-                    break;
+                        case "inactif":
+                            res.status(403).json({message: "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"});
+                            break;
 
-                    case "actif":
-                        if (user.password === md5(passwordUser)) {
-                            jwt.sign(JSON.stringify(user.shortUser()), "zkfgjrezfj852", function(err, token) {
-                                if (err)
-                                    res.status(500).json({message: "Erreur lors de la génération du token : " + err});
-                                else
-                                    res.status(200).json({token: token});
-                            });
-                        } else res.status(400).json({message: "Le mot de passe est incorrect"});
-                    break;
+                        case "actif":
+                            if (user.password === md5(passwordUser)) {
+                                jwt.sign(JSON.stringify(user.shortUser()), "zkfgjrezfj852", function (err, token) {
+                                    if (err)
+                                        res.status(500).json({message: "Erreur lors de la génération du token : " + err});
+                                    else
+                                        res.status(200).json({token: token});
+                                });
+                            } else res.status(400).json({message: "Le mot de passe est incorrect"});
+                            break;
+                    }
                 }
-            }
-        });
-    } else {
+            });
+        } else
+            res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+    } else
         res.json({status: 400, message: "Login et/ou mot de passe non renseignés !"});
-    }
 });
 
 module.exports = router;
