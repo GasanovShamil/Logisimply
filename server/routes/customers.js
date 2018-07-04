@@ -1,25 +1,58 @@
+var config = require('../config.json');
 var express = require('express');
 var router = express.Router();
 var customerModel = require('../models/Customer');
 var utils = require('../helpers/utils');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-//mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
 
 /**
  * @swagger
  * definition:
- *   Customer:
+ *   PrivateCustomer:
  *     type: object
  *     properties:
  *       type:
+ *         type: string
+ *       civility:
  *         type: string
  *       lastname:
  *         type: string
  *       firstname:
  *         type: string
- *       civility:
+ *       phone:
+ *         type: string
+ *       emailAddress:
+ *         type: string
+ *       address:
+ *         type: string
+ *       zipCode:
+ *         type: string
+ *       town:
+ *         type: string
+ *       country:
+ *         type: string
+ *       comment:
+ *         type: string
+ *       idUser:
+ *         type: string
+ *     required:
+ *       - type
+ *       - lastname
+ *       - address
+ *       - zipCode
+ *       - town
+ *       - country
+ *       - idUser
+ *   ProfessionalCustomer:
+ *     type: object
+ *     properties:
+ *       type:
+ *         type: string
+ *       name:
+ *         type: string
+ *       phone:
  *         type: string
  *       legalForm:
  *         type: string
@@ -35,22 +68,22 @@ mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
  *         type: string
  *       country:
  *         type: string
+ *       comment:
+ *         type: string
  *       idUser:
  *         type: string
- *   NewCustomer:
- *     allOf:
- *       - $ref: '#/definitions/Customer'
- *       - type: object
- *         required:
- *           - type
- *           - lastname
- *           - legalForm
- *           - siret
- *           - emailAddress
- *           - address
- *           - zipCode
- *           - town
- *           - idUser
+ *     required:
+ *       - type
+ *       - name
+ *       - address
+ *       - zipCode
+ *       - town
+ *       - country
+ *       - idUser
+ *   Customer:
+ *     oneOf:
+ *       - '#/definitions/PrivateCustomer'
+ *       - '#/definitions/ProfessionnalCustomer'
  */
 
 router.use(utils.isLogged);
@@ -71,7 +104,7 @@ router.use(utils.isLogged);
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/NewCustomer'
+ *           $ref: '#/definitions/Customer'
  *     responses:
  *       400:
  *         description: Error because customer already exists
@@ -81,12 +114,13 @@ router.use(utils.isLogged);
 router.post('/add', function(req, res) {
     let addCustomer = req.body;
     addCustomer.idUser = req.loggedUser._id;
-    console.log('id' + req.loggedUser._id);
+    if (addCustomer.type === "Particulier")
+        addCustomer.name = (addCustomer.lastname + " " + addCustomer.firstname).trim();
 
-    if (addCustomer.emailAddress && addCustomer.type && addCustomer.lastname && addCustomer.legalForm && addCustomer.siret && addCustomer.address && addCustomer.zipCode && addCustomer.town) {
+    if (addCustomer.emailAddress && addCustomer.type && addCustomer.name && addCustomer.address && addCustomer.zipCode && addCustomer.town && addCustomer.country) {
         var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (regex.test(String(addCustomer.emailAddress).toLowerCase())) {
-            customerModel.find({emailAddress: addCustomer.emailAddress, siret: addCustomer.siret, idUser: addCustomer.idUser}, function (err, user) {
+            customerModel.find({emailAddress: addCustomer.emailAddress, idUser: addCustomer.idUser}, function (err, user) {
                 if (!err && user.length !== 0)
                     res.status(400).json({message: "Vous êtes déjà en relation avec ce client !"});
                 else {
@@ -165,7 +199,7 @@ router.get('/:siret', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer's id
+ *       - description: Customer object
  *         in: body
  *         required: true
  *         type: object

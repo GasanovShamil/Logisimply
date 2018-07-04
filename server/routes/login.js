@@ -1,3 +1,4 @@
+var config = require('../config.json');
 var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
@@ -5,8 +6,7 @@ const mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var md5 = require('md5');
 
-mongoose.connect('mongodb://172.18.0.2:27017/logisimply');
-//mongoose.connect('mongodb://localhost:27017/logisimply');
+mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
 
 /**
  * @swagger
