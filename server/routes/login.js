@@ -47,7 +47,7 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *       403:
  *         description: Error - password is incorrect or the account is inactive or banned
  *       400:
- *         description: Error - thz email address is missing or invalid
+ *         description: Error - the email address is missing or invalid
  *       200:
  *         description: A validation token
  */
