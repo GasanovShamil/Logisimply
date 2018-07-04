@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 
 const customerSchema = mongoose.Schema ({
     type: String,
+    civility: String,
     lastname: String,
     firstname: String,
-    civility: String,
+    name: String,
+    phone: String,
     legalForm: String,
     siret: String,
     emailAddress: String,
@@ -12,6 +14,7 @@ const customerSchema = mongoose.Schema ({
     zipCode: String,
     town: String,
     country: String,
+    comment: String,
     idUser: String
 });
 
