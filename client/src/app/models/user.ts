@@ -3,7 +3,6 @@ export class User {
   lastname: string;
   firstname: string;
   activityType: string;
-  activityField: string;
   categoryType: string;
   activityEntitled: string;
   activityStarted: string;
