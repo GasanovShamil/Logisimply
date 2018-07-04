@@ -4,7 +4,7 @@ const itemSchema = mongoose.Schema ({
     type: String,
     reference: String,
     label: String,
-    priceTL: String,
+    priceET: Number,
     description: String,
     idUser: String
 });
