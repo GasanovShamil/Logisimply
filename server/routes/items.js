@@ -80,4 +80,29 @@ router.post('/add', function(req, res) {
         res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
 });
 
+/**
+ * @swagger
+ * /items:
+ *   get:
+ *     tags:
+ *       - Items
+ *     description: Get my items
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       200:
+ *         description: Success
+ */
+router.get('/', function(req, res) {
+    let myId = req.loggedUser._id;
+    itemModel.find({idUser: myId}, function (err, items) {
+        if (err)
+            res.status(500).json({message: "Un problème est survenu."});
+        else
+            res.status(200).json(items);
+    });
+});
+
 module.exports = router;
