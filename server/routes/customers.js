@@ -80,10 +80,6 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *       - town
  *       - country
  *       - idUser
- *   Customer:
- *     oneOf:
- *       - '#/definitions/PrivateCustomer'
- *       - '#/definitions/ProfessionnalCustomer'
  */
 
 router.use(utils.isLogged);
@@ -98,13 +94,14 @@ router.use(utils.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: customer
- *         description: Customer object
+ *       - description: PrivateCustomer or ProfessionnalCustomer
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/Customer'
+ *           oneOf:
+ *             - '#/definitions/PrivateCustomer'
+ *             - '#/definitions/ProfessionnalCustomer'
  *     responses:
  *       400:
  *         description: Error because customer already exists
@@ -199,19 +196,19 @@ router.get('/:siret', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer object
+ *       - description: PrivateCustomer or ProfessionnalCustomer
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/Customer'
+ *           oneOf:
+ *             - '#/definitions/PrivateCustomer'
+ *             - '#/definitions/ProfessionnalCustomer'
  *     responses:
  *       500:
  *         description: An error message on customer's update
  *       200:
- *         description: The customer's data is updated
- *         schema:
- *           $ref: '#/definitions/Customer'
+ *         description: Success
  */
 router.put('/update', function(req, res) {
     let updateCustomer = req.body;
@@ -234,8 +231,7 @@ router.put('/update', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: id
- *         description: Customer's id
+ *       - description: Customer's id
  *         in: path
  *         required: true
  *         type: string

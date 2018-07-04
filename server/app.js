@@ -19,8 +19,8 @@ app.set('view engine', 'ejs');
 
 var swaggerDefinition = {
     info: {
-        title: 'Node Swagger API',
-        version: '1.0.0',
+        title: 'Logisimply API',
+        version: '1.0.1',
         description: 'Demonstrating how to describe a RESTful API with Swagger',
     },
     host: config.base_url,

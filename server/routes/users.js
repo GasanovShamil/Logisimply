@@ -67,13 +67,6 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *       - town
  *       - emailAddress
  *       - password
- *   EmailUser:
- *     type: object
- *     required:
- *       - email
- *     properties:
- *       email:
- *         type: string
  */
 
 function sendActivationUrl(user) {
@@ -171,6 +164,14 @@ router.post('/add', function(req, res) {
  *     description: Activate a user
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - description: User object
+ *         in: body
+ *         required: true
+ *         type: object
+ *         properties:
+ *           email:
+ *             type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
@@ -209,8 +210,9 @@ router.get('/activate/:token', function(req, res) {
  *         in: body
  *         required: true
  *         type: object
- *         schema:
- *           $ref: '#/definitions/EmailUser'
+ *         properties:
+ *           email:
+ *             type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
@@ -250,8 +252,9 @@ router.post('/forgetPassword', function(req, res) {
  *         in: body
  *         required: true
  *         type: object
- *         schema:
- *           $ref: '#/definitions/EmailUser'
+ *         properties:
+ *           email:
+ *             type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
@@ -300,7 +303,7 @@ router.get('/me', function(req, res) {
 /**
  * @swagger
  * /users/update:
- *   post:
+ *   put:
  *     tags:
  *       - Users
  *     description: Update logged user's information
@@ -319,9 +322,7 @@ router.get('/me', function(req, res) {
  *       403:
  *         description: An error message because user is logged out
  *       200:
- *         description: The current user object
- *         schema:
- *           $ref: '#/definitions/User'
+ *         description: The new token
  */
 router.put('/update', function(req, res) {
     let updateUser = req.body;
