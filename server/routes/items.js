@@ -105,4 +105,99 @@ router.get('/', function(req, res) {
     });
 });
 
+/**
+ * @swagger
+ * /items/{reference}:
+ *   get:
+ *     tags:
+ *       - Items
+ *     description: Get my items
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       200:
+ *         description: Success
+ */
+router.get('/:reference', function(req, res) {
+    let itemId = req.params.reference;
+    let myId = req.loggedUser._id;
+    itemModel.findOne({idUser: myId, reference: itemId}, function (err, item) {
+        if (err)
+            res.status(500).json({message: "Un problème est survenu."});
+        else
+            res.status(200).json(item);
+    });
+});
+
+/**
+ * @swagger
+ * /items/update:
+ *   put:
+ *     tags:
+ *       - Items
+ *     description: Update Items' information
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Item id
+ *         in: body
+ *         required: true
+ *         type: object
+ *         schema:
+ *           $ref: '#/definitions/Item'
+ *     responses:
+ *       500:
+ *         description: An error message on item's update
+ *       200:
+ *         description: The item's data is updated
+ *         schema:
+ *           $ref: '#/definitions/Customer'
+ */
+router.put('/update', function(req, res) {
+    let updateItem = req.body;
+
+    itemModel.findOneAndUpdate({_id: updateItem._id, idUser: req.loggedUser._id}, updateItem, null, function(err) {
+        if (err)
+            res.status(500).json({message: "Problème lors de la mise à jour de l'item"});
+        else
+            res.status(200).json({message: "Item correctement modifié"});
+    });
+});
+
+/**
+ * @swagger
+ * /items/{id]:
+ *   delete:
+ *     tags:
+ *       - Items
+ *     description: Delete an item
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Item's id
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       500:
+ *         description: Error
+ *       200:
+ *         description: Success
+ */
+router.delete('/:id', function(req, res) {
+    let idItem = req.params.id;
+
+    itemModel.findOneAndRemove({_id: idItem, idUser: req.loggedUser._id}, function(err, item){
+        if (!item)
+            res.status(400).json({message: "Cet item n'existe pas"});
+        else if (err)
+            res.status(500).json({message: "Problème lors de la suppression de l'item"});
+        else
+            res.status(200).json({message: "Item correctement supprimé"});
+    });
+});
+
 module.exports = router;
