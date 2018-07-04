@@ -54,37 +54,41 @@ router.use(utils.isLogged);
  *   post:
  *     tags:
  *       - Providers
- *     description: Create a provider
+ *     description: Logged - Create a provider
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: provider
- *         description: Provider object
+ *       - description: Provider object
  *         in: body
  *         required: true
  *         type: object
  *         schema:
  *           $ref: '#/definitions/Provider'
  *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       400:
- *         description: Error because customer already exists
+ *         description: Error - missing fields or email invalid or provider already exists
  *       200:
- *         description: Success
+ *         description: Provider created
  */
 router.post('/add', function(req, res) {
     let addProvider = req.body;
     addProvider.idUser = req.loggedUser._id;
 
     if (addProvider.companyName && addProvider.legalForm && addProvider.siret && addProvider.telephone && addProvider.emailAddress && addProvider.website && addProvider.address && addProvider.zipCode && addProvider.town) {
-        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regex.test(String(addProvider.emailAddress).toLowerCase())) {
+        if (utils.isEmailValid(addProvider.emailAddress)) {
             providerModel.find({emailAddress: addProvider.emailAddress, siret: addProvider.siret, idUser: addProvider.idUser}, function (err, provider) {
-                if (!err && provider.length !== 0)
+                if (err)
+                    res.status(500).json({message: err});
+                else if (provider.length !== 0)
                     res.status(400).json({message: "Vous avez déjà créer ce fournisseur !"});
                 else {
                     providerModel.create(addProvider, function (err) {
                         if (err)
-                            res.status(400).json({message: err});
+                            res.status(500).json({message: err});
                         else
                             res.status(200).json({message: "Le fournisseur a été créé avec succès"});
                     });
@@ -102,20 +106,26 @@ router.post('/add', function(req, res) {
  *   get:
  *     tags:
  *       - Providers
- *     description: Get my providers
+ *     description: Logged - Get all of my providers
  *     produces:
  *       - application/json
  *     responses:
  *       500:
  *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: Success
+ *         description: An array of requested providers
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Provider'
  */
 router.get('/', function(req, res) {
     let myId = req.loggedUser._id;
     providerModel.find({idUser: myId}, function (err, providers) {
         if (err)
-            res.status(500).json({message: "Un problème est survenu."});
+            res.status(500).json({message: err});
         else
             res.status(200).json(providers);
     });
@@ -123,27 +133,36 @@ router.get('/', function(req, res) {
 
 /**
  * @swagger
- * /providers/{siret}:
+ * /providers/{id}:
  *   get:
  *     tags:
  *       - Providers
- *     description: Get my providers
+ *     description: Logged - Get one of my providers
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - description: Provider's id
+ *         in: path
+ *         required: true
+ *         type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: Success
+ *         description: An object of the requested provider
+ *         schema:
+ *           $ref: '#/definitions/Provider'
  */
-router.get('/:siret', function(req, res) {
-    let customerId = req.params.siret;
+router.get('/:id', function(req, res) {
+    let idProvider = req.params.id;
     let myId = req.loggedUser._id;
-    providerModel.findOne({idUser: myId, siret: customerId}, function (err, providers) {
+    providerModel.findOne({idUser: myId, siret: idProvider}, function (err, provider) {
         if (err)
-            res.status(500).json({message: "Un problème est survenu."});
+            res.status(500).json({message: err});
         else
-            res.status(200).json(providers);
+            res.status(200).json(provider);
     });
 });
 
@@ -153,7 +172,7 @@ router.get('/:siret', function(req, res) {
  *   put:
  *     tags:
  *       - Providers
- *     description: Update providers' information
+ *     description: Logged - Update provider's information
  *     produces:
  *       - application/json
  *     parameters:
@@ -165,18 +184,18 @@ router.get('/:siret', function(req, res) {
  *           $ref: '#/definitions/Provider'
  *     responses:
  *       500:
- *         description: An error message on provider's update
+ *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: The provider's data is updated
- *         schema:
- *           $ref: '#/definitions/Provider'
+ *         description: Provider updated
  */
 router.put('/update', function(req, res) {
     let updateProvider = req.body;
 
     providerModel.findOneAndUpdate({_id: updateProvider._id, idUser: req.loggedUser._id}, updateProvider, null, function(err) {
         if (err)
-            res.status(500).json({message: "Problème lors de la mise à jour du fournisseur"});
+            res.status(500).json({message: err});
         else
             res.status(200).json({message: "Fournisseur correctement modifié"});
     });
@@ -188,28 +207,29 @@ router.put('/update', function(req, res) {
  *   delete:
  *     tags:
  *       - Providers
- *     description: Delete a provider
+ *     description: Logged - Delete a provider
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: id
- *         description: Provider's id
+ *       - description: Provider's id
  *         in: path
  *         required: true
  *         type: string
  *     responses:
  *       500:
- *         description: Error
+ *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: Success
+ *         description: Provider deleted
  */
 router.delete('/:id', function(req, res) {
     let idProvider = req.params.id;
     providerModel.findOneAndRemove({_id: idProvider, idUser: req.loggedUser._id}, function(err, provider){
-        if (!provider)
-            res.status(400).json({message: "Ce fournisseur n'existe pas"});
-        else if (err)
+        if (err)
             res.status(500).json({message: "Problème lors de la suppression du fournisseur"});
+        else if (!provider)
+            res.status(400).json({message: "Ce fournisseur n'existe pas"});
         else
             res.status(200).json({message: "Fournisseur correctement supprimé"});
     });
