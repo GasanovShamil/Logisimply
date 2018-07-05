@@ -12,23 +12,6 @@ form {
   box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
 
 }
-
-
-
-.corner-ribbon{
-  width: 200px;
-  background: #e43;
-  position: absolute;
-  top: 25px;
-  left: -50px;
-  text-align: center;
-  line-height: 50px;
-  letter-spacing: 1px;
-  color: #f0f0f0;
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-#err {
-  color : red;
+mat-form-field {
+  width: 100%;
 }

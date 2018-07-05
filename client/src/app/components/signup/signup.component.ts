@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertService} from "../../services/alert.service";
+import {UserService} from "../../services/user.service";
 
 @Component({
   selector: 'app-signup',
@@ -10,7 +11,7 @@ import {AlertService} from "../../services/alert.service";
 export class SignupComponent implements OnInit {
   hide = true;
 
-  constructor(private alertService : AlertService) { }
+  constructor(private alertService : AlertService, private userService : UserService) { }
   registerForm = new FormGroup ({
     emailAddress: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
@@ -33,7 +34,17 @@ export class SignupComponent implements OnInit {
 
   signup () {
     if(this.registerForm.valid){
-      this.alertService.success('OK');
+      this.userService.addUser(JSON.parse(JSON.stringify(this.registerForm.getRawValue()))).subscribe(
+        data => {
+          this.alertService.success('User created!');
+          this.registerForm.reset();
+          this.registerForm.clearValidators();
+        },
+        error => {
+          this.alertService.error('ERROR');
+        }
+      );
+
     }else{
       this.alertService.error('Please fill up required fields :)');
     }
