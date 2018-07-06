@@ -41,30 +41,4 @@ export class LoginComponent implements OnInit {
 
     }
   }
- /* emailFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ]);*/
-
-  // login() {
-  //   if(this.user.email && this.user.password ){
-  //     let loginData = {
-  //       'email' : this.user.email,
-  //       "password" : this.user.password
-  //     }
-  //     this.auth.login(loginData).subscribe(
-  //       data =>{
-  //         let decoded_token = jwt_decode(data['token']);
-  //         console.log('DEBUG : '+data['token']);
-  //         let user = new User();
-  //         user = decoded_token.user;
-  //         localStorage.setItem("access_token" , JSON.stringify(data['token']));
-  //         localStorage.setItem("currentUser", JSON.stringify(user));
-  //         this.router.navigate(['/']);
-  //       }
-  //     );
-  //
-  //
-  //   }
-  // }
 }

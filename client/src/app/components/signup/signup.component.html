@@ -1,6 +1,123 @@
-<div class="signup-container">
-  <mat-form-field>
-    <input matInput placeholder="Enter your email" class="form-control" [formControl]="email" required>
-    <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
-  </mat-form-field>
-</div>
+<form role="form" class="form-group" [formGroup]="registerForm" (submit)="signup()">
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Email" formControlName="emailAddress" required>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" formControlName="password" required>
+          <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Lastname" formControlName="lastname" required>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Firstname" formControlName="firstname" required>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+
+    <mat-form-field class="full-width">
+      <input  matInput  placeholder="Address" formControlName="address" required>
+    </mat-form-field>
+
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="City" formControlName="town" required>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Country" formControlName="country" required>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput #postalCode placeholder="Postal Code" formControlName="zipCode" required>
+          <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Activity type" formControlName="activityType">
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Category type" formControlName="categoryType">
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Activity entitled" formControlName="activityEntitled" required>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Activity started" formControlName="activityStarted" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="Siren/Siret" formControlName="sirenSiret" required>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+      </td>
+    </tr>
+  </table>
+    <button mat-raised-button color="primary" type="submit" name="action" >Signup</button>
+    <a mat-button type="button" routerLink="/login">Login</a>
+</form>
+
+
+
+
+  <!--// emailAddress*	string-->
+  <!--// password*	string($password)-->
+  <!--// lastname*	string-->
+  <!--// firstname*	string-->
+  <!--// activityType	string-->
+  <!--// activityField	string-->
+  <!--// categoryType	string-->
+  <!--// activityEntitled*	string-->
+  <!--// activityStarted*	string-->
+  <!--// sirenSiret*	string-->
+  <!--// address*	string-->
+  <!--// zipCode*	string-->
+  <!--// town*	string-->
+  <!--// country	string-->
