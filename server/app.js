@@ -12,6 +12,7 @@ var users = require('./routes/users');
 var login = require('./routes/login');
 var customers = require('./routes/customers');
 var providers = require('./routes/providers');
+var items = require('./routes/items');
 
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -19,8 +20,8 @@ app.set('view engine', 'ejs');
 
 var swaggerDefinition = {
     info: {
-        title: 'Node Swagger API',
-        version: '1.0.0',
+        title: 'Logisimply API',
+        version: '1.0.1',
         description: 'Demonstrating how to describe a RESTful API with Swagger',
     },
     host: config.base_url,
@@ -54,6 +55,7 @@ app.use('/api/users', users);
 app.use('/api/login', login);
 app.use('/api/customers', customers);
 app.use('/api/providers', providers);
+app.use('/api/items', items);
 
 // serve swagger
 app.get('/swagger.json', function(req, res) {

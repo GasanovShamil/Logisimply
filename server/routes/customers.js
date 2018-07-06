@@ -80,10 +80,6 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *       - town
  *       - country
  *       - idUser
- *   Customer:
- *     oneOf:
- *       - '#/definitions/PrivateCustomer'
- *       - '#/definitions/ProfessionnalCustomer'
  */
 
 router.use(utils.isLogged);
@@ -94,22 +90,27 @@ router.use(utils.isLogged);
  *   post:
  *     tags:
  *       - Customers
- *     description: Create a customer
+ *     description: Logged - Create a customer
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: customer
- *         description: Customer object
+ *       - description: PrivateCustomer or ProfessionalCustomer
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/Customer'
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
  *     responses:
+ *       500:
+ *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       400:
- *         description: Error because customer already exists
+ *         description: Error - missing fields or email invalid or customer already exists
  *       200:
- *         description: Success
+ *         description: Customer created
  */
 router.post('/add', function(req, res) {
     let addCustomer = req.body;
@@ -118,15 +119,16 @@ router.post('/add', function(req, res) {
         addCustomer.name = (addCustomer.lastname + " " + addCustomer.firstname).trim();
 
     if (addCustomer.emailAddress && addCustomer.type && addCustomer.name && addCustomer.address && addCustomer.zipCode && addCustomer.town && addCustomer.country) {
-        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regex.test(String(addCustomer.emailAddress).toLowerCase())) {
+        if (utils.isEmailValid(addCustomer.emailAddress)) {
             customerModel.find({emailAddress: addCustomer.emailAddress, idUser: addCustomer.idUser}, function (err, user) {
-                if (!err && user.length !== 0)
+                if (err)
+                    res.status(500).json({message: err});
+                else if (user.length !== 0)
                     res.status(400).json({message: "Vous êtes déjà en relation avec ce client !"});
                 else {
                     customerModel.create(addCustomer, function (err) {
                         if (err)
-                            res.status(400).json({message: err});
+                            res.status(500).json({message: err});
                         else
                             res.status(200).json({message: "Client créé avec succès"});
                     });
@@ -144,20 +146,28 @@ router.post('/add', function(req, res) {
  *   get:
  *     tags:
  *       - Customers
- *     description: Get my customers
+ *     description: Logged - Get all my customers
  *     produces:
  *       - application/json
  *     responses:
  *       500:
  *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: Success
+ *         description: An array of requested customers
+ *         schema:
+ *           type: array
+ *           items:
+ *             oneOf:
+ *               - $ref: '#/definitions/PrivateCustomer'
+ *               - $ref: '#/definitions/ProfessionalCustomer'
  */
 router.get('/', function(req, res) {
     let myId = req.loggedUser._id;
     customerModel.find({idUser: myId}, function (err, customers) {
         if (err)
-            res.status(500).json({message: "Un problème est survenu."});
+            res.status(500).json({message: err});
         else
             res.status(200).json(customers);
     });
@@ -165,25 +175,36 @@ router.get('/', function(req, res) {
 
 /**
  * @swagger
- * /customers/{siret}:
+ * /customers/{id}:
  *   get:
  *     tags:
  *       - Customers
- *     description: Get my customers
+ *     description: Logged - Get one of my customers
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - description: Customer's id
+ *         in: path
+ *         required: true
+ *         type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: Success
+ *         description: An object of the requested customer
+ *         schema:
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get('/:siret', function(req, res) {
-    let customerId = req.params.siret;
+router.get('/:id', function(req, res) {
+    let idCustomer = req.params.id;
     let myId = req.loggedUser._id;
-    customerModel.findOne({idUser: myId, siret: customerId}, function (err, customer) {
+    customerModel.findOne({idUser: myId, _id: idCustomer}, function (err, customer) {
         if (err)
-            res.status(500).json({message: "Un problème est survenu."});
+            res.status(500).json({message: err});
         else
             res.status(200).json(customer);
     });
@@ -195,30 +216,32 @@ router.get('/:siret', function(req, res) {
  *   put:
  *     tags:
  *       - Customers
- *     description: Update customers' information
+ *     description: Logged - Update customer's information
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer object
+ *       - description: PrivateCustomer or ProfessionalCustomer
  *         in: body
  *         required: true
  *         type: object
  *         schema:
- *           $ref: '#/definitions/Customer'
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
  *     responses:
  *       500:
- *         description: An error message on customer's update
+ *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
  *       200:
- *         description: The customer's data is updated
- *         schema:
- *           $ref: '#/definitions/Customer'
+ *         description: Customer updated
  */
 router.put('/update', function(req, res) {
     let updateCustomer = req.body;
 
     customerModel.findOneAndUpdate({_id: updateCustomer._id, idUser: req.loggedUser._id}, updateCustomer, null, function(err) {
         if (err)
-            res.status(500).json({message: "Problème lors de la mise à jour du client"});
+            res.status(500).json({message: err});
         else
             res.status(200).json({message: "Client correctement modifié"});
     });
@@ -230,28 +253,31 @@ router.put('/update', function(req, res) {
  *   delete:
  *     tags:
  *       - Customers
- *     description: Delete a customer
+ *     description: Logged - Delete a customer
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: id
- *         description: Customer's id
+ *       - description: Customer's id
  *         in: path
  *         required: true
  *         type: string
  *     responses:
  *       500:
- *         description: Error
+ *         description: Internal Server Error
+ *       403:
+ *         description: Error - user is logged out
+ *       400:
+ *         description: Error - Customer doesn't exist
  *       200:
- *         description: Success
+ *         description: Customer deleted
  */
 router.delete('/:id', function(req, res) {
     let idCustomer = req.params.id;
     customerModel.findOneAndRemove({_id: idCustomer, idUser: req.loggedUser._id}, function(err, customer){
-        if (!customer)
+        if (err)
+            res.status(500).json({message: err});
+        else if (!customer)
             res.status(400).json({message: "Ce client n'existe pas"});
-        else if (err)
-            res.status(500).json({message: "Problème lors de la suppression du client"});
         else
             res.status(200).json({message: "Client correctement supprimé"});
     });
