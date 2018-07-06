@@ -1,9 +1,9 @@
 var config = require('../config.json');
+var utils = require('../helpers/utils');
 var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
 const mongoose = require('mongoose');
-var utils = require('../helpers/utils');
 var nodemailer = require('nodemailer');
 var jwt = require('jsonwebtoken');
 var md5 = require('md5');
@@ -67,13 +67,6 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *       - town
  *       - emailAddress
  *       - password
- *   EmailUser:
- *     type: object
- *     required:
- *       - email
- *     properties:
- *       email:
- *         type: string
  */
 
 function sendActivationUrl(user) {
@@ -117,7 +110,7 @@ function sendPassword(user) {
  *   post:
  *     tags:
  *       - Users
- *     description: Create a user
+ *     description: Anonymous - Create a user
  *     produces:
  *       - application/json
  *     parameters:
@@ -128,10 +121,12 @@ function sendPassword(user) {
  *         schema:
  *           $ref: '#/definitions/User'
  *     responses:
+ *       500:
+ *         description: Internal Server Error
  *       400:
- *         description: Error
+ *         description: Error - missing fields or email invalid or email already used
  *       200:
- *         description: Success
+ *         description: User created and activation email sent by email
  */
 router.post('/add', function(req, res) {
     let addUser = req.body;
@@ -140,15 +135,16 @@ router.post('/add', function(req, res) {
     addUser.password = md5(addUser.password);
 
     if (addUser.firstname && addUser.lastname && addUser.activityEntitled && addUser.activityStarted && addUser.sirenSiret && addUser.address && addUser.zipCode && addUser.town) {
-        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regex.test(String(addUser.emailAddress).toLowerCase())) {
+        if (utils.isEmailValid(addUser.emailAddress)) {
             userModel.find({emailAddress: addUser.emailAddress}, function (err, user) {
-                if (!err && user.length !== 0)
+                if (err)
+                    res.status(500).json({message: err});
+                else if (user.length !== 0)
                     res.status(400).json({message: "Cette adresse email est déjà associée à un compte"});
                 else {
                     userModel.create(addUser, function (err) {
                         if (err)
-                            res.status(400).json({message: err});
+                            res.status(500).json({message: err});
                         else {
                             sendActivationUrl({emailAddress: addUser.emailAddress, firstname: addUser.firstname, activationToken: addUser.activationToken});
                             res.status(200).json({message: "Compte créé avec succès"});
@@ -168,16 +164,21 @@ router.post('/add', function(req, res) {
  *   get:
  *     tags:
  *       - Users
- *     description: Activate a user
+ *     description: Anonymous - Activate a user
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - description: User activation token
+ *         in: path
+ *         required: true
+ *         type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
  *       400:
- *         description: Error
+ *         description: Render Error
  *       200:
- *         description: Success
+ *         description: Render Success
  */
 router.get('/activate/:token', function(req, res) {
     let activationToken = req.params.token;
@@ -201,7 +202,7 @@ router.get('/activate/:token', function(req, res) {
  *   post:
  *     tags:
  *       - Users
- *     description: New password for the user
+ *     description: Anonymous - Password forgotten
  *     produces:
  *       - application/json
  *     parameters:
@@ -209,31 +210,36 @@ router.get('/activate/:token', function(req, res) {
  *         in: body
  *         required: true
  *         type: object
- *         schema:
- *           $ref: '#/definitions/EmailUser'
+ *         properties:
+ *           email:
+ *             type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
  *       400:
- *         description: An error message because the email doesn't exist
+ *         description: Error - email invalid or user doesn't exist
  *       200:
- *         description: A new password has been sent by email
+ *         description: New password sent by email
  */
 router.post('/forgetPassword', function(req, res) {
-    let emailUser = req.body.emailAddress;
-    userModel.findOne({status: "actif", emailAddress: emailUser}, function (err, user){
-        if (err)
-            res.status(500).json({message: err});
-        else if (!user)
-            res.status(400).json({message: "Aucun compte actif ne correspond à cette adresse mail"});
-        else {
-            let newPassword = Math.floor(Math.random() * 999999) + 100000;
-            user.password = md5("" + newPassword);
-            user.save();
-            sendPassword({firstname: user.firstname, emailAddress: user.emailAddress, password: newPassword});
-            res.status(200).json({message: "Un nouveau mot de passe vous a été envoyé par email"});
-        }
-    });
+    let emailUser = req.body.emailAddress
+
+    if (utils.isEmailValid(emailUser)) {
+        userModel.findOne({status: "actif", emailAddress: emailUser}, function (err, user){
+            if (err)
+                res.status(500).json({message: err});
+            else if (!user)
+                res.status(400).json({message: "Aucun compte actif ne correspond à cette adresse mail"});
+            else {
+                let newPassword = Math.floor(Math.random() * 999999) + 100000;
+                user.password = md5("" + newPassword);
+                user.save();
+                sendPassword({firstname: user.firstname, emailAddress: user.emailAddress, password: newPassword});
+                res.status(200).json({message: "Un nouveau mot de passe vous a été envoyé par email"});
+            }
+        });
+    } else
+        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
 });
 
 /**
@@ -242,7 +248,7 @@ router.post('/forgetPassword', function(req, res) {
  *   post:
  *     tags:
  *       - Users
- *     description: The activation's link is resend to the user
+ *     description: Anonymous - Send new activattion token
  *     produces:
  *       - application/json
  *     parameters:
@@ -250,28 +256,33 @@ router.post('/forgetPassword', function(req, res) {
  *         in: body
  *         required: true
  *         type: object
- *         schema:
- *           $ref: '#/definitions/EmailUser'
+ *         properties:
+ *           email:
+ *             type: string
  *     responses:
  *       500:
  *         description: Internal Server Error
  *       400:
- *         description: An error message because the account is already activate or user doesn't exist
+ *         description: Error - email invalid or user doesn't exist
  *       200:
- *         description: The new activation link is sent
+ *         description: New activation link is sent by email
  */
 router.post('/resendActivationUrl', function(req, res) {
-    let emailUser = req.body.emailAddress;
-    userModel.findOne({status: "inactif", emailAddress: emailUser}, function (err, user){
-        if (err)
-            res.status(500).json({message: err});
-        else if (!user)
-            res.status(400).json({message: "Aucun compte inactif ne correspond à cette adresse mail"});
-        else {
-            sendActivationUrl({emailAddress: user.emailAddress, firstname: user.firstname, activationToken: user.activationToken});
-            res.status(200).json({message: "Un lien vous a été renvoyé à votre adresse email"});
-        }
-    });
+    let emailUser = req.body.emailAddress
+
+    if (utils.isEmailValid(emailUser)) {
+        userModel.findOne({status: "inactif", emailAddress: emailUser}, function (err, user){
+            if (err)
+                res.status(500).json({message: err});
+            else if (!user)
+                res.status(400).json({message: "Aucun compte inactif ne correspond à cette adresse mail"});
+            else {
+                sendActivationUrl({emailAddress: user.emailAddress, firstname: user.firstname, activationToken: user.activationToken});
+                res.status(200).json({message: "Un lien vous a été renvoyé à votre adresse email"});
+            }
+        });
+    } else
+        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
 });
 
 router.use(utils.isLogged);
@@ -282,12 +293,12 @@ router.use(utils.isLogged);
  *   get:
  *     tags:
  *       - Users
- *     description: Get logged user's information
+ *     description: Logged - Get logged user's information
  *     produces:
  *       - application/json
  *     responses:
  *       403:
- *         description: An error message because user is logged out
+ *         description: Error - user is logged out
  *       200:
  *         description: The current user object
  *         schema:
@@ -300,10 +311,10 @@ router.get('/me', function(req, res) {
 /**
  * @swagger
  * /users/update:
- *   post:
+ *   put:
  *     tags:
  *       - Users
- *     description: Update logged user's information
+ *     description: Logged - Update logged user's information
  *     produces:
  *       - application/json
  *     parameters:
@@ -315,24 +326,22 @@ router.get('/me', function(req, res) {
  *           $ref: '#/definitions/User'
  *     responses:
  *       500:
- *         description: An error message on user's update
+ *         description: Internal Server Error
  *       403:
- *         description: An error message because user is logged out
+ *         description: Error - user is logged out
  *       200:
- *         description: The current user object
- *         schema:
- *           $ref: '#/definitions/User'
+ *         description: A new validation token
  */
 router.put('/update', function(req, res) {
     let updateUser = req.body;
     updateUser.password = md5(updateUser.password);
     userModel.findByIdAndUpdate(decoded._id, updateUser, null, function(err, user) {
         if (err)
-            res.status(500).json({message: "Problème lors de la mise à jour du compte"});
+            res.status(500).json({message: err});
         else {
             jwt.sign(JSON.stringify(updateUser.shortUser()), "zkfgjrezfj852", function(err, token) {
                 if (err)
-                    res.status(500).json({message: "Erreur lors de la génération du token : " + err});
+                    res.status(500).json({message: err});
                 else
                     res.status(200).json({token: token});
             });

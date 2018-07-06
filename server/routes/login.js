@@ -1,4 +1,5 @@
 var config = require('../config.json');
+var utils = require('../helpers/utils');
 var express = require('express');
 var router = express.Router();
 var userModel = require('../models/User');
@@ -30,12 +31,11 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *   post:
  *     tags:
  *       - Users
- *     description: Log a user
+ *     description: Anonymous - Log a user
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: login
- *         description: Login object
+ *       - description: Login object
  *         in:  body
  *         required: true
  *         type: object
@@ -43,11 +43,11 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *           $ref: '#/definitions/Login'
  *     responses:
  *       500:
- *         description: An error message on token's generation
+ *         description: Internal Server Error
  *       403:
- *         description: An error message because the account is inactive or banned
+ *         description: Error - password is incorrect or the account is inactive or banned
  *       400:
- *         description: An error message because the password is incorrect
+ *         description: Error - the email address is missing or invalid
  *       200:
  *         description: A validation token
  */
@@ -56,11 +56,10 @@ router.post('/', function(req, res) {
     let passwordUser = req.body.password;
 
     if (emailUser && passwordUser) {
-        var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regex.test(String(emailUser).toLowerCase())) {
+        if (utils.isEmailValid(emailUser)) {
             userModel.findOne({emailAddress: emailUser}, function (err, user) {
                 if (err)
-                    res.status(400).json({message: "Un problème est survenu lors de la connexion"});
+                    res.status(500).json({message: err});
                 else if (!user)
                     res.status(400).json({message: "Cette adresse email n'est associée à aucun compte"});
                 else {
@@ -81,7 +80,7 @@ router.post('/', function(req, res) {
                                     else
                                         res.status(200).json({token: token});
                                 });
-                            } else res.status(400).json({message: "Le mot de passe est incorrect"});
+                            } else res.status(403).json({message: "Le mot de passe est incorrect"});
                             break;
                     }
                 }
@@ -89,7 +88,7 @@ router.post('/', function(req, res) {
         } else
             res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
     } else
-        res.json({status: 400, message: "Login et/ou mot de passe non renseignés !"});
+        res.status(400).json({message: "Login et/ou mot de passe non renseignés !"});
 });
 
 module.exports = router;
