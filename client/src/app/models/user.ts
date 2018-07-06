@@ -6,7 +6,7 @@ export class User {
   categoryType: string;
   activityEntitled: string;
   activityStarted: string;
-  sirenSiret: string;
+  siret: string;
   address: string;
   zipCode: string;
   town: string;

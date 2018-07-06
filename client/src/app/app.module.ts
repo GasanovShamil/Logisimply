@@ -18,6 +18,7 @@ import { AuthService } from './services/auth.service';
 import { SignupComponent } from './components/signup/signup.component';
 import { AlertService } from './services/alert.service';
 import { AlertComponent } from './components/alert/alert.component';
+import { DataService } from './services/data.service';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -32,7 +33,7 @@ export function tokenGetter() {
     ContactsComponent,
     NavigationComponent,
     SignupComponent,
-    AlertComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +49,8 @@ export function tokenGetter() {
     AuthGuard,
     MediaMatcher,
     AuthService,
-    AlertService
+    AlertService,
+    DataService
   ],
   bootstrap: [AppComponent]
 })
