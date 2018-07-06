@@ -1,7 +1,7 @@
 import {
   MatInputModule, MatFormFieldModule, MatExpansionModule, MatListModule, MatDividerModule, MatButtonModule,
   MatCheckboxModule, MatSidenavModule, MatCardModule, MatIconModule, MatToolbarModule, MatSelectModule,
-  MatSnackBarModule, MatDatepickerModule, MatNativeDateModule
+  MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatTableModule, MatPaginatorModule
 } from '@angular/material';
 import {NgModule} from "@angular/core";
 import { CommonModule } from '@angular/common';
@@ -23,7 +23,9 @@ import { CommonModule } from '@angular/common';
     MatSelectModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   exports: [
     CommonModule,
@@ -41,7 +43,9 @@ import { CommonModule } from '@angular/common';
     MatSelectModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
 })
 export class AppMaterialModule { }

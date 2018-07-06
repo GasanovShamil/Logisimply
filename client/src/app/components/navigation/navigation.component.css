@@ -33,3 +33,7 @@ h1.app-name {
 .fill-remaining-space{
   flex: 1 1 auto;
 }
+
+.main-content-container {
+  margin: 2em 2em 2em 2em;
+}
