@@ -1,11 +1,10 @@
 var config = require('../config.json');
+var utils = require('../helpers/utils');
 var express = require('express');
 var router = express.Router();
 var itemModel = require('../models/Item');
-var utils = require('../helpers/utils');
 const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
+mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
 
 /**
  * @swagger
@@ -58,7 +57,7 @@ router.use(utils.isLogged);
  *       403:
  *         description: Error - user is logged out
  *       400:
- *         description: Error - item already exist
+ *         description: Error - item already exists
  *       200:
  *         description: Item created
  */
