@@ -4,7 +4,7 @@ const providerSchema = mongoose.Schema ({
     companyName: String,
     legalForm: String,
     siret: String,
-    telephone: String,
+    phone: String,
     emailAddress: String,
     website: String,
     address: String,

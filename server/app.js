@@ -9,7 +9,6 @@ var cors = require('cors');
 var swaggerJSDoc = require('swagger-jsdoc');
 
 var users = require('./routes/users');
-var login = require('./routes/login');
 var customers = require('./routes/customers');
 var providers = require('./routes/providers');
 var items = require('./routes/items');
@@ -23,21 +22,17 @@ var swaggerDefinition = {
     info: {
         title: 'Logisimply API',
         version: '1.0.1',
-        description: 'Demonstrating how to describe a RESTful API with Swagger',
+        description: 'Welcome to the Logisimply API documentation',
     },
     host: config.base_url,
     basePath: '/',
 };
 
-// options for the swagger docs
 var options = {
-    // import swaggerDefinitions
     swaggerDefinition: swaggerDefinition,
-    // path to the API docs
     apis: ['./routes/*.js']
 };
 
-// initialize swagger-jsdoc
 var swaggerSpec = swaggerJSDoc(options);
 
 app.use(cors());
@@ -53,7 +48,6 @@ app.use(express.static(path.join(__dirname, '/dist')));
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.use('/api/users', users);
-app.use('/api/login', login);
 app.use('/api/customers', customers);
 app.use('/api/providers', providers);
 app.use('/api/items', items);
@@ -76,14 +70,10 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });

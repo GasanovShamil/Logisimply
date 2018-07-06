@@ -1,11 +1,10 @@
 var config = require('../config.json');
+var utils = require('../helpers/utils');
 var express = require('express');
 var router = express.Router();
 var customerModel = require('../models/Customer');
-var utils = require('../helpers/utils');
 const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
+mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
 
 /**
  * @swagger
@@ -40,6 +39,7 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *     required:
  *       - type
  *       - lastname
+ *       - emailAddress
  *       - address
  *       - zipCode
  *       - town
@@ -75,6 +75,7 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *     required:
  *       - type
  *       - name
+ *       - emailAddress
  *       - address
  *       - zipCode
  *       - town
