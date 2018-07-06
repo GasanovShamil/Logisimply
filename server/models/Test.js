@@ -1,6 +1,11 @@
-const mongoose = require('mongoose');
+let config = require('../config.json');
+let utils = require('../helpers/utils');
+let jwt = require('jsonwebtoken');
+let md5 = require('md5');
+let mongoose = require('mongoose');
+mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
 
-const userSchema = mongoose.Schema ({
+let UserSchema = mongoose.Schema ({
     lastname: String,
     firstname: String,
     activityType: String,
@@ -18,7 +23,7 @@ const userSchema = mongoose.Schema ({
     activationToken: String
 });
 
-userSchema.methods.shortUser = function shortUser() {
+UserSchema.methods.shortUser = function shortUser() {
     return {
         _id: this._id,
         lastname: this.lastname,
@@ -37,4 +42,4 @@ userSchema.methods.shortUser = function shortUser() {
     }
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', UserSchema);

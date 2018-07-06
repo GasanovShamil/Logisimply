@@ -1,11 +1,10 @@
 var config = require('../config.json');
+var utils = require('../helpers/utils');
 var express = require('express');
 var router = express.Router();
 var providerModel = require('../models/Provider');
-var utils = require('../helpers/utils');
 const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.database);
+mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
 
 /**
  * @swagger
@@ -19,7 +18,7 @@ mongoose.connect('mongodb://' + config.host + ':' + config.port + '/' + config.d
  *         type: string
  *       siret:
  *         type: string
- *       telephone:
+ *       phone:
  *         type: string
  *       emailAddress:
  *         type: string
@@ -78,7 +77,7 @@ router.post('/add', function(req, res) {
     let addProvider = req.body;
     addProvider.idUser = req.loggedUser._id;
 
-    if (addProvider.companyName && addProvider.legalForm && addProvider.siret && addProvider.telephone && addProvider.emailAddress && addProvider.website && addProvider.address && addProvider.zipCode && addProvider.town) {
+    if (addProvider.companyName && addProvider.legalForm && addProvider.siret && addProvider.emailAddress && addProvider.website && addProvider.address && addProvider.zipCode && addProvider.town) {
         if (utils.isEmailValid(addProvider.emailAddress)) {
             providerModel.find({emailAddress: addProvider.emailAddress, siret: addProvider.siret, idUser: addProvider.idUser}, function (err, provider) {
                 if (err)
