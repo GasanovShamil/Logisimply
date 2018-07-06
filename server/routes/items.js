@@ -65,7 +65,6 @@ router.use(utils.isLogged);
 router.post('/add', function(req, res) {
     let addItem = req.body;
     addItem.idUser = req.loggedUser._id;
-
     if (addItem.type && addItem.reference && addItem.label && addItem.priceET && addItem.description) {
         itemModel.find({reference: addItem.reference, idUser: addItem.idUser}, function (err, user) {
             if (err)
