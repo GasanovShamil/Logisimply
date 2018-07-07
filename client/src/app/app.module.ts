@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule} from './app.material.module';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './components/home/home.component';
@@ -19,6 +19,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { AlertService } from './services/alert.service';
 import { AlertComponent } from './components/alert/alert.component';
 import { DataService } from './services/data.service';
+import {JwtInterceptor} from "./helpers/jwt.interceptor";
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -50,7 +51,12 @@ export function tokenGetter() {
     MediaMatcher,
     AuthService,
     AlertService,
-    DataService
+    DataService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

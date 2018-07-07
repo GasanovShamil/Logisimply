@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ErrorObservable} from "rxjs/observable/ErrorObservable";
 import {catchError} from "rxjs/operators";
+import {Customer} from "../models/customer";
+import {User} from "../models/user";
 
 @Injectable()
 export class DataService {
@@ -23,7 +25,7 @@ export class DataService {
   }
 
   getMyCustomers() {
-    return this.http.get<any>('/api/customers/').pipe(
+    return this.http.get<Customer[]>('/api/customers/').pipe(
       catchError(this.handleError)
     );
   }
@@ -85,6 +87,7 @@ export class DataService {
     // }
     // return an ErrorObservable with a user-facing error message
     return new ErrorObservable(
-      error);
+      error
+    );
   };
 }
