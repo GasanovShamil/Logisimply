@@ -1,10 +1,7 @@
-var config = require('../config.json');
-var utils = require('../helpers/utils');
-var express = require('express');
-var router = express.Router();
-var providerModel = require('../models/Provider');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
+let express = require("express");
+let router = express.Router();
+let utils = require("../helpers/utils");
+let providerModel = require("../models/Provider");
 
 /**
  * @swagger
@@ -73,19 +70,20 @@ router.use(utils.isLogged);
  *       200:
  *         description: Provider created
  */
-router.post('/add', function(req, res) {
-    let addProvider = req.body;
-    addProvider.idUser = req.loggedUser._id;
+router.post("/add", function(req, res) {
+    let paramProvider = req.body;
+    paramProvider.idUser = req.loggedUser._id;
+    paramProvider.createdAt = new Date();
 
-    if (addProvider.companyName && addProvider.legalForm && addProvider.siret && addProvider.emailAddress && addProvider.website && addProvider.address && addProvider.zipCode && addProvider.town) {
+    if (paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.emailAddress && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town) {
         if (utils.isEmailValid(addProvider.emailAddress)) {
-            providerModel.find({emailAddress: addProvider.emailAddress, siret: addProvider.siret, idUser: addProvider.idUser}, function (err, provider) {
+            providerModel.find({emailAddress: paramProvider.emailAddress, siret: paramProvider.siret, idUser: paramProvider.idUser}, function (err, provider) {
                 if (err)
                     res.status(500).json({message: err});
                 else if (provider.length !== 0)
-                    res.status(400).json({message: "Vous avez déjà créer ce fournisseur !"});
+                    res.status(400).json({message: "Vous avez déjà créer ce fournisseur"});
                 else {
-                    providerModel.create(addProvider, function (err) {
+                    providerModel.create(paramProvider, function (err) {
                         if (err)
                             res.status(500).json({message: err});
                         else
@@ -101,7 +99,7 @@ router.post('/add', function(req, res) {
 
 /**
  * @swagger
- * /providers:
+ * /providers/me:
  *   get:
  *     tags:
  *       - Providers
@@ -120,9 +118,8 @@ router.post('/add', function(req, res) {
  *           items:
  *             $ref: '#/definitions/Provider'
  */
-router.get('/', function(req, res) {
-    let myId = req.loggedUser._id;
-    providerModel.find({idUser: myId}, function (err, providers) {
+router.get("/me", function(req, res) {
+    providerModel.find({idUser: req.loggedUser._id}, function (err, providers) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -154,10 +151,9 @@ router.get('/', function(req, res) {
  *         schema:
  *           $ref: '#/definitions/Provider'
  */
-router.get('/:id', function(req, res) {
-    let idProvider = req.params.id;
-    let myId = req.loggedUser._id;
-    providerModel.findOne({idUser: myId, siret: idProvider}, function (err, provider) {
+router.get("/:id", function(req, res) {
+    let paramId = req.params.id;
+    providerModel.findOne({_id: paramId, idUser: req.loggedUser._id}, function (err, provider) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -189,10 +185,9 @@ router.get('/:id', function(req, res) {
  *       200:
  *         description: Provider updated
  */
-router.put('/update', function(req, res) {
-    let updateProvider = req.body;
-
-    providerModel.findOneAndUpdate({_id: updateProvider._id, idUser: req.loggedUser._id}, updateProvider, null, function(err) {
+router.put("/update", function(req, res) {
+    let paramProvider = req.body;
+    providerModel.findOneAndUpdate({_id: paramProvider._id, idUser: req.loggedUser._id}, paramProvider, null, function(err) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -222,9 +217,9 @@ router.put('/update', function(req, res) {
  *       200:
  *         description: Provider deleted
  */
-router.delete('/:id', function(req, res) {
-    let idProvider = req.params.id;
-    providerModel.findOneAndRemove({_id: idProvider, idUser: req.loggedUser._id}, function(err, provider){
+router.delete("/:id", function(req, res) {
+    let paramId = req.params.id;
+    providerModel.findOneAndRemove({_id: paramId, idUser: req.loggedUser._id}, function(err, provider){
         if (err)
             res.status(500).json({message: "Problème lors de la suppression du fournisseur"});
         else if (!provider)

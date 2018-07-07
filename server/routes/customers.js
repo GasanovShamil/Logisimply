@@ -1,10 +1,7 @@
-var config = require('../config.json');
-var utils = require('../helpers/utils');
-var express = require('express');
-var router = express.Router();
-var customerModel = require('../models/Customer');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
+let express = require("express");
+let router = express.Router();
+let utils = require("../helpers/utils");
+var customerModel = require("../models/Customer");
 
 /**
  * @swagger
@@ -113,21 +110,21 @@ router.use(utils.isLogged);
  *       200:
  *         description: Customer created
  */
-router.post('/add', function(req, res) {
-    let addCustomer = req.body;
-    addCustomer.idUser = req.loggedUser._id;
-    if (addCustomer.type === "Particulier")
-        addCustomer.name = (addCustomer.lastname + " " + addCustomer.firstname).trim();
+router.post("/add", function(req, res) {
+    let paramCustomer = req.body;
+    paramCustomer.idUser = req.loggedUser._id;
+    if (paramCustomer.type === "Particulier")
+        paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
 
-    if (addCustomer.emailAddress && addCustomer.type && addCustomer.name && addCustomer.address && addCustomer.zipCode && addCustomer.town && addCustomer.country) {
-        if (utils.isEmailValid(addCustomer.emailAddress)) {
-            customerModel.find({emailAddress: addCustomer.emailAddress, idUser: addCustomer.idUser}, function (err, user) {
+    if (paramCustomer.emailAddress && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country) {
+        if (utils.isEmailValid(paramCustomer.emailAddress)) {
+            customerModel.find({emailAddress: paramCustomer.emailAddress, idUser: paramCustomer.idUser}, function (err, user) {
                 if (err)
                     res.status(500).json({message: err});
                 else if (user.length !== 0)
                     res.status(400).json({message: "Vous êtes déjà en relation avec ce client !"});
                 else {
-                    customerModel.create(addCustomer, function (err) {
+                    customerModel.create(paramCustomer, function (err) {
                         if (err)
                             res.status(500).json({message: err});
                         else
@@ -143,7 +140,7 @@ router.post('/add', function(req, res) {
 
 /**
  * @swagger
- * /customers:
+ * /customers/me:
  *   get:
  *     tags:
  *       - Customers
@@ -164,9 +161,8 @@ router.post('/add', function(req, res) {
  *               - $ref: '#/definitions/PrivateCustomer'
  *               - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get('/', function(req, res) {
-    let myId = req.loggedUser._id;
-    customerModel.find({idUser: myId}, function (err, customers) {
+router.get("/me", function(req, res) {
+    customerModel.find({idUser: req.loggedUser._id}, function (err, customers) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -200,10 +196,9 @@ router.get('/', function(req, res) {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get('/:id', function(req, res) {
-    let idCustomer = req.params.id;
-    let myId = req.loggedUser._id;
-    customerModel.findOne({idUser: myId, _id: idCustomer}, function (err, customer) {
+router.get("/:id", function(req, res) {
+    let paramId = req.params.id;
+    customerModel.findOne({_id: paramId, idUser: req.loggedUser._id}, function (err, customer) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -237,10 +232,9 @@ router.get('/:id', function(req, res) {
  *       200:
  *         description: Customer updated
  */
-router.put('/update', function(req, res) {
-    let updateCustomer = req.body;
-
-    customerModel.findOneAndUpdate({_id: updateCustomer._id, idUser: req.loggedUser._id}, updateCustomer, null, function(err) {
+router.put("/update", function(req, res) {
+    let paramCustomer = req.body;
+    customerModel.findOneAndUpdate({_id: paramCustomer._id, idUser: req.loggedUser._id}, paramCustomer, null, function(err) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -272,9 +266,9 @@ router.put('/update', function(req, res) {
  *       200:
  *         description: Customer deleted
  */
-router.delete('/:id', function(req, res) {
-    let idCustomer = req.params.id;
-    customerModel.findOneAndRemove({_id: idCustomer, idUser: req.loggedUser._id}, function(err, customer){
+router.delete("/:id", function(req, res) {
+    let paramId = req.params.id;
+    customerModel.findOneAndRemove({_id: paramId, idUser: req.loggedUser._id}, function(err, customer){
         if (err)
             res.status(500).json({message: err});
         else if (!customer)

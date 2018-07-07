@@ -1,21 +1,25 @@
-const mongoose = require('mongoose');
+let config = require("../config.json");
+let mongoose = require('mongoose');
+mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
 const customerSchema = mongoose.Schema ({
-    type: String,
-    civility: String,
-    lastname: String,
-    firstname: String,
-    name: String,
-    phone: String,
-    legalForm: String,
-    siret: String,
-    emailAddress: String,
-    address: String,
-    zipCode: String,
-    town: String,
-    country: String,
-    comment: String,
-    idUser: String
+    type: {type: String},
+    civility: {type: String},
+    firstname: {type: String},
+    lastname: {type: String},
+    name: {type: String},
+    phone: {type: String},
+    legalForm: {type: String},
+    siret: {type: String},
+    email: {type: String},
+    address: {type: String},
+    zipCode: {type: String},
+    town: {type: String},
+    country: {type: String},
+    comment: {type: String},
+    idUser: {type: String},
+    createdAt: {type : Date},
+    updatedAt: {type : Date}
 });
 
 module.exports = mongoose.model('Customer', customerSchema);

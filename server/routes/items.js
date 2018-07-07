@@ -1,10 +1,7 @@
-var config = require('../config.json');
-var utils = require('../helpers/utils');
-var express = require('express');
-var router = express.Router();
-var itemModel = require('../models/Item');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
+let express = require("express");
+let router = express.Router();
+let utils = require("../helpers/utils");
+let itemModel = require("../models/Item");
 
 /**
  * @swagger
@@ -61,17 +58,17 @@ router.use(utils.isLogged);
  *       200:
  *         description: Item created
  */
-router.post('/add', function(req, res) {
-    let addItem = req.body;
-    addItem.idUser = req.loggedUser._id;
-    if (addItem.type && addItem.reference && addItem.label && addItem.priceET && addItem.description) {
-        itemModel.find({reference: addItem.reference, idUser: addItem.idUser}, function (err, user) {
+router.post("/add", function(req, res) {
+    let paramItem = req.body;
+    paramItem.idUser = req.loggedUser._id;
+    if (paramItem.type && paramItem.reference && paramItem.label && paramItem.priceET && paramItem.description) {
+        itemModel.find({reference: paramItem.reference, idUser: paramItem.idUser}, function (err, user) {
             if (err)
                 res.status(500).json({message: err});
             else if (user.length !== 0)
-                res.status(400).json({message: "Vous avez déjà créé cet item !"});
+                res.status(400).json({message: "Vous avez déjà créé cet item"});
             else {
-                itemModel.create(addItem, function (err) {
+                itemModel.create(paramItem, function (err) {
                     if (err)
                         res.status(500).json({message: err});
                     else
@@ -85,7 +82,7 @@ router.post('/add', function(req, res) {
 
 /**
  * @swagger
- * /items:
+ * /items/me:
  *   get:
  *     tags:
  *       - Items
@@ -104,9 +101,8 @@ router.post('/add', function(req, res) {
  *           items:
  *             $ref: '#/definitions/Item'
  */
-router.get('/', function(req, res) {
-    let myId = req.loggedUser._id;
-    itemModel.find({idUser: myId}, function (err, items) {
+router.get("/me", function(req, res) {
+    itemModel.find({idUser: req.loggedUser._id}, function (err, items) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -138,10 +134,9 @@ router.get('/', function(req, res) {
  *         schema:
  *           $ref: '#/definitions/Item'
  */
-router.get('/:reference', function(req, res) {
-    let itemId = req.params.reference;
-    let myId = req.loggedUser._id;
-    itemModel.findOne({idUser: myId, reference: itemId}, function (err, item) {
+router.get("/:reference", function(req, res) {
+    let paramRef = req.params.reference;
+    itemModel.findOne({reference: paramRef, idUser: req.loggedUser._id}, function (err, item) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -173,10 +168,9 @@ router.get('/:reference', function(req, res) {
  *       200:
  *         description: Item updated
  */
-router.put('/update', function(req, res) {
-    let updateItem = req.body;
-
-    itemModel.findOneAndUpdate({_id: updateItem._id, idUser: req.loggedUser._id}, updateItem, null, function(err) {
+router.put("/update", function(req, res) {
+    let paramItem = req.body;
+    itemModel.findOneAndUpdate({_id: paramItem._id, idUser: req.loggedUser._id}, paramItem, null, function(err) {
         if (err)
             res.status(500).json({message: err});
         else
@@ -206,10 +200,9 @@ router.put('/update', function(req, res) {
  *       200:
  *         description: Item deleted
  */
-router.delete('/:id', function(req, res) {
-    let idItem = req.params.id;
-
-    itemModel.findOneAndRemove({_id: idItem, idUser: req.loggedUser._id}, function(err, item){
+router.delete("/:id", function(req, res) {
+    let paramId = req.params.id;
+    itemModel.findOneAndRemove({_id: paramId, idUser: req.loggedUser._id}, function(err, item){
         if (err)
             res.status(500).json({message: err});
         else if (!item)
