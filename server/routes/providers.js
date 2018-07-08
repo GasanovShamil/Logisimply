@@ -1,6 +1,7 @@
 let express = require("express");
 let router = express.Router();
 let utils = require("../helpers/utils");
+let userModel = require("../models/User");
 let providerModel = require("../models/Provider");
 
 /**
@@ -9,6 +10,8 @@ let providerModel = require("../models/Provider");
  *   Provider:
  *     type: object
  *     properties:
+ *       code:
+ *         type: string
  *       companyName:
  *         type: string
  *       legalForm:
@@ -17,7 +20,7 @@ let providerModel = require("../models/Provider");
  *         type: string
  *       phone:
  *         type: string
- *       emailAddress:
+ *       email:
  *         type: string
  *       website:
  *         type: string
@@ -31,11 +34,17 @@ let providerModel = require("../models/Provider");
  *         type: string
  *       idUser:
  *         type: string
+ *       createdAt:
+ *         type: string
+ *         format: date
+ *       updatedAt:
+ *         type: string
+ *         format: date
  *     required:
  *       - companyName
  *       - legalForm
  *       - siret
- *       - emailAddress
+ *       - email
  *       - address
  *       - zipCode
  *       - town
@@ -61,8 +70,6 @@ router.use(utils.isLogged);
  *         schema:
  *           $ref: '#/definitions/Provider'
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       400:
@@ -70,31 +77,28 @@ router.use(utils.isLogged);
  *       200:
  *         description: Provider created
  */
-router.post("/add", function(req, res) {
+router.post("/add", async (req, res) => {
     let paramProvider = req.body;
-    paramProvider.idUser = req.loggedUser._id;
-    paramProvider.createdAt = new Date();
-
-    if (paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.emailAddress && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town) {
-        if (utils.isEmailValid(addProvider.emailAddress)) {
-            providerModel.find({emailAddress: paramProvider.emailAddress, siret: paramProvider.siret, idUser: paramProvider.idUser}, function (err, provider) {
-                if (err)
-                    res.status(500).json({message: err});
-                else if (provider.length !== 0)
-                    res.status(400).json({message: "Vous avez déjà créer ce fournisseur"});
-                else {
-                    providerModel.create(paramProvider, function (err) {
-                        if (err)
-                            res.status(500).json({message: err});
-                        else
-                            res.status(200).json({message: "Le fournisseur a été créé avec succès"});
-                    });
-                }
-            });
-        } else
-            res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
-    } else
+    if (!(paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.email && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town))
         res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+    else if (!utils.isEmailValid(paramProvider.email))
+        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+    else {
+        let count = await providerModel.count({email: paramProvider.email, siret: paramProvider.siret, idUser: req.loggedUser._id});
+        if (count !== 0)
+            res.status(400).json({message: "Vous avez déjà créé ce fournisseur"});
+        else {
+            let user = await userModel.findOne({_id: req.loggedUser._id});
+            let nextCode = "00000" + user.parameters.providers;
+            user.parameters.providers += 1;
+            user.save();
+            paramProvider.code = "P" + nextCode.substring(nextCode.length - 5, nextCode.length);
+            paramProvider.idUser = req.loggedUser._id;
+            paramProvider.createdAt = new Date();
+            let provider = await providerModel.create(paramProvider);
+            res.status(200).json({message: "Fournisseur créé : " + provider.code});
+        }
+    }
 });
 
 /**
@@ -107,8 +111,6 @@ router.post("/add", function(req, res) {
  *     produces:
  *       - application/json
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       200:
@@ -118,18 +120,14 @@ router.post("/add", function(req, res) {
  *           items:
  *             $ref: '#/definitions/Provider'
  */
-router.get("/me", function(req, res) {
-    providerModel.find({idUser: req.loggedUser._id}, function (err, providers) {
-        if (err)
-            res.status(500).json({message: err});
-        else
-            res.status(200).json(providers);
-    });
+router.get("/me", async (req, res) => {
+    let providers = await providerModel.find({idUser: req.loggedUser._id});
+    res.status(200).json(providers);
 });
 
 /**
  * @swagger
- * /providers/{id}:
+ * /providers/{code}:
  *   get:
  *     tags:
  *       - Providers
@@ -137,13 +135,11 @@ router.get("/me", function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Provider's id
+ *       - description: Provider's code
  *         in: path
  *         required: true
  *         type: string
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       200:
@@ -151,14 +147,10 @@ router.get("/me", function(req, res) {
  *         schema:
  *           $ref: '#/definitions/Provider'
  */
-router.get("/:id", function(req, res) {
-    let paramId = req.params.id;
-    providerModel.findOne({_id: paramId, idUser: req.loggedUser._id}, function (err, provider) {
-        if (err)
-            res.status(500).json({message: err});
-        else
-            res.status(200).json(provider);
-    });
+router.get("/:code", async (req, res) => {
+    let paramCode = req.params.code;
+    let provider = await providerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
+    res.status(200).json(provider);
 });
 
 /**
@@ -178,26 +170,32 @@ router.get("/:id", function(req, res) {
  *         schema:
  *           $ref: '#/definitions/Provider'
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no provider for code
  *       200:
  *         description: Provider updated
  */
-router.put("/update", function(req, res) {
+router.put("/update", async (req, res) => {
     let paramProvider = req.body;
-    providerModel.findOneAndUpdate({_id: paramProvider._id, idUser: req.loggedUser._id}, paramProvider, null, function(err) {
-        if (err)
-            res.status(500).json({message: err});
+    if (!(paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.email && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town))
+        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+    else if (!utils.isEmailValid(paramProvider.email))
+        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+    else {
+        paramProvider.updatedAt = new Date();
+        let provider = await providerModel.findOneAndUpdate({code: paramProvider.code, idUser: req.loggedUser._id}, paramProvider, null);
+        if (!provider)
+            res.status(400).json({message: "Aucun fournisseur ne correspond au code : " + paramProvider.code});
         else
-            res.status(200).json({message: "Fournisseur correctement modifié"});
-    });
+            res.status(200).json({message: "Fournisseur modifié : " + provider.code});
+    }
 });
 
 /**
  * @swagger
- * /providers/{id]:
+ * /providers/{code]:
  *   delete:
  *     tags:
  *       - Providers
@@ -205,28 +203,25 @@ router.put("/update", function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Provider's id
+ *       - description: Provider's code
  *         in: path
  *         required: true
  *         type: string
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no provider for code
  *       200:
  *         description: Provider deleted
  */
-router.delete("/:id", function(req, res) {
-    let paramId = req.params.id;
-    providerModel.findOneAndRemove({_id: paramId, idUser: req.loggedUser._id}, function(err, provider){
-        if (err)
-            res.status(500).json({message: "Problème lors de la suppression du fournisseur"});
-        else if (!provider)
-            res.status(400).json({message: "Ce fournisseur n'existe pas"});
-        else
-            res.status(200).json({message: "Fournisseur correctement supprimé"});
-    });
+router.delete("/:code", async (req, res) => {
+    let paramCode = req.params.code;
+    let provider = await providerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
+    if (!provider)
+        res.status(400).json({message: "Aucun fournisseur ne correspond au code : " + paramCode});
+    else
+        res.status(200).json({message: "Fournisseur supprimé : " + provider.code});
 });
 
 module.exports = router;

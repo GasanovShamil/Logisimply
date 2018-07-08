@@ -1,7 +1,8 @@
 let express = require("express");
 let router = express.Router();
 let utils = require("../helpers/utils");
-var customerModel = require("../models/Customer");
+let userModel = require("../models/User");
+let customerModel = require("../models/Customer");
 
 /**
  * @swagger
@@ -9,6 +10,8 @@ var customerModel = require("../models/Customer");
  *   PrivateCustomer:
  *     type: object
  *     properties:
+ *       code:
+ *         type: string
  *       type:
  *         type: string
  *       civility:
@@ -19,7 +22,7 @@ var customerModel = require("../models/Customer");
  *         type: string
  *       phone:
  *         type: string
- *       emailAddress:
+ *       email:
  *         type: string
  *       address:
  *         type: string
@@ -33,10 +36,16 @@ var customerModel = require("../models/Customer");
  *         type: string
  *       idUser:
  *         type: string
+ *       createdAt:
+ *         type: string
+ *         format: date
+ *       updatedAt:
+ *         type: string
+ *         format: date
  *     required:
  *       - type
  *       - lastname
- *       - emailAddress
+ *       - email
  *       - address
  *       - zipCode
  *       - town
@@ -55,7 +64,7 @@ var customerModel = require("../models/Customer");
  *         type: string
  *       siret:
  *         type: string
- *       emailAddress:
+ *       email:
  *         type: string
  *       address:
  *         type: string
@@ -69,10 +78,14 @@ var customerModel = require("../models/Customer");
  *         type: string
  *       idUser:
  *         type: string
+ *       createdAt:
+ *         type: Date
+ *       updatedAt:
+ *         type: Date
  *     required:
  *       - type
  *       - name
- *       - emailAddress
+ *       - email
  *       - address
  *       - zipCode
  *       - town
@@ -101,8 +114,6 @@ router.use(utils.isLogged);
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       400:
@@ -110,32 +121,30 @@ router.use(utils.isLogged);
  *       200:
  *         description: Customer created
  */
-router.post("/add", function(req, res) {
+router.post("/add", async (req, res) => {
     let paramCustomer = req.body;
-    paramCustomer.idUser = req.loggedUser._id;
-    if (paramCustomer.type === "Particulier")
-        paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
-
-    if (paramCustomer.emailAddress && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country) {
-        if (utils.isEmailValid(paramCustomer.emailAddress)) {
-            customerModel.find({emailAddress: paramCustomer.emailAddress, idUser: paramCustomer.idUser}, function (err, user) {
-                if (err)
-                    res.status(500).json({message: err});
-                else if (user.length !== 0)
-                    res.status(400).json({message: "Vous êtes déjà en relation avec ce client !"});
-                else {
-                    customerModel.create(paramCustomer, function (err) {
-                        if (err)
-                            res.status(500).json({message: err});
-                        else
-                            res.status(200).json({message: "Client créé avec succès"});
-                    });
-                }
-            });
-        } else
-            res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
-    } else
+    if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
         res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+    else if (!utils.isEmailValid(paramCustomer.email))
+        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+    else {
+        let count = await customerModel.count({email: paramCustomer.email, idUser: req.loggedUser._id});
+        if (count !== 0)
+            res.status(400).json({message: "Vous avez déjà créé ce client"});
+        else {
+            let user = await userModel.findOne({_id: req.loggedUser._id});
+            let nextCode = "00000" + user.parameters.customers;
+            user.parameters.customers += 1;
+            user.save();
+            paramCustomer.code = "C" + nextCode.substring(nextCode.length - 5, nextCode.length);
+            paramCustomer.idUser = req.loggedUser._id;
+            paramCustomer.createdAt = new Date();
+            if (paramCustomer.type === "Particulier")
+                paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
+            let customer = await customerModel.create(paramCustomer);
+            res.status(200).json({message: "Client créé : " + customer.code});
+        }
+    }
 });
 
 /**
@@ -148,8 +157,6 @@ router.post("/add", function(req, res) {
  *     produces:
  *       - application/json
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       200:
@@ -161,18 +168,14 @@ router.post("/add", function(req, res) {
  *               - $ref: '#/definitions/PrivateCustomer'
  *               - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get("/me", function(req, res) {
-    customerModel.find({idUser: req.loggedUser._id}, function (err, customers) {
-        if (err)
-            res.status(500).json({message: err});
-        else
-            res.status(200).json(customers);
-    });
+router.get("/me", async (req, res) => {
+    let customers = await customerModel.find({idUser: req.loggedUser._id});
+    res.status(200).json(customers);
 });
 
 /**
  * @swagger
- * /customers/{id}:
+ * /customers/{code}:
  *   get:
  *     tags:
  *       - Customers
@@ -180,13 +183,11 @@ router.get("/me", function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer's id
+ *       - description: Customer's code
  *         in: path
  *         required: true
  *         type: string
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       200:
@@ -196,14 +197,10 @@ router.get("/me", function(req, res) {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get("/:id", function(req, res) {
-    let paramId = req.params.id;
-    customerModel.findOne({_id: paramId, idUser: req.loggedUser._id}, function (err, customer) {
-        if (err)
-            res.status(500).json({message: err});
-        else
-            res.status(200).json(customer);
-    });
+router.get("/:code", async (req, res) => {
+    let paramCode = req.params.code;
+    let customer = await customerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
+    res.status(200).json(customer);
 });
 
 /**
@@ -225,26 +222,32 @@ router.get("/:id", function(req, res) {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no customer for code
  *       200:
  *         description: Customer updated
  */
-router.put("/update", function(req, res) {
+router.put("/update", async (req, res) => {
     let paramCustomer = req.body;
-    customerModel.findOneAndUpdate({_id: paramCustomer._id, idUser: req.loggedUser._id}, paramCustomer, null, function(err) {
-        if (err)
-            res.status(500).json({message: err});
+    if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
+        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+    else if (!utils.isEmailValid(paramCustomer.email))
+        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+    else {
+        paramCustomer.updatedAt = new Date();
+        let customer = await customerModel.findOneAndUpdate({code: paramCustomer.code, idUser: req.loggedUser._id}, paramCustomer, null);
+        if (!customer)
+            res.status(400).json({message: "Aucun client ne correspond au code : " + paramCustomer.code});
         else
-            res.status(200).json({message: "Client correctement modifié"});
-    });
+            res.status(200).json({message: "Client modifié : " + customer.code});
+    }
 });
 
 /**
  * @swagger
- * /customers/{id]:
+ * /customers/{code]:
  *   delete:
  *     tags:
  *       - Customers
@@ -252,30 +255,25 @@ router.put("/update", function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer's id
+ *       - description: Customer's code
  *         in: path
  *         required: true
  *         type: string
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       400:
- *         description: Error - Customer doesn't exist
+ *         description: Error - no customer for code
  *       200:
  *         description: Customer deleted
  */
-router.delete("/:id", function(req, res) {
-    let paramId = req.params.id;
-    customerModel.findOneAndRemove({_id: paramId, idUser: req.loggedUser._id}, function(err, customer){
-        if (err)
-            res.status(500).json({message: err});
-        else if (!customer)
-            res.status(400).json({message: "Ce client n'existe pas"});
-        else
-            res.status(200).json({message: "Client correctement supprimé"});
-    });
+router.delete("/:code", async (req, res) => {
+    let paramCode = req.params.code;
+    let customer = await customerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
+    if (!customer)
+        res.status(400).json({message: "Aucun client ne correspond au code : " + paramCode});
+    else
+        res.status(200).json({message: "Client supprimé : " + customer.code});
 });
 
 module.exports = router;

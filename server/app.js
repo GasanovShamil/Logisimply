@@ -13,6 +13,7 @@ let users = require("./routes/users");
 let customers = require("./routes/customers");
 let providers = require("./routes/providers");
 let items = require("./routes/items");
+let bills = require("./routes/bills");
 
 let app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -52,6 +53,7 @@ app.use("/api/users", users);
 app.use("/api/customers", customers);
 app.use("/api/providers", providers);
 app.use("/api/items", items);
+app.use("/api/bills", bills);
 
 // serve swagger
 app.get("/swagger.json", function(req, res) {

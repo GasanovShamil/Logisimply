@@ -26,6 +26,12 @@ let userSchema = mongoose.Schema ({
     country: {type: String},
     status: {type: String},
     activationToken: {type: String},
+    parameters: {
+        customers: {type: Number},
+        providers: {type: Number},
+        quotes: {type: Number},
+        bills: {type: Number}
+    },
     createdAt: {type : Date},
     updatedAt: {type : Date}
 });
@@ -46,6 +52,7 @@ userSchema.methods.shortUser = function() {
         zipCode: this.zipCode,
         town: this.town,
         country: this.country,
+        status: this.status,
         createdAt: this.createdAt,
         updatedAt: this.createdAt,
     };
@@ -63,9 +70,9 @@ userSchema.methods.sendActivationUrl = function() {
 
     transporter.sendMail(mailOptions, function(err, info) {
         if (err)
-            console.log("sendActivationUrl KO " + user.email + " : " + err);
+            console.log("sendActivationUrl KO " + this.email + " : " + err);
         else
-            console.log("sendActivationUrl OK " + user.email + " : " + info.response);
+            console.log("sendActivationUrl OK " + this.email + " : " + info.response);
     });
 };
 

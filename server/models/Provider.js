@@ -3,6 +3,7 @@ let mongoose = require('mongoose');
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
 const providerSchema = mongoose.Schema ({
+    code: {type: String},
     companyName: {type: String},
     legalForm: {type: String},
     siret: {type: String},

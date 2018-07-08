@@ -1,7 +1,7 @@
 let express = require("express");
 let router = express.Router();
 let utils = require("../helpers/utils");
-let itemModel = require("../models/Item");
+let billModel = require("../models/Bill");
 
 /**
  * @swagger
@@ -67,14 +67,14 @@ router.post("/add", async (req, res) => {
     if (!(paramItem.type && paramItem.reference && paramItem.label && paramItem.priceET && paramItem.description))
         res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
     else {
-        let count = await itemModel.count({reference: paramItem.reference, idUser: paramItem.idUser});
+        let count = await billModel.count({reference: paramItem.reference, idUser: paramItem.idUser});
         if (count !== 0)
             res.status(400).json({message: "Vous avez déjà créé cet item"});
         else {
             paramItem.idUser = req.loggedUser._id;
             paramItem.createdAt = new Date();
-            let item = await itemModel.create(paramItem);
-            res.status(200).json({message: "Item créé : " + item.reference, reference: item.reference});
+            let item = await billModel.create(paramItem);
+            res.status(200).json({message: "Item créé : " + item.reference});
         }
     }
 });
@@ -99,7 +99,7 @@ router.post("/add", async (req, res) => {
  *             $ref: '#/definitions/Item'
  */
 router.get("/me", async (req, res) => {
-    let items = await itemModel.find({idUser: req.loggedUser._id});
+    let items = await billModel.find({idUser: req.loggedUser._id});
     res.status(200).json(items);
 });
 
@@ -127,7 +127,7 @@ router.get("/me", async (req, res) => {
  */
 router.get("/:reference", async (req, res) => {
     let paramRef = req.params.reference;
-    let item = await itemModel.findOne({reference: paramRef, idUser: req.loggedUser._id});
+    let item = await billModel.findOne({reference: paramRef, idUser: req.loggedUser._id});
     res.status(200).json(item);
 });
 
@@ -150,8 +150,6 @@ router.get("/:reference", async (req, res) => {
  *     responses:
  *       403:
  *         description: Error - user is logged out
- *       400:
- *         description: Error - no item for reference
  *       200:
  *         description: Item updated
  */
@@ -161,11 +159,8 @@ router.put("/update", async (req, res) => {
         res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
     else {
         paramItem.updatedAt = new Date();
-        let item = await itemModel.findOneAndUpdate({reference: paramItem.reference, idUser: req.loggedUser._id}, paramItem, null);
-        if (!item)
-            res.status(400).json({message: "Aucun item ne correspond à la référence : " + paramItem.reference});
-        else
-            res.status(200).json({message: "Item modifié : " + item.reference});
+        let item = await billModel.findOneAndUpdate({reference: paramItem.reference, idUser: req.loggedUser._id}, paramItem, null);
+        res.status(200).json({message: "Item modifié : " + item.reference});
     }
 });
 
@@ -193,7 +188,7 @@ router.put("/update", async (req, res) => {
  */
 router.delete("/:reference", async (req, res) => {
     let paramRef = req.params.reference;
-    let item = await itemModel.findOneAndRemove({reference: paramRef, idUser: req.loggedUser._id});
+    let item = await billModel.findOneAndRemove({reference: paramRef, idUser: req.loggedUser._id});
     if (!item)
         res.status(400).json({message: "Aucun item ne correspond à la référence : " + paramRef});
     else
