@@ -1,0 +1,67 @@
+{
+  "fields": {
+    "required": "Merci de bien remplir les champs obligatoires"
+  },
+  "email": {
+    "invalid": "Le format de l'adresse email n'est pas correct"
+  },
+  "users": {
+    "email": {
+      "used": "Cette adresse email est déjà associée à un compte",
+      "failed": "Aucun compte actif ne correspond à cette adresse email"
+    },
+    "add": "Compte créé avec succès",
+    "token": {
+      "failed": "Aucun compte inactif ne correspond à ce jeton d'activation"
+    },
+    "password": {
+      "new": "Un nouveau mot de passe vous a été envoyé par email",
+      "failed": "Le mot de passe est incorrect"
+    },
+    "link": "Un lien vous a été renvoyé à votre adresse email",
+    "banned": "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr",
+    "inactive": "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"
+  },
+  "items": {
+    "used": "Vous avez déjà créé ce produit/service",
+    "add": "Produit/Service crée avec succès",
+    "reference": {
+      "failed": "Aucun produit/service ne correspond à la référence demandée"
+    },
+    "update": "Produit/Service modifié avec succès",
+    "delete": {
+      "one": "Produit/Service supprimé avec succès",
+      "multiple": "Produits/Services supprimés avec succès"
+    }
+  },
+  "customers": {
+    "used": "Vous avez déjà créé ce client",
+    "add": "Client crée avec succès",
+    "code": {
+      "failed": "Aucun client ne correspond au code demandé"
+    },
+    "update": "Client modifié avec succès",
+    "delete": {
+      "one": "Client supprimé avec succès",
+      "multiple": "Clients supprimés avec succès"
+    }
+  },
+  "providers": {
+    "used": "Vous avez déjà créé ce fournisseur",
+    "add": "Fournisseur crée avec succès",
+    "code": {
+      "failed": "Aucun fournisseur ne correspond au code demandé"
+    },
+    "update": "Fournisseur modifié avec succès",
+    "delete": {
+      "one": "Fournisseur supprimé avec succès",
+      "multiple": "Fournisseurs supprimés avec succès"
+    }
+  },
+  "quotes": {
+
+  },
+  "bills": {
+
+  }
+}

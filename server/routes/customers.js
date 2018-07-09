@@ -1,10 +1,9 @@
-var config = require('../config.json');
-var utils = require('../helpers/utils');
-var express = require('express');
-var router = express.Router();
-var customerModel = require('../models/Customer');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.database);
+let express = require("express");
+let router = express.Router();
+let utils = require("../helpers/utils");
+let localization = require("../localization/fr_FR");
+let userModel = require("../models/User");
+let customerModel = require("../models/Customer");
 
 /**
  * @swagger
@@ -12,6 +11,8 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
  *   PrivateCustomer:
  *     type: object
  *     properties:
+ *       code:
+ *         type: string
  *       type:
  *         type: string
  *       civility:
@@ -22,7 +23,7 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
  *         type: string
  *       phone:
  *         type: string
- *       emailAddress:
+ *       email:
  *         type: string
  *       address:
  *         type: string
@@ -36,10 +37,16 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
  *         type: string
  *       idUser:
  *         type: string
+ *       createdAt:
+ *         type: string
+ *         format: date
+ *       updatedAt:
+ *         type: string
+ *         format: date
  *     required:
  *       - type
  *       - lastname
- *       - emailAddress
+ *       - email
  *       - address
  *       - zipCode
  *       - town
@@ -58,7 +65,7 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
  *         type: string
  *       siret:
  *         type: string
- *       emailAddress:
+ *       email:
  *         type: string
  *       address:
  *         type: string
@@ -72,18 +79,20 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
  *         type: string
  *       idUser:
  *         type: string
+ *       createdAt:
+ *         type: Date
+ *       updatedAt:
+ *         type: Date
  *     required:
  *       - type
  *       - name
- *       - emailAddress
+ *       - email
  *       - address
  *       - zipCode
  *       - town
  *       - country
  *       - idUser
  */
-
-router.use(utils.isLogged);
 
 /**
  * @swagger
@@ -104,46 +113,46 @@ router.use(utils.isLogged);
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       400:
  *         description: Error - missing fields or email invalid or customer already exists
  *       200:
  *         description: Customer created
+ *         schema:
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.post('/add', function(req, res) {
-    let addCustomer = req.body;
-    addCustomer.idUser = req.loggedUser._id;
-    if (addCustomer.type === "Particulier")
-        addCustomer.name = (addCustomer.lastname + " " + addCustomer.firstname).trim();
-
-    if (addCustomer.emailAddress && addCustomer.type && addCustomer.name && addCustomer.address && addCustomer.zipCode && addCustomer.town && addCustomer.country) {
-        if (utils.isEmailValid(addCustomer.emailAddress)) {
-            customerModel.find({emailAddress: addCustomer.emailAddress, idUser: addCustomer.idUser}, function (err, user) {
-                if (err)
-                    res.status(500).json({message: err});
-                else if (user.length !== 0)
-                    res.status(400).json({message: "Vous êtes déjà en relation avec ce client !"});
-                else {
-                    customerModel.create(addCustomer, function (err) {
-                        if (err)
-                            res.status(500).json({message: err});
-                        else
-                            res.status(200).json({message: "Client créé avec succès"});
-                    });
-                }
-            });
-        } else
-            res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
-    } else
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+router.post("/add", async (req, res) => {
+    let paramCustomer = req.body;
+    if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
+        res.status(400).json({message: localization.fields.required});
+    else if (!utils.isEmailValid(paramCustomer.email))
+        res.status(400).json({message: localization.email.invalid});
+    else {
+        let count = await customerModel.count({email: paramCustomer.email, idUser: req.loggedUser._id});
+        if (count !== 0)
+            res.status(400).json({message: localization.customers.used});
+        else {
+            let user = await userModel.findOne({_id: req.loggedUser._id});
+            let nextCode = "00000" + user.parameters.customers;
+            user.parameters.customers += 1;
+            user.save();
+            paramCustomer.code = "C" + nextCode.substring(nextCode.length - 5, nextCode.length);
+            paramCustomer.idUser = req.loggedUser._id;
+            paramCustomer.createdAt = new Date();
+            if (paramCustomer.type === "Particulier")
+                paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
+            let customer = await customerModel.create(paramCustomer);
+            res.status(200).json({message: localization.customers.add, data: customer});
+        }
+    }
 });
 
 /**
  * @swagger
- * /customers:
+ * /customers/me:
  *   get:
  *     tags:
  *       - Customers
@@ -151,8 +160,6 @@ router.post('/add', function(req, res) {
  *     produces:
  *       - application/json
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       200:
@@ -164,19 +171,14 @@ router.post('/add', function(req, res) {
  *               - $ref: '#/definitions/PrivateCustomer'
  *               - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get('/', function(req, res) {
-    let myId = req.loggedUser._id;
-    customerModel.find({idUser: myId}, function (err, customers) {
-        if (err)
-            res.status(500).json({message: err});
-        else
-            res.status(200).json(customers);
-    });
+router.get("/me", async (req, res) => {
+    let customers = await customerModel.find({idUser: req.loggedUser._id});
+    res.status(200).json(customers);
 });
 
 /**
  * @swagger
- * /customers/{id}:
+ * /customers/{code}:
  *   get:
  *     tags:
  *       - Customers
@@ -184,15 +186,15 @@ router.get('/', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer's id
+ *       - description: Customer's code
  *         in: path
  *         required: true
  *         type: string
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no customer for code
  *       200:
  *         description: An object of the requested customer
  *         schema:
@@ -200,15 +202,13 @@ router.get('/', function(req, res) {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get('/:id', function(req, res) {
-    let idCustomer = req.params.id;
-    let myId = req.loggedUser._id;
-    customerModel.findOne({idUser: myId, _id: idCustomer}, function (err, customer) {
-        if (err)
-            res.status(500).json({message: err});
-        else
-            res.status(200).json(customer);
-    });
+router.get("/:code", async (req, res) => {
+    let paramCode = req.params.code;
+    let customer = await customerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
+    if (!customer)
+        res.status(400).json({message: localization.customers.code.failed});
+    else
+        res.status(200).json(customer);
 });
 
 /**
@@ -230,27 +230,36 @@ router.get('/:id', function(req, res) {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no customer for code
  *       200:
  *         description: Customer updated
+ *         schema:
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.put('/update', function(req, res) {
-    let updateCustomer = req.body;
-
-    customerModel.findOneAndUpdate({_id: updateCustomer._id, idUser: req.loggedUser._id}, updateCustomer, null, function(err) {
-        if (err)
-            res.status(500).json({message: err});
+router.put("/update", async (req, res) => {
+    let paramCustomer = req.body;
+    if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
+        res.status(400).json({message: localization.fields.required});
+    else if (!utils.isEmailValid(paramCustomer.email))
+        res.status(400).json({message: localization.email.invalid});
+    else {
+        paramCustomer.updatedAt = new Date();
+        let customer = await customerModel.findOneAndUpdate({code: paramCustomer.code, idUser: req.loggedUser._id}, paramCustomer, null);
+        if (!customer)
+            res.status(400).json({message: localization.customers.code.failed});
         else
-            res.status(200).json({message: "Client correctement modifié"});
-    });
+            res.status(200).json({message: localization.customers.update, data: customer});
+    }
 });
 
 /**
  * @swagger
- * /customers/{id]:
+ * /customers/delete/{code}:
  *   delete:
  *     tags:
  *       - Customers
@@ -258,30 +267,70 @@ router.put('/update', function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Customer's id
+ *       - description: Customer's code
  *         in: path
  *         required: true
  *         type: string
  *     responses:
- *       500:
- *         description: Internal Server Error
  *       403:
  *         description: Error - user is logged out
  *       400:
- *         description: Error - Customer doesn't exist
+ *         description: Error - no customer for code
  *       200:
  *         description: Customer deleted
+ *         schema:
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.delete('/:id', function(req, res) {
-    let idCustomer = req.params.id;
-    customerModel.findOneAndRemove({_id: idCustomer, idUser: req.loggedUser._id}, function(err, customer){
-        if (err)
-            res.status(500).json({message: err});
-        else if (!customer)
-            res.status(400).json({message: "Ce client n'existe pas"});
-        else
-            res.status(200).json({message: "Client correctement supprimé"});
-    });
+router.delete("/delete/:code", async (req, res) => {
+    let paramCode = req.params.code;
+    let customer = await customerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
+    if (!customer)
+        res.status(400).json({message: localization.customers.code.failed});
+    else
+        res.status(200).json({message: localization.customers.delete.one, data: customer});
+});
+
+/**
+ * @swagger
+ * /customers/delete:
+ *   post:
+ *     tags:
+ *       - Customers
+ *     description: Logged - Delete multiple customers
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Customers to delete
+ *         in: body
+ *         required: true
+ *         type: array
+ *         items:
+ *           oneOf:
+ *             - $ref: '#/definitions/PrivateCustomer'
+ *             - $ref: '#/definitions/ProfessionalCustomer'
+ *     responses:
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Customers deleted
+ *         schema:
+ *           type: array
+ *           items:
+ *             oneOf:
+ *               - $ref: '#/definitions/PrivateCustomer'
+ *               - $ref: '#/definitions/ProfessionalCustomer'
+ */
+router.post("/delete", async (req, res) => {
+    let paramCustomers = req.body;
+    let customers = [];
+    for (let i = 0; i < paramCustomers.length; i++) {
+        let customer = await customerModel.findOneAndRemove({code: paramCustomers[i].code, idUser: req.loggedUser._id});
+        if (customer)
+            customers.push(customer);
+    }
+    res.status(200).json({message: localization.customers.delete.multiple, data: customers});
 });
 
 module.exports = router;
