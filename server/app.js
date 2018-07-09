@@ -56,10 +56,8 @@ app.get("/swagger.json", function(req, res) {
     res.send(swaggerSpec);
 });
 
-app.use(middleware.promises);
 //app.use("/api/test", test);
 app.use("/api/users", users);
-app.use(middleware.isLogged);
 app.use("/api/customers", customers);
 app.use("/api/providers", providers);
 app.use("/api/items", items);

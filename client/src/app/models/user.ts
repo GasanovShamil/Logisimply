@@ -1,18 +1,23 @@
 export class User {
   _id: string;
-  lastname: string;
+  email:	string;
+  password:	string;
   firstname: string;
-  activityType: string;
-  categoryType: string;
-  activityEntitled: string;
+  lastname:	string;
+  activityType:	string;
+  activityField: string;
+  categoryType:	string;
+  activityEntitled:	string;
   activityStarted: string;
   siret: string;
   address: string;
   zipCode: string;
-  town: string;
+  town:	string;
   country: string;
-  emailAddress: string;
-  password: string;
+  status:	string;
+  activationToken: string;
+  createdAt: string;
+  updatedAt:string;
 }
 
 

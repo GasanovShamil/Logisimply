@@ -1,4 +1,5 @@
 export class Customer {
+  code: string;
   type: string;
   civility: string;
   lastname: string;
@@ -7,13 +8,13 @@ export class Customer {
   phone: string;
   legalForm: string;
   siret: string;
-  emailAddress: string;
+  email: string;
   address: string;
   zipCode: string;
   town: string;
   country: string;
   comment: string;
   idUser: string;
+  createdAt: string;
+  updatedAt: string;
 }
-
-

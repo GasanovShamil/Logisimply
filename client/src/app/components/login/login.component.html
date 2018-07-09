@@ -1,7 +1,7 @@
 
 <form role="form" class="login-form" (submit)="login()">
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Email" name="email" [(ngModel)]="user.emailAddress" required>
+    <input matInput placeholder="Email" name="email" [(ngModel)]="user.email" required>
   </mat-form-field>
   <mat-form-field>
     <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'"  name="password" [(ngModel)]="user.password" required>

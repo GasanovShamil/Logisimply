@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let middleware = require("../helpers/middleware");
 let localization = require("../localization/fr_FR");
 let itemModel = require("../models/Item");
 
@@ -33,8 +34,10 @@ let itemModel = require("../models/Item");
  *       - label
  *       - priceET
  *       - description
- *       - idUser
  */
+
+router.use(middleware.promises);
+router.use(middleware.isLogged);
 
 /**
  * @swagger

@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let localization = require("../localization/fr_FR");
 let userModel = require("../models/User");
@@ -51,6 +52,9 @@ let providerModel = require("../models/Provider");
  *       - town
  *       - idUser
  */
+
+router.use(middleware.promises);
+router.use(middleware.isLogged);
 
 /**
  * @swagger

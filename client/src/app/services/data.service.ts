@@ -26,7 +26,7 @@ export class DataService {
   }
 
   getMyCustomers() {
-    return this.http.get<Customer[]>('/api/customers/').pipe(
+    return this.http.get<Customer[]>('/api/customers/me').pipe(
       catchError(this.handleError)
     );
   }
@@ -64,7 +64,7 @@ export class DataService {
   }
 
   getMyProviders() {
-    return this.http.get<any>('/api/providers/').pipe(
+    return this.http.get<any>('/api/providers/me').pipe(
       catchError(this.handleError)
     );
   }

@@ -53,8 +53,8 @@ export class ContactsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.displayedCustomerColumns = (this.mobileQuery.matches)?['select', 'name', 'emailAddress', 'actions']:['select', 'type', 'name', 'emailAddress', 'town', 'info'];
-    this.displayedProviderColumns = (this.mobileQuery.matches)?['select', 'companyName', 'emailAddress', 'actions']:['select', 'companyName', 'legalForm', 'emailAddress', 'town', 'info'];
+    this.displayedCustomerColumns = (this.mobileQuery.matches)?['select', 'name', 'email', 'actions']:['select', 'type', 'name', 'email', 'town', 'info'];
+    this.displayedProviderColumns = (this.mobileQuery.matches)?['select', 'companyName', 'email', 'actions']:['select', 'companyName', 'legalForm', 'email', 'town', 'info'];
     this.getCustomers();
   }
 

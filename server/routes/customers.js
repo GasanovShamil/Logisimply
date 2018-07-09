@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let localization = require("../localization/fr_FR");
 let userModel = require("../models/User");
@@ -51,7 +52,6 @@ let customerModel = require("../models/Customer");
  *       - zipCode
  *       - town
  *       - country
- *       - idUser
  *   ProfessionalCustomer:
  *     type: object
  *     properties:
@@ -91,8 +91,10 @@ let customerModel = require("../models/Customer");
  *       - zipCode
  *       - town
  *       - country
- *       - idUser
  */
+
+router.use(middleware.promises);
+router.use(middleware.isLogged);
 
 /**
  * @swagger
@@ -126,6 +128,8 @@ let customerModel = require("../models/Customer");
  */
 router.post("/add", async (req, res) => {
     let paramCustomer = req.body;
+    if (paramCustomer.type === "Particulier")
+        paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
     if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
         res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramCustomer.email))
@@ -142,8 +146,6 @@ router.post("/add", async (req, res) => {
             paramCustomer.code = "C" + nextCode.substring(nextCode.length - 5, nextCode.length);
             paramCustomer.idUser = req.loggedUser._id;
             paramCustomer.createdAt = new Date();
-            if (paramCustomer.type === "Particulier")
-                paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
             let customer = await customerModel.create(paramCustomer);
             res.status(200).json({message: localization.customers.add, data: customer});
         }
