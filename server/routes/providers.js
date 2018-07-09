@@ -1,6 +1,7 @@
 let express = require("express");
 let router = express.Router();
 let utils = require("../helpers/utils");
+let localization = require("../localization/fr_FR");
 let userModel = require("../models/User");
 let providerModel = require("../models/Provider");
 
@@ -51,8 +52,6 @@ let providerModel = require("../models/Provider");
  *       - idUser
  */
 
-router.use(utils.isLogged);
-
 /**
  * @swagger
  * /providers/add:
@@ -76,17 +75,19 @@ router.use(utils.isLogged);
  *         description: Error - missing fields or email invalid or provider already exists
  *       200:
  *         description: Provider created
+ *         schema:
+ *           $ref: '#/definitions/Provider'
  */
 router.post("/add", async (req, res) => {
     let paramProvider = req.body;
     if (!(paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.email && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramProvider.email))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
         let count = await providerModel.count({email: paramProvider.email, siret: paramProvider.siret, idUser: req.loggedUser._id});
         if (count !== 0)
-            res.status(400).json({message: "Vous avez déjà créé ce fournisseur"});
+            res.status(400).json({message: localization.providers.used});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             let nextCode = "00000" + user.parameters.providers;
@@ -96,7 +97,7 @@ router.post("/add", async (req, res) => {
             paramProvider.idUser = req.loggedUser._id;
             paramProvider.createdAt = new Date();
             let provider = await providerModel.create(paramProvider);
-            res.status(200).json({message: "Fournisseur créé : " + provider.code});
+            res.status(200).json({message: localization.providers.add, data: provider});
         }
     }
 });
@@ -142,6 +143,8 @@ router.get("/me", async (req, res) => {
  *     responses:
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no provider for code
  *       200:
  *         description: An object of the requested provider
  *         schema:
@@ -150,7 +153,10 @@ router.get("/me", async (req, res) => {
 router.get("/:code", async (req, res) => {
     let paramCode = req.params.code;
     let provider = await providerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
-    res.status(200).json(provider);
+    if (!provider)
+        res.status(400).json({message: localization.providers.code.failed});
+    else
+        res.status(200).json(provider);
 });
 
 /**
@@ -176,26 +182,28 @@ router.get("/:code", async (req, res) => {
  *         description: Error - no provider for code
  *       200:
  *         description: Provider updated
+ *         schema:
+ *           $ref: '#/definitions/Provider'
  */
 router.put("/update", async (req, res) => {
     let paramProvider = req.body;
     if (!(paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.email && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramProvider.email))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
         paramProvider.updatedAt = new Date();
         let provider = await providerModel.findOneAndUpdate({code: paramProvider.code, idUser: req.loggedUser._id}, paramProvider, null);
         if (!provider)
-            res.status(400).json({message: "Aucun fournisseur ne correspond au code : " + paramProvider.code});
+            res.status(400).json({message: localization.providers.code.failed});
         else
-            res.status(200).json({message: "Fournisseur modifié : " + provider.code});
+            res.status(200).json({message: localization.providers.update, data: provider});
     }
 });
 
 /**
  * @swagger
- * /providers/{code]:
+ * /providers/delete/{code}:
  *   delete:
  *     tags:
  *       - Providers
@@ -214,14 +222,53 @@ router.put("/update", async (req, res) => {
  *         description: Error - no provider for code
  *       200:
  *         description: Provider deleted
+ *         schema:
+ *           $ref: '#/definitions/Provider'
  */
-router.delete("/:code", async (req, res) => {
+router.delete("/delete/:code", async (req, res) => {
     let paramCode = req.params.code;
     let provider = await providerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
     if (!provider)
-        res.status(400).json({message: "Aucun fournisseur ne correspond au code : " + paramCode});
+        res.status(400).json({message: localization.providers.code.failed});
     else
-        res.status(200).json({message: "Fournisseur supprimé : " + provider.code});
+        res.status(200).json({message: localization.providers.delete.one, data: provider});
+});
+
+/**
+ * @swagger
+ * /providers/delete:
+ *   post:
+ *     tags:
+ *       - Providers
+ *     description: Logged - Delete multiple providers
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Providers to delete
+ *         in: body
+ *         required: true
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/Provider'
+ *     responses:
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Providers deleted
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Provider'
+ */
+router.post("/delete", async (req, res) => {
+    let paramProviders = req.body;
+    let providers = [];
+    for (let i = 0; i < paramProviders.length; i++) {
+        let provider = await providerModel.findOneAndRemove({code: paramProviders[i].code, idUser: req.loggedUser._id});
+        if (provider)
+            providers.push(provider);
+    }
+    res.status(200).json({message: localization.providers.delete.multiple, data: providers});
 });
 
 module.exports = router;

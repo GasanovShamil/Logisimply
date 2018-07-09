@@ -1,8 +1,8 @@
 let config = require("../config.json");
-let mongoose = require('mongoose');
+let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
-const providerSchema = mongoose.Schema ({
+let providerSchema = mongoose.Schema ({
     code: {type: String},
     companyName: {type: String},
     legalForm: {type: String},
@@ -19,4 +19,4 @@ const providerSchema = mongoose.Schema ({
     updatedAt: {type : Date}
 });
 
-module.exports = mongoose.model('Provider', providerSchema);
+module.exports = mongoose.model("Provider", providerSchema);

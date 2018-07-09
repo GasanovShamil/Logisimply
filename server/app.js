@@ -1,4 +1,5 @@
 let config = require("./config.json");
+let middleware = require("./helpers/middleware");
 let express = require("express");
 let path = require("path");
 let favicon = require("serve-favicon");
@@ -13,6 +14,7 @@ let users = require("./routes/users");
 let customers = require("./routes/customers");
 let providers = require("./routes/providers");
 let items = require("./routes/items");
+let quotes = require("./routes/quotes");
 let bills = require("./routes/bills");
 
 let app = express();
@@ -48,18 +50,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "/dist")));
 app.use(express.static(path.join(__dirname, "/public")));
 
-//app.use("/api/test", test);
-app.use("/api/users", users);
-app.use("/api/customers", customers);
-app.use("/api/providers", providers);
-app.use("/api/items", items);
-app.use("/api/bills", bills);
-
 // serve swagger
 app.get("/swagger.json", function(req, res) {
     res.setHeader("Content-Type", "application/json");
     res.send(swaggerSpec);
 });
+
+app.use(middleware.promises);
+//app.use("/api/test", test);
+app.use("/api/users", users);
+app.use(middleware.isLogged);
+app.use("/api/customers", customers);
+app.use("/api/providers", providers);
+app.use("/api/items", items);
+app.use("/api/quotes", quotes);
+app.use("/api/bills", bills);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -73,12 +78,13 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-// error handlerapp.use(function(err, req, res, next) {
-//     res.locals.message = err.message;
-//     res.locals.error = req.app.get("env") === "development" ? err : {};
-//     res.status(err.status || 500);
-//     res.render("error");
-// });
+// error handler
+app.use(function(err, req, res, next) {
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
+    res.status(err.status || 500);
+    res.render("error");
+});
 
 
 module.exports = app;

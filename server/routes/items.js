@@ -1,6 +1,6 @@
 let express = require("express");
 let router = express.Router();
-let utils = require("../helpers/utils");
+let localization = require("../localization/fr_FR");
 let itemModel = require("../models/Item");
 
 /**
@@ -36,8 +36,6 @@ let itemModel = require("../models/Item");
  *       - idUser
  */
 
-router.use(utils.isLogged);
-
 /**
  * @swagger
  * /items/add:
@@ -61,20 +59,22 @@ router.use(utils.isLogged);
  *         description: Error - item already exists
  *       200:
  *         description: Item created
+ *         schema:
+ *           $ref: '#/definitions/Item'
  */
 router.post("/add", async (req, res) => {
     let paramItem = req.body;
     if (!(paramItem.type && paramItem.reference && paramItem.label && paramItem.priceET && paramItem.description))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else {
         let count = await itemModel.count({reference: paramItem.reference, idUser: paramItem.idUser});
         if (count !== 0)
-            res.status(400).json({message: "Vous avez déjà créé cet item"});
+            res.status(400).json({message: localization.items.used});
         else {
             paramItem.idUser = req.loggedUser._id;
             paramItem.createdAt = new Date();
             let item = await itemModel.create(paramItem);
-            res.status(200).json({message: "Item créé : " + item.reference, reference: item.reference});
+            res.status(200).json({message: localization.items.add, data: item});
         }
     }
 });
@@ -120,6 +120,8 @@ router.get("/me", async (req, res) => {
  *     responses:
  *       403:
  *         description: Error - user is logged out
+ *       400:
+ *         description: Error - no item for reference
  *       200:
  *         description: An object of the requested item
  *         schema:
@@ -128,7 +130,10 @@ router.get("/me", async (req, res) => {
 router.get("/:reference", async (req, res) => {
     let paramRef = req.params.reference;
     let item = await itemModel.findOne({reference: paramRef, idUser: req.loggedUser._id});
-    res.status(200).json(item);
+    if (!item)
+        res.status(400).json({message: localization.items.reference.failed});
+    else
+        res.status(200).json(item);
 });
 
 /**
@@ -154,24 +159,26 @@ router.get("/:reference", async (req, res) => {
  *         description: Error - no item for reference
  *       200:
  *         description: Item updated
+ *         schema:
+ *           $ref: '#/definitions/Item'
  */
 router.put("/update", async (req, res) => {
     let paramItem = req.body;
     if (!(paramItem.type && paramItem.reference && paramItem.label && paramItem.priceET && paramItem.description))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else {
         paramItem.updatedAt = new Date();
         let item = await itemModel.findOneAndUpdate({reference: paramItem.reference, idUser: req.loggedUser._id}, paramItem, null);
         if (!item)
-            res.status(400).json({message: "Aucun item ne correspond à la référence : " + paramItem.reference});
+            res.status(400).json({message: localization.items.reference.failed});
         else
-            res.status(200).json({message: "Item modifié : " + item.reference});
+            res.status(200).json({message: localization.items.update, data: item});
     }
 });
 
 /**
  * @swagger
- * /items/{reference]:
+ * /items/delete/{reference}:
  *   delete:
  *     tags:
  *       - Items
@@ -190,14 +197,53 @@ router.put("/update", async (req, res) => {
  *         description: Error - no item for reference
  *       200:
  *         description: Item deleted
+ *         schema:
+ *           $ref: '#/definitions/Item'
  */
-router.delete("/:reference", async (req, res) => {
+router.delete("/delete/:reference", async (req, res) => {
     let paramRef = req.params.reference;
     let item = await itemModel.findOneAndRemove({reference: paramRef, idUser: req.loggedUser._id});
     if (!item)
-        res.status(400).json({message: "Aucun item ne correspond à la référence : " + paramRef});
+        res.status(400).json({message: localization.items.reference.failed});
     else
-        res.status(200).json({message: "Item supprimé : " + item.reference});
+        res.status(200).json({message: localization.items.delete.one, data: item});
+});
+
+/**
+ * @swagger
+ * /items/delete:
+ *   post:
+ *     tags:
+ *       - Items
+ *     description: Logged - Delete multiple items
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Items to delete
+ *         in: body
+ *         required: true
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/Item'
+ *     responses:
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Items deleted
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Item'
+ */
+router.post("/delete", async (req, res) => {
+    let paramItems = req.body;
+    let items = [];
+    for (let i = 0; i < paramItems.length; i++) {
+        let item = await itemModel.findOneAndRemove({reference: paramItems[i].reference, idUser: req.loggedUser._id});
+        if (item)
+            items.push(item);
+    }
+    res.status(200).json({message: localization.items.delete.multiple, data: items});
 });
 
 module.exports = router;

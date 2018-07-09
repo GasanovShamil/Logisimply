@@ -1,6 +1,9 @@
 let express = require("express");
 let router = express.Router();
+let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
+let config = require("../config.json");
+let localization = require("../localization/fr_FR");
 let jwt = require("jsonwebtoken");
 let md5 = require("md5");
 let userModel = require("../models/User");
@@ -85,17 +88,19 @@ let userModel = require("../models/User");
  *         description: Error - missing fields or email invalid or email already used
  *       200:
  *         description: User created and activation email sent by email
+ *         schema:
+ *           $ref: '#/definitions/User'
  */
 router.post("/add", async (req, res) => {
     let paramUser = req.body;
     if (!(paramUser.email && paramUser.password && paramUser.firstname && paramUser.lastname && paramUser.activityEntitled && paramUser.activityStarted && paramUser.siret && paramUser.address && paramUser.zipCode && paramUser.town))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramUser.email))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
         let count = await userModel.count({email: paramUser.email});
         if (count !== 0)
-            res.status(400).json({message: "Cette adresse email est déjà associée à un compte"});
+            res.status(400).json({message: localization.users.email.used});
         else {
             paramUser.status = "inactif";
             paramUser.activationToken = md5(paramUser.email);
@@ -104,7 +109,7 @@ router.post("/add", async (req, res) => {
             paramUser.parameters = {customers: 1, providers: 1, quotes: 1, bills: 1};
             let user = await userModel.create(paramUser);
             user.sendActivationUrl();
-            res.status(200).json({message: "Compte créé avec succès"});
+            res.status(200).json({message: localization.users.add});
         }
     }
 });
@@ -133,7 +138,7 @@ router.get("/activate/:token", async (req, res) => {
     let paramToken = req.params.token;
     let user = await userModel.findOne({status: "inactif", activationToken: paramToken});
     if (!user)
-        res.render("error", {message: "Aucun compte inactif ne correspond à ce jeton d'activation"})
+        res.render("error", {message: localization.users.token.failed})
     else {
         user.status = "actif";
         user.activationToken = "";
@@ -168,19 +173,19 @@ router.get("/activate/:token", async (req, res) => {
 router.post("/forgetPassword", async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
-        var user = await userModel.findOne({status: "actif", email: paramEmail});
+        let user = await userModel.findOne({status: "actif", email: paramEmail});
         if (!user)
-            res.status(400).json({message: "Aucun compte actif ne correspond à cette adresse mail"});
+            res.status(400).json({message: localization.users.email.failed});
         else {
             let newPassword = Math.floor(Math.random() * 999999) + 100000;
             user.password = md5("" + newPassword);
             user.save();
             user.sendPassword();
-            res.status(200).json({message: "Un nouveau mot de passe vous a été envoyé par email"});
+            res.status(200).json({message: localization.users.password.new});
         }
     }
 });
@@ -211,16 +216,16 @@ router.post("/forgetPassword", async (req, res) => {
 router.post("/resendActivationUrl", async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
-        var user = await userModel.findOne({status: "inactif", email: paramEmail});
+        let user = await userModel.findOne({status: "inactif", email: paramEmail});
         if (!user)
-            res.status(400).json({message: "Aucun compte inactif ne correspond à cette adresse mail"});
+            res.status(400).json({message: localization.users.email.failed});
         else {
             user.sendActivationUrl();
-            res.status(200).json({message: "Un lien vous a été renvoyé à votre adresse email"});
+            res.status(200).json({message: localization.users.link});
         }
     }
 });
@@ -259,38 +264,38 @@ router.post("/login", async (req, res) => {
     let paramEmail = req.body.email;
     let paramPassword = req.body.password;
     if (!(paramEmail && paramPassword))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
         let user = await userModel.findOne({email: paramEmail});
         if (!user)
-            res.status(400).json({message: "Cette adresse email n'est associée à aucun compte"});
+            res.status(400).json({message: localization.users.email.failed});
         else
             switch (user.status) {
                 case "banni":
-                    res.status(403).json({message: "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr"});
+                    res.status(403).json({message: localization.users.banned});
                     break;
 
                 case "inactif":
-                    res.status(403).json({message: "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"});
+                    res.status(403).json({message: localization.users.inactive});
                     break;
 
                 case "actif":
-                    if (user.password === md5(paramPassword)) {
-                        jwt.sign(JSON.stringify(user.shortUser()), "zkfgjrezfj852", function (err, token) {
+                    if (user.password === md5(paramPassword))
+                        jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function (err, token) {
                             if (err)
                                 res.status(500).json({message: err});
                             else
                                 res.status(200).json({token: token});
                         });
-                    } else res.status(403).json({message: "Le mot de passe est incorrect"});
+                    else res.status(403).json({message: localization.users.password.failed});
                     break;
             }
     }
 });
 
-router.use(utils.isLogged);
+router.use(middleware.isLogged);
 
 /**
  * @swagger
@@ -340,14 +345,14 @@ router.get("/me", function(req, res) {
 router.put("/update", async (req, res) => {
     let paramUser = req.body;
     if (!(paramUser.email && paramUser.password && paramUser.firstname && paramUser.lastname && paramUser.activityEntitled && paramUser.activityStarted && paramUser.siret && paramUser.address && paramUser.zipCode && paramUser.town))
-        res.status(400).json({message: "Merci de bien remplir les champs obligatoires"});
+        res.status(400).json({message: localization.fields.required});
     else if (!utils.isEmailValid(paramUser.email))
-        res.status(400).json({message: "Le format de l'adresse email n'est pas correct"});
+        res.status(400).json({message: localization.email.invalid});
     else {
         paramUser.password = md5(paramUser.password);
         paramUser.updatedAt = new Date();
         let user = await userModel.findOneAndUpdate({_id: req.loggedUser._id}, paramUser, null);
-        jwt.sign(JSON.stringify(user.shortUser()), "zkfgjrezfj852", function(err, token) {
+        jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function(err, token) {
             if (err)
                 res.status(500).json({message: err});
             else

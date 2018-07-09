@@ -1,8 +1,8 @@
 let config = require("../config.json");
-let mongoose = require('mongoose');
+let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
-const customerSchema = mongoose.Schema ({
+let customerSchema = mongoose.Schema ({
     code: {type: String},
     type: {type: String},
     civility: {type: String},
@@ -23,4 +23,4 @@ const customerSchema = mongoose.Schema ({
     updatedAt: {type : Date}
 });
 
-module.exports = mongoose.model('Customer', customerSchema);
+module.exports = mongoose.model("Customer", customerSchema);

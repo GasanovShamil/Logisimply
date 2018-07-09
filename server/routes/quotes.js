@@ -1,12 +1,12 @@
 let express = require("express");
 let router = express.Router();
 let localization = require("../localization/fr_FR");
-let billModel = require("../models/Bill");
+let quoteModel = require("../models/Quote");
 
 /**
  * @swagger
  * definition:
- *   Bill:
+ *   Quote:
  *     type: object
  *     properties:
  *       idUser:
