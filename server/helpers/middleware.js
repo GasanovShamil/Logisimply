@@ -22,12 +22,14 @@ module.exports = {
             res.status(403).json({message: localization[req.language].middleware.missing});
     },
     promises: function(req, res, next) {
-        let languageHeader = req.get("Accept-Language");
+        console.log("middleware.promises : OK");
+        let languageHeader = req.get("Localize");
         if (typeof languageHeader !== "undefined")
             req.language = languageHeader;
         else
             req.language = config.localize;
 
+        console.log("req.language : " + req.language);
         next();
     }
 };

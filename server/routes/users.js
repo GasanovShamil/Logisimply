@@ -111,7 +111,7 @@ router.post("/add", async (req, res) => {
             paramUser.createdAt = new Date();
             paramUser.parameters = {customers: 1, providers: 1, quotes: 1, bills: 1};
             let user = await userModel.create(paramUser);
-            mailer.sendActivationUrl(user);
+            mailer.sendActivationUrl(user, req.language);
             res.status(200).json({message: localization[req.language].users.add});
         }
     }
@@ -132,10 +132,8 @@ router.post("/add", async (req, res) => {
  *         required: true
  *         type: string
  *     responses:
- *       400:
- *         description: Render Error
- *       200:
- *         description: Render Success
+ *       default:
+ *         description: Render
  */
 router.get("/activate/:token", async (req, res) => {
     let paramToken = req.params.token;
@@ -187,7 +185,7 @@ router.post("/forgetPassword", async (req, res) => {
             let newPassword = Math.floor(Math.random() * 999999) + 100000;
             user.password = md5("" + newPassword);
             user.save();
-            mailer.sendPassword(user);
+            mailer.sendPassword(user, req.language);
             res.status(200).json({message: localization[req.language].users.password.new});
         }
     }
@@ -227,7 +225,7 @@ router.post("/resendActivationUrl", async (req, res) => {
         if (!user)
             res.status(400).json({message: localization[req.language].users.email.failed});
         else {
-            mailer.sendActivationUrl(user);
+            mailer.sendActivationUrl(user, req.language);
             res.status(200).json({message: localization[req.language].users.link});
         }
     }
