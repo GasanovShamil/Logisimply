@@ -1,17 +1,22 @@
-const mongoose = require('mongoose');
+let config = require("../config.json");
+let mongoose = require("mongoose");
+mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
-const providerSchema = mongoose.Schema ({
-    companyName: String,
-    legalForm: String,
-    siret: String,
-    phone: String,
-    emailAddress: String,
-    website: String,
-    address: String,
-    zipCode: String,
-    town: String,
-    country: String,
-    idUser: String
+let providerSchema = mongoose.Schema ({
+    code: {type: String},
+    companyName: {type: String},
+    legalForm: {type: String},
+    siret: {type: String},
+    phone: {type: String},
+    email: {type: String},
+    website: {type: String},
+    address: {type: String},
+    zipCode: {type: String},
+    town: {type: String},
+    country: {type: String},
+    idUser: {type: String},
+    createdAt: {type : Date},
+    updatedAt: {type : Date}
 });
 
-module.exports = mongoose.model('Provider', providerSchema);
+module.exports = mongoose.model("Provider", providerSchema);
