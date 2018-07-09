@@ -14,27 +14,24 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   isLogedIn(): boolean {
-    let user = localStorage.getItem('currentUser');
+    let user = localStorage.getItem('current_user');
     return (user)?true:false;
   }
 
   getCurrentUser(): User {
     let user = new User();
-    user = JSON.parse(localStorage.getItem('currentUser'));
+    user = JSON.parse(localStorage.getItem('current_user'));
     return user;
   }
 
   login(loginData) {
-    return this.http.post<any>('/api/login', loginData)
+    return this.http.post<any>('/api/users/login', loginData)
       .map(data => {
         // login successful if there's a jwt token in the response
         if (data['token']) {
-          let user = new User();
           let decoded_token = jwt_decode(data['token']);
-          user = decoded_token.user;
-          localStorage.setItem("access_token" , decoded_token);
-          localStorage.setItem("currentUser", JSON.stringify(user));
-          return user;
+          localStorage.setItem("access_token" , data['token']);
+          localStorage.setItem("current_user", JSON.stringify(decoded_token));
         }
       }).pipe(
         catchError(this.handleError)
@@ -43,7 +40,7 @@ export class AuthService {
 
   logout(){
     localStorage.removeItem("access_token");
-    localStorage.removeItem("currentUser")
+    localStorage.removeItem("current_user")
   }
 
 

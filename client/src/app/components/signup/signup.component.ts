@@ -13,7 +13,7 @@ export class SignupComponent implements OnInit {
 
   constructor(private alertService : AlertService, private userService : UserService) { }
   registerForm = new FormGroup ({
-    emailAddress: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     lastname: new FormControl('', [Validators.required]),
     firstname: new FormControl('', [Validators.required]),
@@ -21,7 +21,7 @@ export class SignupComponent implements OnInit {
     categoryType: new FormControl('', []),
     activityEntitled: new FormControl('', [Validators.required]),
     activityStarted: new FormControl('', [Validators.required]),
-    sirenSiret: new FormControl('', [Validators.required, Validators.maxLength(14), Validators.minLength(14)]),
+    siret: new FormControl('', [Validators.required, Validators.maxLength(14), Validators.minLength(14)]),
     address: new FormControl('', [Validators.required]),
     zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5)]),
     town: new FormControl('', [Validators.required]),

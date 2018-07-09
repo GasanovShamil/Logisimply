@@ -23,10 +23,10 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    if(this.user.emailAddress && this.user.password ){
+    if(this.user.email && this.user.password ){
       let loginData = {
-        'email' : this.user.emailAddress,
-        "password" : this.user.password
+        'email' : this.user.email,
+        'password' : this.user.password
       }
       this.auth.login(loginData).subscribe(
         data =>{

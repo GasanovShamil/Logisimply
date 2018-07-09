@@ -1,7 +1,8 @@
 import {
   MatInputModule, MatFormFieldModule, MatExpansionModule, MatListModule, MatDividerModule, MatButtonModule,
   MatCheckboxModule, MatSidenavModule, MatCardModule, MatIconModule, MatToolbarModule, MatSelectModule,
-  MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatTableModule, MatPaginatorModule
+  MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatTableModule, MatPaginatorModule, MatTabsModule,
+  MatProgressSpinnerModule, MatSortModule, MatTooltipModule
 } from '@angular/material';
 import {NgModule} from "@angular/core";
 import { CommonModule } from '@angular/common';
@@ -25,7 +26,11 @@ import { CommonModule } from '@angular/common';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatTooltipModule
   ],
   exports: [
     CommonModule,
@@ -45,7 +50,11 @@ import { CommonModule } from '@angular/common';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatTooltipModule
   ],
 })
 export class AppMaterialModule { }

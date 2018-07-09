@@ -1,5 +1,6 @@
 let express = require("express");
 let router = express.Router();
+let middleware = require("../helpers/middleware");
 let localization = require("../localization/fr_FR");
 let quoteModel = require("../models/Quote");
 
@@ -18,8 +19,10 @@ let quoteModel = require("../models/Quote");
  *         type: string
  *         format: date
  *     required:
- *       - idUser
  */
+
+router.use(middleware.promises);
+router.use(middleware.isLogged);
 
 router.post("/", async (req, res) => {
     res.sendStatus(200);

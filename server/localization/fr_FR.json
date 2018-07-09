@@ -12,7 +12,7 @@
     },
     "add": "Compte créé avec succès",
     "token": {
-      "failed": "Aucun compte inactif ne correspond à ce jeton d'activation"
+      "failed": "Aucun compte ne correspond à ce jeton d'activation"
     },
     "password": {
       "new": "Un nouveau mot de passe vous a été envoyé par email",
