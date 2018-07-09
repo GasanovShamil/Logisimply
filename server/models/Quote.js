@@ -1,4 +1,4 @@
-let config = require("../config.json");
+let config = require("../config");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 

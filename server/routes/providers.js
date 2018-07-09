@@ -1,10 +1,10 @@
-let express = require("express");
-let router = express.Router();
+let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
-let localization = require("../localization/fr_FR");
 let userModel = require("../models/User");
 let providerModel = require("../models/Provider");
+let express = require("express");
+let router = express.Router();
 
 /**
  * @swagger
@@ -85,13 +85,13 @@ router.use(middleware.isLogged);
 router.post("/add", async (req, res) => {
     let paramProvider = req.body;
     if (!(paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.email && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town))
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramProvider.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let count = await providerModel.count({email: paramProvider.email, siret: paramProvider.siret, idUser: req.loggedUser._id});
         if (count !== 0)
-            res.status(400).json({message: localization.providers.used});
+            res.status(400).json({message: localization[req.language].providers.code.used});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             let nextCode = "00000" + user.parameters.providers;
@@ -101,7 +101,7 @@ router.post("/add", async (req, res) => {
             paramProvider.idUser = req.loggedUser._id;
             paramProvider.createdAt = new Date();
             let provider = await providerModel.create(paramProvider);
-            res.status(200).json({message: localization.providers.add, data: provider});
+            res.status(200).json({message: localization[req.language].providers.add, data: provider});
         }
     }
 });
@@ -158,7 +158,7 @@ router.get("/:code", async (req, res) => {
     let paramCode = req.params.code;
     let provider = await providerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
     if (!provider)
-        res.status(400).json({message: localization.providers.code.failed});
+        res.status(400).json({message: localization[req.language].providers.code.failed});
     else
         res.status(200).json(provider);
 });
@@ -192,16 +192,16 @@ router.get("/:code", async (req, res) => {
 router.put("/update", async (req, res) => {
     let paramProvider = req.body;
     if (!(paramProvider.companyName && paramProvider.legalForm && paramProvider.siret && paramProvider.email && paramProvider.website && paramProvider.address && paramProvider.zipCode && paramProvider.town))
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramProvider.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramProvider.updatedAt = new Date();
         let provider = await providerModel.findOneAndUpdate({code: paramProvider.code, idUser: req.loggedUser._id}, paramProvider, null);
         if (!provider)
-            res.status(400).json({message: localization.providers.code.failed});
+            res.status(400).json({message: localization[req.language].providers.code.failed});
         else
-            res.status(200).json({message: localization.providers.update, data: provider});
+            res.status(200).json({message: localization[req.language].providers.update, data: provider});
     }
 });
 
@@ -233,9 +233,9 @@ router.delete("/delete/:code", async (req, res) => {
     let paramCode = req.params.code;
     let provider = await providerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
     if (!provider)
-        res.status(400).json({message: localization.providers.code.failed});
+        res.status(400).json({message: localization[req.language].providers.code.failed});
     else
-        res.status(200).json({message: localization.providers.delete.one, data: provider});
+        res.status(200).json({message: localization[req.language].providers.delete.one, data: provider});
 });
 
 /**
@@ -272,7 +272,7 @@ router.post("/delete", async (req, res) => {
         if (provider)
             providers.push(provider);
     }
-    res.status(200).json({message: localization.providers.delete.multiple, data: providers});
+    res.status(200).json({message: localization[req.language].providers.delete.multiple, data: providers});
 });
 
 module.exports = router;

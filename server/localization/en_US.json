@@ -1,6 +1,6 @@
 {
   "fields": {
-    "required": "Merci de bien remplir les champs obligatoires"
+    "required": "Please fill all the mandatory fields"
   },
   "email": {
     "invalid": "Le format de l'adresse email n'est pas correct",
@@ -10,9 +10,9 @@
     }
   },
   "middleware": {
-    "activate": "Veuillez activer votre compte",
-    "failed": "Token d'authentification incorrect",
-    "missing": "Token d'authentification inexistant"
+    "activate": "You must activate your account first",
+    "failed": "Authentication token invalid",
+    "missing": "Authentication token missing"
   },
   "users": {
     "email": {

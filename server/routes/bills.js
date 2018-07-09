@@ -1,8 +1,9 @@
+let localization = require("../localization/localize");
+let middleware = require("../helpers/middleware");
+let utils = require("../helpers/utils");
+let billModel = require("../models/Bill");
 let express = require("express");
 let router = express.Router();
-let middleware = require("../helpers/middleware");
-let localization = require("../localization/fr_FR");
-let billModel = require("../models/Bill");
 
 /**
  * @swagger
