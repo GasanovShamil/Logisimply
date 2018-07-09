@@ -1,13 +1,13 @@
-let config = require("../config.json");
-let localization = require("../localization/fr_FR");
-let express = require("express");
-let router = express.Router();
+let config = require("../config");
+let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let mailer = require("../helpers/mailer");
+let userModel = require("../models/User");
+let express = require("express");
+let router = express.Router();
 let jwt = require("jsonwebtoken");
 let md5 = require("md5");
-let userModel = require("../models/User");
 
 /**
  * @swagger
@@ -97,13 +97,13 @@ router.use(middleware.promises);
 router.post("/add", async (req, res) => {
     let paramUser = req.body;
     if (!(paramUser.email && paramUser.password && paramUser.firstname && paramUser.lastname && paramUser.activityEntitled && paramUser.activityStarted && paramUser.siret && paramUser.address && paramUser.zipCode && paramUser.town))
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramUser.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let count = await userModel.count({email: paramUser.email});
         if (count !== 0)
-            res.status(400).json({message: localization.users.email.used});
+            res.status(400).json({message: localization[req.language].users.email.used});
         else {
             paramUser.status = "inactif";
             paramUser.activationToken = md5(paramUser.email);
@@ -112,7 +112,7 @@ router.post("/add", async (req, res) => {
             paramUser.parameters = {customers: 1, providers: 1, quotes: 1, bills: 1};
             let user = await userModel.create(paramUser);
             mailer.sendActivationUrl(user);
-            res.status(200).json({message: localization.users.add});
+            res.status(200).json({message: localization[req.language].users.add});
         }
     }
 });
@@ -141,7 +141,7 @@ router.get("/activate/:token", async (req, res) => {
     let paramToken = req.params.token;
     let user = await userModel.findOne({status: "inactif", activationToken: paramToken});
     if (!user)
-        res.render("error", {message: localization.users.token.failed})
+        res.render("error", {message: localization[req.language].users.token.failed})
     else {
         user.status = "actif";
         user.activationToken = "";
@@ -176,19 +176,19 @@ router.get("/activate/:token", async (req, res) => {
 router.post("/forgetPassword", async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({status: "actif", email: paramEmail});
         if (!user)
-            res.status(400).json({message: localization.users.email.failed});
+            res.status(400).json({message: localization[req.language].users.email.failed});
         else {
             let newPassword = Math.floor(Math.random() * 999999) + 100000;
             user.password = md5("" + newPassword);
             user.save();
             mailer.sendPassword(user);
-            res.status(200).json({message: localization.users.password.new});
+            res.status(200).json({message: localization[req.language].users.password.new});
         }
     }
 });
@@ -219,16 +219,16 @@ router.post("/forgetPassword", async (req, res) => {
 router.post("/resendActivationUrl", async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({status: "inactif", email: paramEmail});
         if (!user)
-            res.status(400).json({message: localization.users.email.failed});
+            res.status(400).json({message: localization[req.language].users.email.failed});
         else {
             mailer.sendActivationUrl(user);
-            res.status(200).json({message: localization.users.link});
+            res.status(200).json({message: localization[req.language].users.link});
         }
     }
 });
@@ -267,21 +267,21 @@ router.post("/login", async (req, res) => {
     let paramEmail = req.body.email;
     let paramPassword = req.body.password;
     if (!(paramEmail && paramPassword))
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({email: paramEmail});
         if (!user)
-            res.status(400).json({message: localization.users.email.failed});
+            res.status(400).json({message: localization[req.language].users.email.failed});
         else
             switch (user.status) {
                 case "banni":
-                    res.status(403).json({message: localization.users.banned});
+                    res.status(403).json({message: localization[req.language].users.banned});
                     break;
 
                 case "inactif":
-                    res.status(403).json({message: localization.users.inactive});
+                    res.status(403).json({message: localization[req.language].users.inactive});
                     break;
 
                 case "actif":
@@ -292,7 +292,7 @@ router.post("/login", async (req, res) => {
                             else
                                 res.status(200).json({token: token});
                         });
-                    else res.status(403).json({message: localization.users.password.failed});
+                    else res.status(403).json({message: localization[req.language].users.password.failed});
                     break;
             }
     }
@@ -348,9 +348,9 @@ router.get("/me", function(req, res) {
 router.put("/update", async (req, res) => {
     let paramUser = req.body;
     if (!(paramUser.email && paramUser.password && paramUser.firstname && paramUser.lastname && paramUser.activityEntitled && paramUser.activityStarted && paramUser.siret && paramUser.address && paramUser.zipCode && paramUser.town))
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramUser.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramUser.password = md5(paramUser.password);
         paramUser.updatedAt = new Date();
@@ -359,7 +359,7 @@ router.put("/update", async (req, res) => {
             if (err)
                 res.status(500).json({message: err});
             else
-                res.status(200).json({message: localization.users.update, token: token});
+                res.status(200).json({message: localization[req.language].users.update, token: token});
         });
     }
 });

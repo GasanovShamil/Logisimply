@@ -1,5 +1,4 @@
-let config = require("./config.json");
-let middleware = require("./helpers/middleware");
+let config = require("./config");
 let express = require("express");
 let path = require("path");
 let favicon = require("serve-favicon");

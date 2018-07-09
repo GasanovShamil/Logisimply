@@ -1,5 +1,5 @@
-let config = require("../config.json");
-let localization = require("../localization/fr_FR");
+let config = require("../config");
+let localization = require("../localization/localize");
 let nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({
     service: config.email.service,
@@ -15,7 +15,7 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: user.email,
-            subject: localization.email.template.activation,
+            subject: localization[req.language].email.template.activation,
             text: "Bonjour " + user.firstname + ", veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : " + url,
             html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
         };
@@ -31,7 +31,7 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: user.email,
-            subject: localization.email.template.password,
+            subject: localization[req.language].email.template.password,
             text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
             html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
         };
