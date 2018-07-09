@@ -4,6 +4,7 @@ import {ErrorObservable} from "rxjs/observable/ErrorObservable";
 import {catchError} from "rxjs/operators";
 import {Customer} from "../models/customer";
 import {User} from "../models/user";
+import {Provider} from "../models/provider";
 
 @Injectable()
 export class DataService {
@@ -42,6 +43,12 @@ export class DataService {
     );
   }
 
+  deleteCustomers(customers: Customer[]){
+    return this.http.post<any>('/api/customers/delete', customers).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   ///////////////////////////// PROVIDER SECTION /////////////////////////////
 
   addProvider(providerData) {
@@ -74,17 +81,23 @@ export class DataService {
     );
   }
 
+  deleteProviders(providers: Provider[]){
+    return this.http.post<any>('/api/providers/delete', providers).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
-    // if (error.error instanceof ErrorEvent) {
+    if (error.error instanceof ErrorEvent) {
     // A client-side or network error occurred. Handle it accordingly.
-    // console.error('An error occurred:', error.error.message);
-    // } else {
+      console.error('An error occurred:', error.error.message);
+     } else {
     // The backend returned an unsuccessful response code.
     // The response body may contain clues as to what went wrong,
-    // console.error(
-    //   `Backend returned code ${error.status}, ` +
-    //   `body was: ${error.error.message}`);
-    // }
+     console.error(
+       `Backend returned code ${error.status}, ` +
+       `body was: ${error.error.message}`);
+     }
     // return an ErrorObservable with a user-facing error message
     return new ErrorObservable(
       error
