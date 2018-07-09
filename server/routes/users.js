@@ -1,20 +1,13 @@
+let config = require("../config.json");
+let localization = require("../localization/fr_FR");
 let express = require("express");
 let router = express.Router();
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
-let config = require("../config.json");
-let localization = require("../localization/fr_FR");
+let mailer = require("../helpers/mailer");
 let jwt = require("jsonwebtoken");
 let md5 = require("md5");
 let userModel = require("../models/User");
-let nodemailer = require("nodemailer");
-let transporter = nodemailer.createTransport({
-    service: config.email.service,
-    auth: {
-        user: config.email.user,
-        pass: config.email.password
-    }
-});
 
 /**
  * @swagger
@@ -75,40 +68,7 @@ let transporter = nodemailer.createTransport({
  *       - town
  */
 
-function sendActivationUrl(user) {
-    let url = "http://" + config.base_url + "/api/users/activate/" + user.activationToken;
-    let mailOptions = {
-        from: config.email.user,
-        to: user.email,
-        subject: "Activation de votre compte Logisimply",
-        text: "Bonjour " + user.firstname + ", veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : " + url,
-        html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
-    };
-
-    transporter.sendMail(mailOptions, function(err, info) {
-        if (err)
-            console.log("sendActivationUrl KO " + user.email + " : " + err);
-        else
-            console.log("sendActivationUrl OK " + user.email + " : " + info.response);
-    });
-};
-
-function sendPassword(user) {
-    let mailOptions = {
-        from: config.email.user,
-        to: user.email,
-        subject: "Votre nouveau mot de passe",
-        text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
-        html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
-    };
-
-    transporter.sendMail(mailOptions, function(err, info) {
-        if (err)
-            console.log("sendPassword KO " + this.email + " : " + err);
-        else
-            console.log("sendPassword OK " + this.email + " : " + info.response);
-    });
-};
+router.use(middleware.promises);
 
 /**
  * @swagger
@@ -151,7 +111,7 @@ router.post("/add", async (req, res) => {
             paramUser.createdAt = new Date();
             paramUser.parameters = {customers: 1, providers: 1, quotes: 1, bills: 1};
             let user = await userModel.create(paramUser);
-            sendActivationUrl(user);
+            mailer.sendActivationUrl(user);
             res.status(200).json({message: localization.users.add});
         }
     }
@@ -227,7 +187,7 @@ router.post("/forgetPassword", async (req, res) => {
             let newPassword = Math.floor(Math.random() * 999999) + 100000;
             user.password = md5("" + newPassword);
             user.save();
-            sendPassword(user);
+            mailer.sendPassword(user);
             res.status(200).json({message: localization.users.password.new});
         }
     }
@@ -267,7 +227,7 @@ router.post("/resendActivationUrl", async (req, res) => {
         if (!user)
             res.status(400).json({message: localization.users.email.failed});
         else {
-            sendActivationUrl(user);
+            mailer.sendActivationUrl(user);
             res.status(200).json({message: localization.users.link});
         }
     }
@@ -399,7 +359,7 @@ router.put("/update", async (req, res) => {
             if (err)
                 res.status(500).json({message: err});
             else
-                res.status(200).json({token: token});
+                res.status(200).json({message: localization.users.update, token: token});
         });
     }
 });

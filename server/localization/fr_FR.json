@@ -3,7 +3,11 @@
     "required": "Merci de bien remplir les champs obligatoires"
   },
   "email": {
-    "invalid": "Le format de l'adresse email n'est pas correct"
+    "invalid": "Le format de l'adresse email n'est pas correct",
+    "template": {
+      "activation": "Activation de votre compte Logisimply",
+      "password": "Votre nouveau mot de passe Logisimply"
+    }
   },
   "users": {
     "email": {
@@ -20,7 +24,8 @@
     },
     "link": "Un lien vous a été renvoyé à votre adresse email",
     "banned": "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr",
-    "inactive": "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"
+    "inactive": "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email",
+    "update": "Compte modifié avec succès"
   },
   "items": {
     "used": "Vous avez déjà créé ce produit/service",
