@@ -3,29 +3,29 @@ let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
 let userSchema = mongoose.Schema ({
-    email: {type: String},
-    password: {type: String},
-    firstname: {type: String},
-    lastname: {type: String},
-    activityType: {type: String},
-    categoryType: {type: String},
-    activityEntitled: {type: String},
-    activityStarted: {type: Date},
-    siret: {type: String},
-    address: {type: String},
-    zipCode: {type: String},
-    town: {type: String},
-    country: {type: String},
-    status: {type: String},
-    activationToken: {type: String},
+    email: String,
+    password: String,
+    firstname: String,
+    lastname: String,
+    activityType: String,
+    categoryType: String,
+    activityEntitled: String,
+    activityStarted: Date,
+    siret: String,
+    address: String,
+    zipCode: String,
+    town: String,
+    country: String,
+    status: Number,
+    activationToken: String,
     parameters: {
-        customers: {type: Number},
-        providers: {type: Number},
-        quotes: {type: Number},
-        bills: {type: Number}
+        customers: Number,
+        providers: Number,
+        quotes: Number,
+        invoices: Number
     },
-    createdAt: {type : Date},
-    updatedAt: {type : Date}
+    createdAt: Date,
+    updatedAt: Date
 });
 
 userSchema.methods.shortUser = function() {

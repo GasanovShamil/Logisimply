@@ -1,5 +1,6 @@
 let config = require("../config");
 let localization = require("../localization/localize");
+let constants = require("../helpers/constants");
 let jwt = require("jsonwebtoken");
 
 module.exports = {
@@ -11,8 +12,8 @@ module.exports = {
             jwt.verify(bearerToken, config.jwt_key, (err, decoded) => {
                 if (err)
                     res.status(403).json({message: localization[req.language].middleware.failed});
-                else if (decoded.status !== "actif")
-                    res.status(403).json({message: localization[req.language].middleware.activate});
+                else if (decoded.status !== constants.UserStatus.active)
+                    res.status(403).json({message: localization[req.language].users.inactive});
                 else {
                     req.loggedUser = decoded;
                     next();
@@ -21,13 +22,19 @@ module.exports = {
         } else
             res.status(403).json({message: localization[req.language].middleware.missing});
     },
-    promises: function(req, res, next) {
-        let languageHeader = req.get("Accept-Language");
+    localize: function(req, res, next) {
+        let languageHeader = req.get("Localize");
         if (typeof languageHeader !== "undefined")
             req.language = languageHeader;
         else
-            req.language = config.localize;
-
+            req.language = config.default_localize;
         next();
+    },
+    wrapper: function(callback) {
+        return function(req, res) {
+            //callback(req, res).catch(() => res.status(500).json({message: localization[req.language].middleware.error}));
+            //callback(req, res).catch((err) => res.status(500).json({message: err}));
+            callback(req, res);
+        };
     }
 };
