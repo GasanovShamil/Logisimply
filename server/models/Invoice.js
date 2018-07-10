@@ -3,14 +3,14 @@ let content = require("./Content");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
 
-let quoteSchema = mongoose.Schema ({
+let invoiceSchema = mongoose.Schema ({
     customer: String,
     code: String,
-    dateQuote: Date,
+    dateInvoice: Date,
     subject: String,
     content: [content],
     datePayment: Date,
-    validity: Number,
+    dateExecution: Date,
     collectionCost: Boolean,
     comment: String,
     status: Number,
@@ -19,7 +19,7 @@ let quoteSchema = mongoose.Schema ({
     updatedAt: Date
 });
 
-quoteSchema.methods.withTotal = function() {
+invoiceSchema.methods.withTotal = function() {
     let arrayContent = [];
     let discount = 0;
     let totalPriceET = 0;
@@ -34,13 +34,13 @@ quoteSchema.methods.withTotal = function() {
     return {
         customer: this.customer,
         code: this.code,
-        dateQuote: this.dateQuote,
+        dateInvoice: this.dateInvoice,
         subject: this.subject,
         content: arrayContent,
         discount: discount,
         totalPriceET: totalPriceET,
         datePayment: this.datePayment,
-        validity: this.validity,
+        dateExecution: this.dateExecution,
         collectionCost: this.collectionCost,
         comment: this.comment,
         status: this.status,
@@ -50,4 +50,4 @@ quoteSchema.methods.withTotal = function() {
     };
 };
 
-module.exports = mongoose.model("Quote", quoteSchema);
+module.exports = mongoose.model("Invoice", invoiceSchema);

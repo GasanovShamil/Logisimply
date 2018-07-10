@@ -1,4 +1,4 @@
 module.exports = {
-    "fr_FR": require("./fr_FR"),
-    "en_US": require("./en_US")
+    "fr": require("./fr_FR"),
+    "en": require("./en_US")
 };

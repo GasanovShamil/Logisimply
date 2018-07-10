@@ -10,9 +10,9 @@
     }
   },
   "middleware": {
-    "activate": "Veuillez activer votre compte",
     "failed": "Token d'authentification incorrect",
-    "missing": "Token d'authentification inexistant"
+    "missing": "Token d'authentification inexistant",
+    "error": "Un problème est survenu sur le serveur"
   },
   "users": {
     "email": {
@@ -21,15 +21,15 @@
     },
     "add": "Compte créé avec succès",
     "token": {
-      "failed": "Aucun compte ne correspond à ce jeton d'activation"
+      "failed": "Aucun compte inactif ne correspond à ce jeton d'activation"
     },
     "password": {
       "new": "Un nouveau mot de passe vous a été envoyé par email",
       "failed": "Le mot de passe est incorrect"
     },
-    "link": "Un lien vous a été renvoyé à votre adresse email",
+    "link": "Un lien d'activation vous a été renvoyé à votre adresse email",
     "banned": "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr",
-    "inactive": "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email",
+    "inactive": "Vous devez activer votre compte, un email vous a été envoyé",
     "update": "Compte modifié avec succès"
   },
   "items": {
@@ -79,7 +79,7 @@
       "multiple": "Devis supprimés avec succès"
     }
   },
-  "bills": {
+  "invoices": {
     "add": "Facture créee avec succès",
     "code": {
       "failed": "Aucune facture ne correspond au code demandé"
