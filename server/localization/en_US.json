@@ -1,0 +1,93 @@
+{
+  "fields": {
+    "required": "Please fill all the required fields"
+  },
+  "email": {
+    "invalid": "Email is invalid",
+    "template": {
+      "activation": "Activation of your Logisimply account",
+      "password": "Your new password Logisimply"
+    }
+  },
+  "middleware": {
+    "failed": "Authentication token invalid",
+    "missing": "Authentication token missing",
+    "error": "Internal Server Error"
+  },
+  "users": {
+    "email": {
+      "used": "This email is already used",
+      "failed": "No active account match this email"
+    },
+    "add": "Account successfully created",
+    "token": {
+      "failed": "No inactive account match this activation token"
+    },
+    "password": {
+      "new": "A new password has been sent to your email",
+      "failed": "Wrong password"
+    },
+    "link": "The activation link has been sent again to your email",
+    "banned": "Your account has been banned, contact the administrator at : admin@logisimply.fr",
+    "inactive": "You must activate your account, an email has been sent to you",
+    "update": "Account successfully updated"
+  },
+  "items": {
+    "add": "Item successfully created",
+    "reference": {
+      "used": "Item already exists",
+      "failed": "No item match this reference"
+    },
+    "update": "Item successfully updated"
+    "delete": {
+      "one": "Item successfully deleted",
+      "multiple": "Items successfully deleted"
+    }
+  },
+  "customers": {
+    "add": "Customer successfully created",
+    "code": {
+      "used": "Customer already exists",
+      "failed": "No customer match this code"
+    },
+    "update": "Customer successfully updated"
+    "delete": {
+      "one": "Customer successfully deleted",
+      "multiple": "Customers successfully deleted"
+    }
+  },
+  "providers": {
+    "add": "Provider successfully created",
+    "code": {
+      "used": "Provider already exists",
+      "failed": "No provider match this code"
+    },
+    "update": "Provider successfully updated"
+    "delete": {
+      "one": "Provider successfully deleted",
+      "multiple": "Providers successfully deleted"
+    }
+  },
+  "quotes": {
+    "add": "Quote successfully created",
+    "code": {
+      "failed": "No quote match this code"
+    },
+    "update": "Quote successfully updated"
+    "delete": {
+      "one": "Quote successfully deleted",
+      "multiple": "Quote successfully deleted"
+    }
+  },
+  "invoices": {
+    "add": "Invoice successfully created",
+    "code": {
+      "failed": "No invoice match this code"
+    },
+    "update": "Invoice successfully updated"
+    "delete": {
+      "one": "Invoice successfully deleted",
+      "multiple": "Invoice successfully deleted"
+    }
+  }
+}
