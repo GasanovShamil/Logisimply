@@ -1,6 +1,6 @@
 let config = require("../config");
 let mongoose = require("mongoose");
-mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
+mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 
 let itemSchema = mongoose.Schema ({
     type: String,
