@@ -1,7 +1,7 @@
 let config = require("../config");
 let content = require("./Content");
 let mongoose = require("mongoose");
-mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
+mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 
 let quoteSchema = mongoose.Schema ({
     customer: String,

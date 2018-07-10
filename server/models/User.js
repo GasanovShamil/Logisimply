@@ -1,6 +1,6 @@
 let config = require("../config");
 let mongoose = require("mongoose");
-mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database);
+mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 
 let userSchema = mongoose.Schema ({
     email: String,
@@ -46,7 +46,7 @@ userSchema.methods.shortUser = function() {
         country: this.country,
         status: this.status,
         createdAt: this.createdAt,
-        updatedAt: this.createdAt,
+        updatedAt: this.updatedAt
     };
 };
 

@@ -110,7 +110,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isQuoteComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.count({code: paramQuote.customer, idUser: req.loggedUser._id});
+        let count = await customerModel.countDocuments({code: paramQuote.customer, idUser: req.loggedUser._id});
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
@@ -215,7 +215,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     if (!utils.isProviderComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.count({code: paramQuote.customer, idUser: req.loggedUser._id});
+        let count = await customerModel.countDocuments({code: paramQuote.customer, idUser: req.loggedUser._id});
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
@@ -328,7 +328,7 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.count({code: paramInvoice.customer, idUser: req.loggedUser._id});
+        let count = await customerModel.countDocuments({code: paramInvoice.customer, idUser: req.loggedUser._id});
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {

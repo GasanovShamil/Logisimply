@@ -135,7 +135,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramCustomer.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let count = await customerModel.count({email: paramCustomer.email, idUser: req.loggedUser._id});
+        let count = await customerModel.countDocuments({email: paramCustomer.email, idUser: req.loggedUser._id});
         if (count !== 0)
             res.status(400).json({message: localization[req.language].customers.code.used});
         else {
