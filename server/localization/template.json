@@ -1,0 +1,93 @@
+{
+  "fields": {
+    "required": ""
+  },
+  "email": {
+    "invalid": "",
+    "template": {
+      "activation": "",
+      "password": ""
+    }
+  },
+  "middleware": {
+    "failed": "",
+    "missing": "",
+    "error": ""
+  },
+  "users": {
+    "email": {
+      "used": "",
+      "failed": ""
+    },
+    "add": "",
+    "token": {
+      "failed": ""
+    },
+    "password": {
+      "new": "",
+      "failed": ""
+    },
+    "link": "",
+    "banned": "",
+    "inactive": "",
+    "update": ""
+  },
+  "items": {
+    "add": "",
+    "reference": {
+      "used": "",
+      "failed": ""
+    },
+    "update": "",
+    "delete": {
+      "one": "",
+      "multiple": ""
+    }
+  },
+  "customers": {
+    "add": "",
+    "code": {
+      "used": "",
+      "failed": ""
+    },
+    "update": "",
+    "delete": {
+      "one": "",
+      "multiple": ""
+    }
+  },
+  "providers": {
+    "add": "",
+    "code": {
+      "used": "",
+      "failed": ""
+    },
+    "update": "",
+    "delete": {
+      "one": "",
+      "multiple": ""
+    }
+  },
+  "quotes": {
+    "add": "",
+    "code": {
+      "failed": ""
+    },
+    "update": "",
+    "delete": {
+      "one": "",
+      "multiple": ""
+    }
+  },
+  "invoices": {
+    "add": "",
+    "code": {
+      "failed": ""
+    },
+    "update": "",
+    "delete": {
+      "one": "",
+      "multiple": ""
+    }
+  }
+}

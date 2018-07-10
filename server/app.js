@@ -1,5 +1,4 @@
-let config = require("./config.json");
-let middleware = require("./helpers/middleware");
+let config = require("./config");
 let express = require("express");
 let path = require("path");
 let favicon = require("serve-favicon");
@@ -15,7 +14,7 @@ let customers = require("./routes/customers");
 let providers = require("./routes/providers");
 let items = require("./routes/items");
 let quotes = require("./routes/quotes");
-let bills = require("./routes/bills");
+let invoices = require("./routes/invoices");
 
 let app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -62,7 +61,7 @@ app.use("/api/customers", customers);
 app.use("/api/providers", providers);
 app.use("/api/items", items);
 app.use("/api/quotes", quotes);
-app.use("/api/bills", bills);
+app.use("/api/invoices", invoices);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -77,12 +76,12 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-    res.status(err.status || 500);
-    res.render("error");
-});
+// app.use(function(err, req, res, next) {
+//     res.locals.message = err.message;
+//     res.locals.error = req.app.get("env") === "development" ? err : {};
+//     res.status(err.status || 500);
+//     res.render("error");
+// });
 
 
 module.exports = app;

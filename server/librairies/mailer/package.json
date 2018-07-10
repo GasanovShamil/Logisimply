@@ -1,9 +1,0 @@
-{
-  "name": "mailer",
-  "private": true,
-  "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "nodemailer": "^4.6.4"
-  }
-}

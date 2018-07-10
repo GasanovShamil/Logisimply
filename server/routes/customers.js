@@ -1,10 +1,10 @@
-let express = require("express");
-let router = express.Router();
+let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
-let localization = require("../localization/fr_FR");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
+let express = require("express");
+let router = express.Router();
 
 /**
  * @swagger
@@ -93,7 +93,7 @@ let customerModel = require("../models/Customer");
  *       - country
  */
 
-router.use(middleware.promises);
+router.use(middleware.localize);
 router.use(middleware.isLogged);
 
 /**
@@ -126,31 +126,30 @@ router.use(middleware.isLogged);
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.post("/add", async (req, res) => {
+router.post("/add", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
     if (paramCustomer.type === "Particulier")
         paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
-    if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
-        res.status(400).json({message: localization.fields.required});
+    if (!utils.isCustomerComplete(paramCustomer))
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramCustomer.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let count = await customerModel.count({email: paramCustomer.email, idUser: req.loggedUser._id});
         if (count !== 0)
-            res.status(400).json({message: localization.customers.used});
+            res.status(400).json({message: localization[req.language].customers.code.used});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
-            let nextCode = "00000" + user.parameters.customers;
             user.parameters.customers += 1;
             user.save();
-            paramCustomer.code = "C" + nextCode.substring(nextCode.length - 5, nextCode.length);
+            paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
             paramCustomer.idUser = req.loggedUser._id;
             paramCustomer.createdAt = new Date();
             let customer = await customerModel.create(paramCustomer);
-            res.status(200).json({message: localization.customers.add, data: customer});
+            res.status(200).json({message: localization[req.language].customers.add, data: customer});
         }
     }
-});
+}));
 
 /**
  * @swagger
@@ -173,10 +172,10 @@ router.post("/add", async (req, res) => {
  *               - $ref: '#/definitions/PrivateCustomer'
  *               - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get("/me", async (req, res) => {
+router.get("/me", middleware.wrapper(async (req, res) => {
     let customers = await customerModel.find({idUser: req.loggedUser._id});
     res.status(200).json(customers);
-});
+}));
 
 /**
  * @swagger
@@ -204,14 +203,14 @@ router.get("/me", async (req, res) => {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.get("/:code", async (req, res) => {
+router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let customer = await customerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
     if (!customer)
-        res.status(400).json({message: localization.customers.code.failed});
+        res.status(400).json({message: localization[req.language].customers.code.failed});
     else
         res.status(200).json(customer);
-});
+}));
 
 /**
  * @swagger
@@ -223,7 +222,7 @@ router.get("/:code", async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: PrivateCustomer or ProfessionalCustomer
+ *       - description: Customer to update
  *         in: body
  *         required: true
  *         type: object
@@ -243,21 +242,21 @@ router.get("/:code", async (req, res) => {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.put("/update", async (req, res) => {
+router.put("/update", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
-    if (!(paramCustomer.email && paramCustomer.type && paramCustomer.name && paramCustomer.address && paramCustomer.zipCode && paramCustomer.town && paramCustomer.country))
-        res.status(400).json({message: localization.fields.required});
+    if (!utils.isCustomerComplete(paramCustomer))
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramCustomer.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramCustomer.updatedAt = new Date();
         let customer = await customerModel.findOneAndUpdate({code: paramCustomer.code, idUser: req.loggedUser._id}, paramCustomer, null);
         if (!customer)
-            res.status(400).json({message: localization.customers.code.failed});
+            res.status(400).json({message: localization[req.language].customers.code.failed});
         else
-            res.status(200).json({message: localization.customers.update, data: customer});
+            res.status(200).json({message: localization[req.language].customers.update, data: customer});
     }
-});
+}));
 
 /**
  * @swagger
@@ -285,14 +284,14 @@ router.put("/update", async (req, res) => {
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.delete("/delete/:code", async (req, res) => {
+router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let customer = await customerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
     if (!customer)
-        res.status(400).json({message: localization.customers.code.failed});
+        res.status(400).json({message: localization[req.language].customers.code.failed});
     else
-        res.status(200).json({message: localization.customers.delete.one, data: customer});
-});
+        res.status(200).json({message: localization[req.language].customers.delete.one, data: customer});
+}));
 
 /**
  * @swagger
@@ -324,7 +323,7 @@ router.delete("/delete/:code", async (req, res) => {
  *               - $ref: '#/definitions/PrivateCustomer'
  *               - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.post("/delete", async (req, res) => {
+router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramCustomers = req.body;
     let customers = [];
     for (let i = 0; i < paramCustomers.length; i++) {
@@ -332,7 +331,7 @@ router.post("/delete", async (req, res) => {
         if (customer)
             customers.push(customer);
     }
-    res.status(200).json({message: localization.customers.delete.multiple, data: customers});
-});
+    res.status(200).json({message: localization[req.language].customers.delete.multiple, data: customers});
+}));
 
 module.exports = router;

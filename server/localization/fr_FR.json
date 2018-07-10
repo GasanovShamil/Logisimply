@@ -3,7 +3,16 @@
     "required": "Merci de bien remplir les champs obligatoires"
   },
   "email": {
-    "invalid": "Le format de l'adresse email n'est pas correct"
+    "invalid": "Le format de l'adresse email n'est pas correct",
+    "template": {
+      "activation": "Activation de votre compte Logisimply",
+      "password": "Votre nouveau mot de passe Logisimply"
+    }
+  },
+  "middleware": {
+    "failed": "Token d'authentification incorrect",
+    "missing": "Token d'authentification inexistant",
+    "error": "Un problème est survenu sur le serveur"
   },
   "users": {
     "email": {
@@ -12,20 +21,21 @@
     },
     "add": "Compte créé avec succès",
     "token": {
-      "failed": "Aucun compte ne correspond à ce jeton d'activation"
+      "failed": "Aucun compte inactif ne correspond à ce jeton d'activation"
     },
     "password": {
       "new": "Un nouveau mot de passe vous a été envoyé par email",
       "failed": "Le mot de passe est incorrect"
     },
-    "link": "Un lien vous a été renvoyé à votre adresse email",
+    "link": "Un lien d'activation vous a été renvoyé à votre adresse email",
     "banned": "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr",
-    "inactive": "Vous devez activer votre compte, un email vous a été envoyé à votre adresse email"
+    "inactive": "Vous devez activer votre compte, un email vous a été envoyé",
+    "update": "Compte modifié avec succès"
   },
   "items": {
-    "used": "Vous avez déjà créé ce produit/service",
     "add": "Produit/Service crée avec succès",
     "reference": {
+      "used": "Vous avez déjà créé ce produit/service",
       "failed": "Aucun produit/service ne correspond à la référence demandée"
     },
     "update": "Produit/Service modifié avec succès",
@@ -35,9 +45,9 @@
     }
   },
   "customers": {
-    "used": "Vous avez déjà créé ce client",
     "add": "Client crée avec succès",
     "code": {
+      "used": "Vous avez déjà créé ce client",
       "failed": "Aucun client ne correspond au code demandé"
     },
     "update": "Client modifié avec succès",
@@ -47,9 +57,9 @@
     }
   },
   "providers": {
-    "used": "Vous avez déjà créé ce fournisseur",
     "add": "Fournisseur crée avec succès",
     "code": {
+      "used": "Vous avez déjà créé ce fournisseur",
       "failed": "Aucun fournisseur ne correspond au code demandé"
     },
     "update": "Fournisseur modifié avec succès",
@@ -59,9 +69,25 @@
     }
   },
   "quotes": {
-
+    "add": "Devis crée avec succès",
+    "code": {
+      "failed": "Aucun devis ne correspond au code demandé"
+    },
+    "update": "Devis modifié avec succès",
+    "delete": {
+      "one": "Devis supprimé avec succès",
+      "multiple": "Devis supprimés avec succès"
+    }
   },
-  "bills": {
-
+  "invoices": {
+    "add": "Facture créee avec succès",
+    "code": {
+      "failed": "Aucune facture ne correspond au code demandé"
+    },
+    "update": "Facture modifiée avec succès",
+    "delete": {
+      "one": "Facture supprimée avec succès",
+      "multiple": "Factures supprimées avec succès"
+    }
   }
 }

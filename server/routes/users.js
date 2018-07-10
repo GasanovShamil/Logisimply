@@ -1,20 +1,14 @@
-let express = require("express");
-let router = express.Router();
+let config = require("../config");
+let localization = require("../localization/localize");
+let constants = require("../helpers/constants");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
-let config = require("../config.json");
-let localization = require("../localization/fr_FR");
+let mailer = require("../helpers/mailer");
+let userModel = require("../models/User");
+let express = require("express");
+let router = express.Router();
 let jwt = require("jsonwebtoken");
 let md5 = require("md5");
-let userModel = require("../models/User");
-let nodemailer = require("nodemailer");
-let transporter = nodemailer.createTransport({
-    service: config.email.service,
-    auth: {
-        user: config.email.user,
-        pass: config.email.password
-    }
-});
 
 /**
  * @swagger
@@ -53,7 +47,7 @@ let transporter = nodemailer.createTransport({
  *       country:
  *         type: string
  *       status:
- *         type: string
+ *         type: number
  *       activationToken:
  *         type: string
  *       createdAt:
@@ -75,40 +69,7 @@ let transporter = nodemailer.createTransport({
  *       - town
  */
 
-function sendActivationUrl(user) {
-    let url = "http://" + config.base_url + "/api/users/activate/" + user.activationToken;
-    let mailOptions = {
-        from: config.email.user,
-        to: user.email,
-        subject: "Activation de votre compte Logisimply",
-        text: "Bonjour " + user.firstname + ", veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : " + url,
-        html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
-    };
-
-    transporter.sendMail(mailOptions, function(err, info) {
-        if (err)
-            console.log("sendActivationUrl KO " + user.email + " : " + err);
-        else
-            console.log("sendActivationUrl OK " + user.email + " : " + info.response);
-    });
-};
-
-function sendPassword(user) {
-    let mailOptions = {
-        from: config.email.user,
-        to: user.email,
-        subject: "Votre nouveau mot de passe",
-        text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
-        html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
-    };
-
-    transporter.sendMail(mailOptions, function(err, info) {
-        if (err)
-            console.log("sendPassword KO " + this.email + " : " + err);
-        else
-            console.log("sendPassword OK " + this.email + " : " + info.response);
-    });
-};
+router.use(middleware.localize);
 
 /**
  * @swagger
@@ -134,28 +95,28 @@ function sendPassword(user) {
  *         schema:
  *           $ref: '#/definitions/User'
  */
-router.post("/add", async (req, res) => {
+router.post("/add", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
-    if (!(paramUser.email && paramUser.password && paramUser.firstname && paramUser.lastname && paramUser.activityEntitled && paramUser.activityStarted && paramUser.siret && paramUser.address && paramUser.zipCode && paramUser.town))
-        res.status(400).json({message: localization.fields.required});
+    if (!utils.isUserComplete(paramUser))
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramUser.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let count = await userModel.count({email: paramUser.email});
         if (count !== 0)
-            res.status(400).json({message: localization.users.email.used});
+            res.status(400).json({message: localization[req.language].users.email.used});
         else {
-            paramUser.status = "inactif";
+            paramUser.status = constants.UserStatus.inactive;
             paramUser.activationToken = md5(paramUser.email);
             paramUser.password = md5(paramUser.password);
             paramUser.createdAt = new Date();
-            paramUser.parameters = {customers: 1, providers: 1, quotes: 1, bills: 1};
+            paramUser.parameters = {customers: 0, providers: 0, quotes: 0, invoices: 0};
             let user = await userModel.create(paramUser);
-            sendActivationUrl(user);
-            res.status(200).json({message: localization.users.add});
+            mailer.sendActivationUrl(user, req.language);
+            res.status(200).json({message: localization[req.language].users.add});
         }
     }
-});
+}));
 
 /**
  * @swagger
@@ -172,23 +133,21 @@ router.post("/add", async (req, res) => {
  *         required: true
  *         type: string
  *     responses:
- *       400:
- *         description: Render Error
- *       200:
- *         description: Render Success
+ *       default:
+ *         description: Render
  */
-router.get("/activate/:token", async (req, res) => {
+router.get("/activate/:token", middleware.wrapper(async (req, res) => {
     let paramToken = req.params.token;
-    let user = await userModel.findOne({status: "inactif", activationToken: paramToken});
+    let user = await userModel.findOne({status: constants.UserStatus.inactive, activationToken: paramToken});
     if (!user)
-        res.render("error", {message: localization.users.token.failed})
+        res.render("error", {message: localization[req.language].users.token.failed})
     else {
-        user.status = "actif";
+        user.status = constants.UserStatus.active;
         user.activationToken = "";
         user.save();
         res.render("activate", {user: user});
     }
-});
+}));
 
 /**
  * @swagger
@@ -213,25 +172,25 @@ router.get("/activate/:token", async (req, res) => {
  *       200:
  *         description: New password sent by email
  */
-router.post("/forgetPassword", async (req, res) => {
+router.post("/forgetPassword", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let user = await userModel.findOne({status: "actif", email: paramEmail});
+        let user = await userModel.findOne({status: constants.UserStatus.active, email: paramEmail});
         if (!user)
-            res.status(400).json({message: localization.users.email.failed});
+            res.status(400).json({message: localization[req.language].users.email.failed});
         else {
             let newPassword = Math.floor(Math.random() * 999999) + 100000;
             user.password = md5("" + newPassword);
             user.save();
-            sendPassword(user);
-            res.status(200).json({message: localization.users.password.new});
+            mailer.sendPassword(user, req.language);
+            res.status(200).json({message: localization[req.language].users.password.new});
         }
     }
-});
+}));
 
 /**
  * @swagger
@@ -256,22 +215,22 @@ router.post("/forgetPassword", async (req, res) => {
  *       200:
  *         description: New activation link is sent by email
  */
-router.post("/resendActivationUrl", async (req, res) => {
+router.post("/resendActivationUrl", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let user = await userModel.findOne({status: "inactif", email: paramEmail});
+        let user = await userModel.findOne({status: constants.UserStatus.inactive, email: paramEmail});
         if (!user)
-            res.status(400).json({message: localization.users.email.failed});
+            res.status(400).json({message: localization[req.language].users.email.failed});
         else {
-            sendActivationUrl(user);
-            res.status(200).json({message: localization.users.link});
+            mailer.sendActivationUrl(user, req.language);
+            res.status(200).json({message: localization[req.language].users.link});
         }
     }
-});
+}));
 
 /**
  * @swagger
@@ -303,28 +262,28 @@ router.post("/resendActivationUrl", async (req, res) => {
  *       200:
  *         description: A validation token
  */
-router.post("/login", async (req, res) => {
+router.post("/login", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     let paramPassword = req.body.password;
     if (!(paramEmail && paramPassword))
-        res.status(400).json({message: localization.fields.required});
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramEmail))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({email: paramEmail});
         if (!user)
-            res.status(400).json({message: localization.users.email.failed});
+            res.status(400).json({message: localization[req.language].users.email.failed});
         else
             switch (user.status) {
-                case "banni":
-                    res.status(403).json({message: localization.users.banned});
+                case constants.UserStatus.banned:
+                    res.status(403).json({message: localization[req.language].users.banned});
                     break;
 
-                case "inactif":
-                    res.status(403).json({message: localization.users.inactive});
+                case constants.UserStatus.inactive:
+                    res.status(403).json({message: localization[req.language].users.inactive});
                     break;
 
-                case "actif":
+                case constants.UserStatus.active:
                     if (user.password === md5(paramPassword))
                         jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function (err, token) {
                             if (err)
@@ -332,11 +291,11 @@ router.post("/login", async (req, res) => {
                             else
                                 res.status(200).json({token: token});
                         });
-                    else res.status(403).json({message: localization.users.password.failed});
+                    else res.status(403).json({message: localization[req.language].users.password.failed});
                     break;
             }
     }
-});
+}));
 
 router.use(middleware.isLogged);
 
@@ -357,9 +316,9 @@ router.use(middleware.isLogged);
  *         schema:
  *           $ref: '#/definitions/User'
  */
-router.get("/me", function(req, res) {
+router.get("/me", middleware.wrapper(async (req, res) => {
     res.status(200).json(req.loggedUser);
-});
+}));
 
 /**
  * @swagger
@@ -371,7 +330,7 @@ router.get("/me", function(req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: The user to update
+ *       - description: User to update
  *         in: body
  *         required: true
  *         type: object
@@ -385,12 +344,12 @@ router.get("/me", function(req, res) {
  *       200:
  *         description: A new validation token
  */
-router.put("/update", async (req, res) => {
+router.put("/update", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
-    if (!(paramUser.email && paramUser.password && paramUser.firstname && paramUser.lastname && paramUser.activityEntitled && paramUser.activityStarted && paramUser.siret && paramUser.address && paramUser.zipCode && paramUser.town))
-        res.status(400).json({message: localization.fields.required});
+    if (!utils.isUserComplete(paramUser))
+        res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramUser.email))
-        res.status(400).json({message: localization.email.invalid});
+        res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramUser.password = md5(paramUser.password);
         paramUser.updatedAt = new Date();
@@ -399,9 +358,9 @@ router.put("/update", async (req, res) => {
             if (err)
                 res.status(500).json({message: err});
             else
-                res.status(200).json({token: token});
+                res.status(200).json({message: localization[req.language].users.update, token: token});
         });
     }
-});
+}));
 
 module.exports = router;
