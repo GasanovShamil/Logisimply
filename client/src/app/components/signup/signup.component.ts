@@ -26,7 +26,6 @@ export class SignupComponent implements OnInit {
     zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5)]),
     town: new FormControl('', [Validators.required]),
     country: new FormControl('', [Validators.required]),
-
   });
 
   ngOnInit() {

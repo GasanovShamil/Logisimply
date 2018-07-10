@@ -8,7 +8,7 @@
         <input matInput (keyup)="applyCustomerFilter($event.target.value)" placeholder="{{ 'contacts.filter' | translate }}">
       </mat-form-field>
       <div class="button-row myrow">
-        <button mat-icon-button matTooltip="{{ 'contacts.add_new_customer' | translate }}">
+        <button mat-icon-button matTooltip="{{ 'contacts.add_new_customer' | translate }}" (click)="openCustomerDialog()">
           <mat-icon color="primary">add</mat-icon>
         </button>
         <button mat-icon-button matTooltip="{{ 'contacts.delete_selected' | translate }}" (click)="onDeleteCustomerClick()">
@@ -49,7 +49,7 @@
           <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="info">
-          <mat-header-cell *matHeaderCellDef> {{ 'contacts.info' | translate }} </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="editCustomer(row)">
               <mat-icon color="primary">info</mat-icon>
@@ -57,7 +57,7 @@
           </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedCustomerColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedCustomerColumns;" (click)="customerSelection.toggle(row)">
+        <mat-row *matRowDef="let row; columns: displayedCustomerColumns;">
         </mat-row>
       </mat-table>
       <mat-paginator #customerPaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
@@ -110,7 +110,7 @@
           <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="info">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.info' | translate }} </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="editProvider(row)">
               <mat-icon color="primary">info</mat-icon>
@@ -118,7 +118,7 @@
           </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedProviderColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedProviderColumns;" (click)="providerSelection.toggle(row)">
+        <mat-row *matRowDef="let row; columns: displayedProviderColumns;">
         </mat-row>
       </mat-table>
       <mat-paginator #providerPaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>

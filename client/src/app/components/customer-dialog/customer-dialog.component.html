@@ -1,3 +1,107 @@
-<p>
-  customer-dialog works!
-</p>
+<h1 mat-dialog-title>{{ 'customerDialog.title' | translate }}</h1>
+<div mat-dialog-content [formGroup]="customerForm">
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.email_placeholder' | translate }}" formControlName="email" required>
+          </mat-form-field>
+        </td>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.password_placeholder' | translate }}" type="password" formControlName="password" required>
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.lastname' | translate }}" formControlName="lastname" required>
+          </mat-form-field>
+        </td>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.firstname' | translate }}" formControlName="firstname" required>
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+
+    <mat-form-field class="full-width">
+      <input  matInput  placeholder="{{ 'signup.address' | translate }}" formControlName="address" required>
+    </mat-form-field>
+
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.city' | translate }}" formControlName="town" required>
+          </mat-form-field>
+        </td>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.country' | translate }}" formControlName="country" required>
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput #postalCode placeholder="{{ 'signup.zipcode' | translate }}" formControlName="zipCode" required>
+            <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
+          </mat-form-field>
+        </td>
+        <td width="50%">
+        </td>
+      </tr>
+    </table>
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.activity_type' | translate }}" formControlName="activityType">
+          </mat-form-field>
+        </td>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.category_type' | translate }}" formControlName="categoryType">
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.activity_entitled' | translate }}" formControlName="activityEntitled" required>
+          </mat-form-field>
+        </td>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker" placeholder="{{ 'signup.activity_started' | translate }}" formControlName="activityStarted" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'signup.siret' | translate }}" formControlName="siret" required>
+          </mat-form-field>
+        </td>
+        <td width="50%">
+        </td>
+      </tr>
+    </table>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="submitData()" cdkFocusInitial>Ok</button>
+  <button mat-raised-button color="warn" (click)="onNoClick()">No Thanks</button>
+</div>

@@ -7,6 +7,8 @@ import {MediaMatcher} from "@angular/cdk/layout";
 import {Provider} from "../../models/provider";
 import {SelectionModel} from "@angular/cdk/collections";
 import {TranslateService} from "@ngx-translate/core";
+import {MatDialog, MatDialogRef} from '@angular/material';
+import {CustomerDialogComponent} from "../customer-dialog/customer-dialog.component";
 
 @Component({
   selector: 'app-contacts',
@@ -25,15 +27,17 @@ export class ContactsComponent implements OnInit {
   providers: Provider[] = [];
   customerSelection = new SelectionModel<Customer>(true, []);
   providerSelection = new SelectionModel<Provider>(true, []);
-
   errorMessage = '';
+  customer: Customer = new Customer();
+  provider: Provider = new Provider();
+
 
   @ViewChild('customerPaginator') customerPaginator: MatPaginator;
   @ViewChild('customerSort') customerSort: MatSort;
   @ViewChild('providerPaginator') providerPaginator: MatPaginator;
   @ViewChild('providerSort') providerSort: MatSort;
 
-  constructor(private translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public dialog: MatDialog, private translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -193,9 +197,24 @@ export class ContactsComponent implements OnInit {
           this.alertService.error(error.error.message);
         }
       )
-
-
     }
+  }
+
+  openCustomerDialog(customer?: Customer): void {
+    let dialogRef = this.dialog.open(CustomerDialogComponent, {
+      width: '500px',
+      data: (customer)?customer:this.customer
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if(result){
+        this.customer = result;
+        console.log(this.customer);
+      }
+
+
+    });
   }
 
 }

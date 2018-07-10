@@ -14,9 +14,9 @@
   <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-nav-list>
-        <a i18n mat-list-item routerLink="/home" color="primary"><mat-icon mat-list-icon>home</mat-icon>{{ 'navigation.home' | translate }}</a>
-        <a i18n mat-list-item routerLink="/dashboard" color="primary"><mat-icon mat-list-icon>dashboard</mat-icon>{{ 'navigation.dashboard' | translate }}</a>
-        <a i18n mat-list-item routerLink="/contacts" color="primary"><mat-icon mat-list-icon>group</mat-icon>{{ 'navigation.contacts' | translate }}</a>
+        <a i18n mat-list-item routerLink="/home" color="primary"><mat-icon mat-list-icon color="primary">home</mat-icon>{{ 'navigation.home' | translate }}</a>
+        <a i18n mat-list-item routerLink="/dashboard" color="primary"><mat-icon mat-list-icon color="primary">dashboard</mat-icon>{{ 'navigation.dashboard' | translate }}</a>
+        <a i18n mat-list-item routerLink="/contacts" color="primary"><mat-icon mat-list-icon color="primary">group</mat-icon>{{ 'navigation.contacts' | translate }}</a>
         <mat-divider></mat-divider>
        <!-- <mat-accordion>
           <mat-expansion-panel>

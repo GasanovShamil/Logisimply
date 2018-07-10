@@ -33,8 +33,8 @@ export class NavigationComponent implements OnInit {
   }
 
   onLanguageChange(event: MatSelectChange){
-    console.log('LANG :'+this.language);
     this.translate.use(this.language);
+    localStorage.setItem('Localize', this.language);
   }
   ngOnInit() {
   }

@@ -45,5 +45,8 @@
     "legal_form": "Legal form",
     "details_edit": "Details/Edit",
     "select_at_least_one": "You need to select at least one element !"
+  },
+  "customerDialog": {
+    "title": "Customer creation"
   }
 }

@@ -23,6 +23,7 @@ import {JwtInterceptor} from "./helpers/jwt.interceptor";
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { CustomerDialogComponent } from './components/customer-dialog/customer-dialog.component';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -40,6 +41,7 @@ export function tokenGetter() {
     AlertComponent,
     CustomerDialogComponent
   ],
+  entryComponents: [CustomerDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -77,3 +79,4 @@ export class AppModule { }
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
+platformBrowserDynamic().bootstrapModule(AppModule);
