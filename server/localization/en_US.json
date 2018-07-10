@@ -38,7 +38,7 @@
       "used": "Item already exists",
       "failed": "No item match this reference"
     },
-    "update": "Item successfully updated"
+    "update": "Item successfully updated",
     "delete": {
       "one": "Item successfully deleted",
       "multiple": "Items successfully deleted"
@@ -50,7 +50,7 @@
       "used": "Customer already exists",
       "failed": "No customer match this code"
     },
-    "update": "Customer successfully updated"
+    "update": "Customer successfully updated",
     "delete": {
       "one": "Customer successfully deleted",
       "multiple": "Customers successfully deleted"
@@ -62,7 +62,7 @@
       "used": "Provider already exists",
       "failed": "No provider match this code"
     },
-    "update": "Provider successfully updated"
+    "update": "Provider successfully updated",
     "delete": {
       "one": "Provider successfully deleted",
       "multiple": "Providers successfully deleted"
@@ -73,7 +73,7 @@
     "code": {
       "failed": "No quote match this code"
     },
-    "update": "Quote successfully updated"
+    "update": "Quote successfully updated",
     "delete": {
       "one": "Quote successfully deleted",
       "multiple": "Quote successfully deleted"
@@ -84,7 +84,7 @@
     "code": {
       "failed": "No invoice match this code"
     },
-    "update": "Invoice successfully updated"
+    "update": "Invoice successfully updated",
     "delete": {
       "one": "Invoice successfully deleted",
       "multiple": "Invoice successfully deleted"
