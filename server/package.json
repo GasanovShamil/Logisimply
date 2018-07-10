@@ -14,9 +14,9 @@
     "express": "~4.15.5",
     "ejs": "~2.5.7",
     "jsonwebtoken": "^8.2.1",
-    "mailer": "file:librairies/mailer",
     "md5": "^2.2.1",
-    "mongoose": "^5.0.15",
+    "mongoose": "^5.2.2",
+    "nodemailer": "^4.6.4",
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5",
     "swagger-jsdoc": "^1.3.0"

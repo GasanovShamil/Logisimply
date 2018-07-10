@@ -89,7 +89,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramProvider.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let count = await providerModel.count({email: paramProvider.email, siret: paramProvider.siret, idUser: req.loggedUser._id});
+        let count = await providerModel.countDocuments({email: paramProvider.email, siret: paramProvider.siret, idUser: req.loggedUser._id});
         if (count !== 0)
             res.status(400).json({message: localization[req.language].providers.code.used});
         else {
