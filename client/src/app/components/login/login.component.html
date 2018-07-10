@@ -1,14 +1,17 @@
 
 <form role="form" class="login-form" (submit)="login()">
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Email" name="email" [(ngModel)]="user.email" required>
+    <input matInput placeholder="{{ 'login.email_placeholder' | translate }}" name="email" [(ngModel)]="user.email" required>
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'"  name="password" [(ngModel)]="user.password" required>
+    <input matInput placeholder="{{ 'login.password_placeholder' | translate }}" [type]="hide ? 'password' : 'text'"  name="password" [(ngModel)]="user.password" required>
     <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
   </mat-form-field>
-  <button mat-raised-button color="primary" type="submit" name="action" >Login</button>
-  <a mat-button type="button" routerLink="/signup">Create</a>
+  <button mat-raised-button color="primary" type="submit" name="action" >{{ 'login.login_button' | translate }}</button>
+  <a mat-button type="button" routerLink="/signup">{{ 'login.create_button' | translate }}</a>
+  <br>
+  <br>
+  <a href="#" (click)="forgetPassword()">{{ 'login.forgot_password' | translate }}</a>
 </form>
 
 

@@ -1,0 +1,49 @@
+{
+  "navigation":{
+    "logout": "Logout",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "contacts": "Contacts"
+  },
+  "login": {
+    "email_placeholder": "Email",
+    "password_placeholder": "Enter your password",
+    "login_button": "Login",
+    "create_button": "Create",
+    "forgot_password": "Forgot password ?"
+  },
+  "signup" :{
+    "email_placeholder": "Email",
+    "password_placeholder": "Enter your password",
+    "lastname": "Lastname",
+    "firstname": "Firstname",
+    "address": "Address",
+    "city": "City",
+    "country": "Country",
+    "zipcode": "ZipCode",
+    "activity_type": "Activity type",
+    "category_type": "Category type",
+    "activity_entitled": "Activity entitled",
+    "activity_started": "Activity started",
+    "siret": "Siret",
+    "signup_button": "Signup",
+    "login_button": "Login"
+  },
+  "contacts": {
+    "customers": "Customers",
+    "providers": "Providers",
+    "filter": "Filter",
+    "add_new_customer": "Add new customer",
+    "delete_selected": "Delete selected",
+    "type": "Type",
+    "name": "Name",
+    "email": "Email",
+    "town": "City",
+    "info": "Info",
+    "add_new_provider": "Add new provider",
+    "company_name": "Company name",
+    "legal_form": "Legal form",
+    "details_edit": "Details/Edit",
+    "select_at_least_one": "You need to select at least one element !"
+  }
+}

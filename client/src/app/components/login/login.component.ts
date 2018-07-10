@@ -37,7 +37,21 @@ export class LoginComponent implements OnInit {
           this.alertService.error(error.error.message);
         }
       );
+    }
+  }
 
+  forgetPassword() {
+    if(!this.user.email){
+      this.alertService.error("Enter your email please");
+    }else{
+      this.auth.forgetPassword({'email':this.user.email}).subscribe(
+        data => {
+          this.alertService.success(data.message);
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
 
     }
   }

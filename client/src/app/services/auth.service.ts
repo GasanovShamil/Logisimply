@@ -43,6 +43,12 @@ export class AuthService {
     localStorage.removeItem("current_user")
   }
 
+  forgetPassword(data){
+    return this.http.post<any>('/api/users/forgetPassword', data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     // if (error.error instanceof ErrorEvent) {

@@ -6,7 +6,7 @@ import {Customer} from "../../models/customer";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {Provider} from "../../models/provider";
 import {SelectionModel} from "@angular/cdk/collections";
-import {forEach} from "@angular/router/src/utils/collection";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-contacts',
@@ -26,12 +26,14 @@ export class ContactsComponent implements OnInit {
   customerSelection = new SelectionModel<Customer>(true, []);
   providerSelection = new SelectionModel<Provider>(true, []);
 
+  errorMessage = '';
+
   @ViewChild('customerPaginator') customerPaginator: MatPaginator;
   @ViewChild('customerSort') customerSort: MatSort;
   @ViewChild('providerPaginator') providerPaginator: MatPaginator;
   @ViewChild('providerSort') providerSort: MatSort;
 
-  constructor(private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(private translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -62,7 +64,6 @@ export class ContactsComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataService.getMyCustomers().subscribe(
       data => {
-        console.log(JSON.stringify(data));
         this.customers = data;
         this.customerDataSource = new MatTableDataSource(this.customers);
         this.customerDataSource.paginator = this.customerPaginator;
@@ -88,7 +89,6 @@ export class ContactsComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataService.getMyProviders().subscribe(
       data => {
-        console.log(JSON.stringify(data));
         this.providers = data;
         this.providerDataSource = new MatTableDataSource(this.providers);
         this.providerDataSource.paginator = this.providerPaginator;
@@ -138,7 +138,10 @@ export class ContactsComponent implements OnInit {
 
   onDeleteCustomerClick(){
     if(this.customerSelection.isEmpty()){
-      this.alertService.error("You need to select at least one element !");
+      this.translate.get(['contacts']).subscribe(translation => {
+        this.errorMessage = translation.contacts.select_at_least_one;
+        this.alertService.error(this.errorMessage);
+      })
     } else {
       this.dataService.deleteCustomers(this.customerSelection.selected).subscribe(
         data => {
@@ -172,7 +175,10 @@ export class ContactsComponent implements OnInit {
 
   onDeleteProviderClick(){
     if(this.providerSelection.isEmpty()){
-      this.alertService.error("You need to select at least one element !");
+      this.translate.get(['contacts']).subscribe(translation => {
+        this.errorMessage = translation.contacts.select_at_least_one;
+        this.alertService.error(this.errorMessage);
+      })
     } else {
       this.dataService.deleteProviders(this.providerSelection.selected).subscribe(
         data => {
