@@ -1,4 +1,5 @@
 let config = require("../config");
+let utils = require("../helpers/utils");
 let load = require("../helpers/load");
 let content = require("./Content");
 let mongoose = require("mongoose");
@@ -38,13 +39,13 @@ invoiceSchema.methods.fullFormat = function(include) {
     let result = {
         customer: this.customer,
         code: this.code,
-        dateInvoice: this.dateInvoice,
+        dateInvoice: utils.formatDate(this.dateInvoice),
         subject: this.subject || "",
         content: arrayContent,
         discount: discount,
         totalPriceET: totalPriceET,
-        datePayment: this.datePayment,
-        dateExecution: this.dateExecution,
+        datePayment: utils.formatDate(this.datePayment),
+        dateExecution: utils.formatDate(this.dateExecution),
         collectionCost: this.collectionCost,
         advancedPayment: this.advancedPayment,
         comment: this.comment || "",

@@ -265,8 +265,11 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramCustomer.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
+        if (paramCustomer.type === "private")
+            paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
         paramCustomer.updatedAt = new Date();
-        let customer = await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, paramCustomer, null);
+        await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, paramCustomer, null);
+        let customer = await customerModel.findOne({code: paramCustomer.code, user: req.loggedUser._id});
         if (!customer)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {

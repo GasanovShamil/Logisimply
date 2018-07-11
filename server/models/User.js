@@ -1,5 +1,5 @@
 let config = require("../config");
-let load = require("../helpers/load");
+let utils = require("../helpers/utils");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 
@@ -39,7 +39,7 @@ userSchema.methods.shortUser = function() {
         activityField: this.activityField || "",
         categoryType: this.categoryType || "",
         activityEntitled: this.activityEntitled,
-        activityStarted: this.activityStarted,
+        activityStarted: utils.formatDate(this.activityStarted),
         siret: this.siret,
         address: this.address,
         zipCode: this.zipCode,
