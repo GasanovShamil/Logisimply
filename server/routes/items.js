@@ -21,7 +21,7 @@ let router = express.Router();
  *         type: number
  *       description:
  *         type: string
- *       idUser:
+ *       user:
  *         type: string
  *       createdAt:
  *         type: date
@@ -69,14 +69,15 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isItemComplete(paramItem))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await itemModel.countDocuments({reference: paramItem.reference, idUser: paramItem.idUser});
+        let count = await itemModel.countDocuments({reference: paramItem.reference, user: paramItem.user});
         if (count !== 0)
             res.status(400).json({message: localization[req.language].items.reference.used});
         else {
-            paramItem.idUser = req.loggedUser._id;
+            paramItem.user = req.loggedUser._id;
             paramItem.createdAt = new Date();
             let item = await itemModel.create(paramItem);
-            res.status(200).json({message: localization[req.language].items.add, data: item});
+            let result = await item.fullFormat();
+            res.status(200).json({message: localization[req.language].items.add, data: result});
         }
     }
 }));
@@ -101,7 +102,9 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  *             $ref: '#/definitions/Item'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    let items = await itemModel.find({idUser: req.loggedUser._id});
+    let items = await itemModel.find({user: req.loggedUser._id});
+    for (let i = 0; i < quotes.length; i++)
+        items[i] = await items[i].fullFormat();
     res.status(200).json(items);
 }));
 
@@ -110,7 +113,7 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  * /items/{reference}:
  *   get:
  *     tags:
- *       - Items
+ *       - Items000000
  *     description: Logged - Get one of my items
  *     produces:
  *       - application/json
@@ -131,11 +134,13 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  */
 router.get("/:reference", middleware.wrapper(async (req, res) => {
     let paramRef = req.params.reference;
-    let item = await itemModel.findOne({reference: paramRef, idUser: req.loggedUser._id});
+    let item = await itemModel.findOne({reference: paramRef, user: req.loggedUser._id});
     if (!item)
         res.status(400).json({message: localization[req.language].items.reference.failed});
-    else
-        res.status(200).json(item);
+    else {
+        let result = await item.fullFormat();
+        res.status(200).json(result);
+    }
 }));
 
 /**
@@ -170,11 +175,13 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         paramItem.updatedAt = new Date();
-        let item = await itemModel.findOneAndUpdate({reference: paramItem.reference, idUser: req.loggedUser._id}, paramItem, null);
+        let item = await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, paramItem, null);
         if (!item)
             res.status(400).json({message: localization[req.language].items.reference.failed});
-        else
-            res.status(200).json({message: localization[req.language].items.update, data: item});
+        else {
+            let result = await item.fullFormat();
+            res.status(200).json({message: localization[req.language].items.update, data: result});
+        }
     }
 }));
 
@@ -204,11 +211,13 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  */
 router.delete("/delete/:reference", middleware.wrapper(async (req, res) => {
     let paramRef = req.params.reference;
-    let item = await itemModel.findOneAndRemove({reference: paramRef, idUser: req.loggedUser._id});
+    let item = await itemModel.findOneAndRemove({reference: paramRef, user: req.loggedUser._id});
     if (!item)
         res.status(400).json({message: localization[req.language].items.reference.failed});
-    else
-        res.status(200).json({message: localization[req.language].items.delete.one, data: item});
+    else {
+        let result = await item.fullFormat();
+        res.status(200).json({message: localization[req.language].items.delete.one, data: result});
+    }
 }));
 
 /**
@@ -233,19 +242,17 @@ router.delete("/delete/:reference", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: Items deleted
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Item'
+ *           type: number
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramItems = req.body;
-    let items = [];
+    let count = 0;
     for (let i = 0; i < paramItems.length; i++) {
-        let item = await itemModel.findOneAndRemove({reference: paramItems[i].reference, idUser: req.loggedUser._id});
+        let item = await itemModel.findOneAndRemove({reference: paramItems[i].reference, user: req.loggedUser._id});
         if (item)
-            items.push(item);
+            count++;
     }
-    res.status(200).json({message: localization[req.language].items.delete.multiple, data: items});
+    res.status(200).json({message: localization[req.language].items.delete.multiple, data: count});
 }));
 
 module.exports = router;

@@ -34,9 +34,11 @@ let router = express.Router();
  *         type: string
  *       country:
  *         type: string
+ *       assets:
+ *         type: number
  *       comment:
  *         type: string
- *       idUser:
+ *       user:
  *         type: string
  *       createdAt:
  *         type: date
@@ -75,9 +77,11 @@ let router = express.Router();
  *         type: string
  *       country:
  *         type: string
+ *       assets:
+ *         type: number
  *       comment:
  *         type: string
- *       idUser:
+ *       user:
  *         type: string
  *       createdAt:
  *         type: date
@@ -138,7 +142,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         else if (!utils.isEmailValid(paramCustomer.email))
             res.status(400).json({message: localization[req.language].email.invalid});
         else {
-            let count = await customerModel.countDocuments({email: paramCustomer.email, idUser: req.loggedUser._id});
+            let count = await customerModel.countDocuments({email: paramCustomer.email, user: req.loggedUser._id});
             if (count !== 0)
                 res.status(400).json({message: localization[req.language].customers.code.used});
             else {
@@ -146,10 +150,12 @@ router.post("/add", middleware.wrapper(async (req, res) => {
                 user.parameters.customers += 1;
                 user.save();
                 paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
-                paramCustomer.idUser = req.loggedUser._id;
+                paramCustomer.assets = 0;
+                paramCustomer.user = req.loggedUser._id;
                 paramCustomer.createdAt = new Date();
                 let customer = await customerModel.create(paramCustomer);
-                res.status(200).json({message: localization[req.language].customers.add, data: customer});
+                let result = await customer.fullFormat();
+                res.status(200).json({message: localization[req.language].customers.add, data: result});
             }
         }
     }
@@ -177,7 +183,9 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  *               - $ref: '#/definitions/ProfessionalCustomer'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    let customers = await customerModel.find({idUser: req.loggedUser._id});
+    let customers = await customerModel.find({user: req.loggedUser._id});
+    for (let i = 0; i < quotes.length; i++)
+        customers[i] = await customers[i].fullFormat();
     res.status(200).json(customers);
 }));
 
@@ -209,11 +217,13 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  */
 router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
-    let customer = await customerModel.findOne({code: paramCode, idUser: req.loggedUser._id});
+    let customer = await customerModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!customer)
         res.status(400).json({message: localization[req.language].customers.code.failed});
-    else
-        res.status(200).json(customer);
+    else {
+        let result = await customer.fullFormat();
+        res.status(200).json(result);
+    }
 }));
 
 /**
@@ -248,17 +258,21 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
-    if (!utils.isCustomerComplete(paramCustomer))
+    if (paramCustomer.assets)
+        res.status(400).json({message: localization[req.language].fields.prohibited});
+    else if (!utils.isCustomerComplete(paramCustomer))
         res.status(400).json({message: localization[req.language].fields.required});
     else if (!utils.isEmailValid(paramCustomer.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramCustomer.updatedAt = new Date();
-        let customer = await customerModel.findOneAndUpdate({code: paramCustomer.code, idUser: req.loggedUser._id}, paramCustomer, null);
+        let customer = await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, paramCustomer, null);
         if (!customer)
             res.status(400).json({message: localization[req.language].customers.code.failed});
-        else
-            res.status(200).json({message: localization[req.language].customers.update, data: customer});
+        else {
+            let result = await customer.fullFormat();
+            res.status(200).json({message: localization[req.language].customers.update, data: result});
+        }
     }
 }));
 
@@ -290,11 +304,13 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  */
 router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
-    let customer = await customerModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
+    let customer = await customerModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
     if (!customer)
         res.status(400).json({message: localization[req.language].customers.code.failed});
-    else
-        res.status(200).json({message: localization[req.language].customers.delete.one, data: customer});
+    else {
+        let result = await customer.fullFormat();
+        res.status(200).json({message: localization[req.language].customers.delete.one, data: result});
+    }
 }));
 
 /**
@@ -321,21 +337,17 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: Customers deleted
  *         schema:
- *           type: array
- *           items:
- *             oneOf:
- *               - $ref: '#/definitions/PrivateCustomer'
- *               - $ref: '#/definitions/ProfessionalCustomer'
+ *           type: number
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramCustomers = req.body;
-    let customers = [];
+    let count = 0;
     for (let i = 0; i < paramCustomers.length; i++) {
-        let customer = await customerModel.findOneAndRemove({code: paramCustomers[i].code, idUser: req.loggedUser._id});
+        let customer = await customerModel.findOneAndRemove({code: paramCustomers[i].code, user: req.loggedUser._id});
         if (customer)
-            customers.push(customer);
+            count++;
     }
-    res.status(200).json({message: localization[req.language].customers.delete.multiple, data: customers});
+    res.status(200).json({message: localization[req.language].customers.delete.multiple, data: count});
 }));
 
 module.exports = router;

@@ -63,7 +63,7 @@ let router = express.Router();
  *         type: string
  *       status:
  *         type: string
- *       idUser:
+ *       user:
  *         type: string
  *       createdAt:
  *         type: date
@@ -119,7 +119,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramInvoice.customer, idUser: req.loggedUser._id});
+        let count = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
@@ -127,12 +127,13 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             user.parameters.invoices += 1;
             user.save();
             paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
-            paramInvoice.advancedPayment = {value: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
-            paramInvoice.status = "pending";
-            paramInvoice.idUser = req.loggedUser._id;
+            paramInvoice.advancedPayment = {amount: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
+            paramInvoice.status = "draft";
+            paramInvoice.user = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
             let invoice = await invoiceModel.create(paramInvoice);
-            res.status(200).json({message: localization[req.language].invoices.add, data: invoice});
+            let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+            res.status(200).json({message: localization[req.language].invoices.add, data: result});
         }
     }
 }));
@@ -157,7 +158,9 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  *             $ref: '#/definitions/Invoice'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    let invoices = await invoiceModel.find({idUser: req.loggedUser._id});
+    let invoices = await invoiceModel.find({user: req.loggedUser._id});
+    for (let i = 0; i < quotes.length; i++)
+        invoices[i] = await invoices[i].fullFormat({logged: req.loggedUser._id, customer: true});
     res.status(200).json(invoices);
 }));
 
@@ -187,11 +190,13 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  */
 router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
-    let invoice = await invoiceModel.findOne({code: paramCode, idUser: req.loggedUser._id});
+    let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.code.failed});
-    else
-        res.status(200).json(invoice.withTotal());
+    else {
+        let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+        res.status(200).json(result);
+    }
 }));
 
 /**
@@ -232,17 +237,19 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramInvoice.customer, idUser: req.loggedUser._id});
+        let count = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
-            paramInvoice.advancedPayment = {value: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
+            paramInvoice.advancedPayment = {amount: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
             paramInvoice.updatedAt = new Date();
-            let invoice = await invoiceModel.findOneAndUpdate({code: paramInvoice.code, idUser: req.loggedUser._id}, paramInvoice, null);
+            let invoice = await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
             if (!invoice)
                 res.status(400).json({message: localization[req.language].invoices.code.failed});
-            else
-                res.status(200).json({message: localization[req.language].invoices.update, data: invoice});
+            else {
+                let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+                res.status(200).json({message: localization[req.language].invoices.update, data: result});
+            }
         }
     }
 }));
@@ -273,11 +280,13 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  */
 router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
-    let invoice = await invoiceModel.findOneAndRemove({code: paramCode, idUser: req.loggedUser._id});
+    let invoice = await invoiceModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.code.failed});
-    else
-        res.status(200).json({message: localization[req.language].invoices.delete.one, data: invoice});
+    else {
+        let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+        res.status(200).json({message: localization[req.language].invoices.delete.one, data: result});
+    }
 }));
 
 /**
@@ -302,19 +311,17 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: Quotes deleted
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Invoice'
+ *           type: number
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramInvoices = req.body;
-    let invoices = [];
+    let count = 0;
     for (let i = 0; i < paramInvoices.length; i++) {
-        let invoice = await invoiceModel.findOneAndRemove({code: paramInvoices[i].code, idUser: req.loggedUser._id});
+        let invoice = await invoiceModel.findOneAndRemove({code: paramInvoices[i].code, user: req.loggedUser._id});
         if (invoice)
-            invoices.push(invoice);
+            count++;
     }
-    res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: invoices});
+    res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: count});
 }));
 
 module.exports = router;

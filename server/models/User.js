@@ -1,4 +1,5 @@
 let config = require("../config");
+let load = require("../helpers/load");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 

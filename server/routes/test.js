@@ -10,11 +10,11 @@ router.use(middleware.localize);
 router.post("/:user/:invoice", middleware.wrapper(async (req, res) => {
     let paramId = req.params.user;
     let paramCode = req.params.invoice;
-    let invoice = await invoiceModel.findOne({code: paramCode, idUser: paramId});
+    let invoice = await invoiceModel.findOne({code: paramCode, user: paramId});
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.code.failed});
     else
-        res.status(200).json(invoice.withTotal());
+        res.status(200).json(invoice.full());
 }));
 
 module.exports = router;
