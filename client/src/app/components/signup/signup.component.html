@@ -37,7 +37,7 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="{{ 'signup.city' | translate }}" formControlName="town" required>
+          <input matInput placeholder="{{ 'signup.town' | translate }}" formControlName="town" required>
         </mat-form-field>
       </td>
       <td width="50%">
@@ -93,7 +93,8 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="{{ 'signup.siret' | translate }}" formControlName="siret" required>
+          <input matInput #siretHint placeholder="{{ 'signup.siret' | translate }}" formControlName="siret" required>
+          <mat-hint align="end">{{siretHint.value.length}} / 14</mat-hint>
         </mat-form-field>
       </td>
       <td width="50%">
@@ -103,21 +104,3 @@
     <button mat-raised-button color="primary" type="submit" name="action" >{{ 'signup.signup_button' | translate }}</button>
     <a mat-button type="button" routerLink="/login">{{ 'signup.login_button' | translate }}</a>
 </form>
-
-
-
-
-  <!--// emailAddress*	string-->
-  <!--// password*	string($password)-->
-  <!--// lastname*	string-->
-  <!--// firstname*	string-->
-  <!--// activityType	string-->
-  <!--// activityField	string-->
-  <!--// categoryType	string-->
-  <!--// activityEntitled*	string-->
-  <!--// activityStarted*	string-->
-  <!--// sirenSiret*	string-->
-  <!--// address*	string-->
-  <!--// zipCode*	string-->
-  <!--// town*	string-->
-  <!--// country	string-->

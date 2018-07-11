@@ -1,107 +1,114 @@
-<h1 mat-dialog-title>{{ 'customerDialog.title' | translate }}</h1>
+<div class="dialog-title" mat-dialog-title>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <h3>{{ 'customerDialog.title' | translate }} <span *ngIf="data && data.code">- {{data.code}}</span> </h3>
+      </td>
+      <td width="50%">
+        <button mat-icon-button color="warn" class="close-button" (click)="onNoClick()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </td>
+    </tr>
+  </table>
+  <mat-slide-toggle *ngIf="data" [labelPosition]="editLablePosition" (change)="editSliderChange($event)">{{ 'customerDialog.edit_mode' | translate }}</mat-slide-toggle>
+</div>
 <div mat-dialog-content [formGroup]="customerForm">
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.email_placeholder' | translate }}" formControlName="email" required>
-          </mat-form-field>
-        </td>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.password_placeholder' | translate }}" type="password" formControlName="password" required>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.lastname' | translate }}" formControlName="lastname" required>
-          </mat-form-field>
-        </td>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.firstname' | translate }}" formControlName="firstname" required>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-
-    <mat-form-field class="full-width">
-      <input  matInput  placeholder="{{ 'signup.address' | translate }}" formControlName="address" required>
+  <mat-form-field>
+    <mat-select placeholder="{{ 'customerDialog.type' | translate }}" #typeSelect formControlName="type" (change)="onSelectChange(typeSelect.value)" required cdkFocusInitial>
+      <mat-option *ngFor="let item of types" [value]="item.value">
+        {{ item.name | translate }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <table class="full-width" cellspacing="0" *ngIf="customerForm.controls['type'].value === 'private'">
+    <mat-form-field>
+      <input matInput placeholder="{{ 'customerDialog.civility' | translate }}" formControlName="civility" >
     </mat-form-field>
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.lastname' | translate }}" formControlName="lastname" required >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.firstname' | translate }}" formControlName="firstname" >
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0" *ngIf="customerForm.controls['type'].value === 'professional'">
+    <mat-form-field>
+      <input matInput placeholder="{{ 'customerDialog.name' | translate }}" formControlName="name" required >
+    </mat-form-field>
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.legalForm' | translate }}" formControlName="legalForm" >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput #siretHint placeholder="{{ 'customerDialog.siret' | translate }}" formControlName="siret" >
+          <mat-hint align="end">{{siretHint.value.length}} / 14</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.email_placeholder' | translate }}" formControlName="email" required >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.phone' | translate }}"  formControlName="phone" >
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <mat-form-field class="full-width">
+    <input  matInput  placeholder="{{ 'customerDialog.address' | translate }}" formControlName="address" required >
+  </mat-form-field>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.town' | translate }}" formControlName="town" required >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'customerDialog.country' | translate }}" formControlName="country" required >
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput #postalCode placeholder="{{ 'customerDialog.zipcode' | translate }}" formControlName="zipCode" required >
+          <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+      </td>
+    </tr>
+  </table>
+  <mat-form-field>
+    <input matInput placeholder="{{ 'customerDialog.comment' | translate }}" formControlName="comment" >
+  </mat-form-field>
+</div>
+<div mat-dialog-actions *ngIf="saveButton">
+  <button mat-raised-button color="primary" (click)="submitData()"><mat-icon>save</mat-icon></button>
+</div>
 
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.city' | translate }}" formControlName="town" required>
-          </mat-form-field>
-        </td>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.country' | translate }}" formControlName="country" required>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput #postalCode placeholder="{{ 'signup.zipcode' | translate }}" formControlName="zipCode" required>
-            <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
-          </mat-form-field>
-        </td>
-        <td width="50%">
-        </td>
-      </tr>
-    </table>
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.activity_type' | translate }}" formControlName="activityType">
-          </mat-form-field>
-        </td>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.category_type' | translate }}" formControlName="categoryType">
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.activity_entitled' | translate }}" formControlName="activityEntitled" required>
-          </mat-form-field>
-        </td>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput [matDatepicker]="picker" placeholder="{{ 'signup.activity_started' | translate }}" formControlName="activityStarted" required>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td width="50%">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'signup.siret' | translate }}" formControlName="siret" required>
-          </mat-form-field>
-        </td>
-        <td width="50%">
-        </td>
-      </tr>
-    </table>
-</div>
-<div mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="submitData()" cdkFocusInitial>Ok</button>
-  <button mat-raised-button color="warn" (click)="onNoClick()">No Thanks</button>
-</div>
+
+
+
+
+

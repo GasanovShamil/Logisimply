@@ -32,6 +32,10 @@
             </mat-checkbox>
           </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.code' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="type">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.type' | translate }} </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
@@ -51,7 +55,7 @@
         <ng-container matColumnDef="info">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="editCustomer(row)">
+            <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="openCustomerDialog(row)">
               <mat-icon color="primary">info</mat-icon>
             </button>
           </mat-cell>
@@ -92,6 +96,10 @@
                           [checked]="providerSelection.isSelected(row)">
             </mat-checkbox>
           </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.code' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="companyName">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.company_name' | translate }} </mat-header-cell>

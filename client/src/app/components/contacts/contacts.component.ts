@@ -59,8 +59,8 @@ export class ContactsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.displayedCustomerColumns = (this.mobileQuery.matches)?['select', 'name', 'email', 'actions']:['select', 'type', 'name', 'email', 'town', 'info'];
-    this.displayedProviderColumns = (this.mobileQuery.matches)?['select', 'companyName', 'email', 'actions']:['select', 'companyName', 'legalForm', 'email', 'town', 'info'];
+    this.displayedCustomerColumns = (this.mobileQuery.matches)?['select','code', 'name',  'info']:['select','code', 'type', 'name', 'email', 'town', 'info'];
+    this.displayedProviderColumns = (this.mobileQuery.matches)?['select','code', 'companyName', 'info']:['select','code', 'companyName', 'legalForm', 'email', 'town', 'info'];
     this.getCustomers();
   }
 
@@ -81,9 +81,6 @@ export class ContactsComponent implements OnInit {
     );
   }
 
-  editCustomer (customer) {
-
-  }
 
   editProvider (customer) {
 
@@ -160,8 +157,6 @@ export class ContactsComponent implements OnInit {
           this.alertService.error(error.error.message);
         }
       )
-
-
     }
   }
 
@@ -203,7 +198,7 @@ export class ContactsComponent implements OnInit {
   openCustomerDialog(customer?: Customer): void {
     let dialogRef = this.dialog.open(CustomerDialogComponent, {
       width: '500px',
-      data: (customer)?customer:this.customer
+      data: (customer)?customer:null
     });
 
     dialogRef.afterClosed().subscribe(result => {
