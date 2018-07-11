@@ -14,6 +14,7 @@ export class DataService {
 ///////////////////////////// CUSTOMER SECTION /////////////////////////////
 
   addCustomer(customerData) {
+    console.log('IN DATASERVICE : '+ customerData);
     return this.http.post<any>('/api/customers/add', customerData).pipe(
       catchError(this.handleError)
     );

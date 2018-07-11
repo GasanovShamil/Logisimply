@@ -2,6 +2,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSlideToggleChange, MatOption} from '@angular/material';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertService} from "../../services/alert.service";
+import {DataService} from "../../services/data.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-customer-dialog',
@@ -9,8 +11,10 @@ import {AlertService} from "../../services/alert.service";
   styleUrls: ['./customer-dialog.component.css']
 })
 export class CustomerDialogComponent implements OnInit {
-  saveButton: boolean = true;
+  saveButton: boolean = (this.data)?false:true;
   editLablePosition = 'before';
+  customerForm: FormGroup;
+
   types = [
     {
       "name": "customerDialog.private_customer",
@@ -20,8 +24,51 @@ export class CustomerDialogComponent implements OnInit {
       "name": "customerDialog.professional_customer",
       "value": "professional"
     }];
-  customerForm: FormGroup;
-  constructor( private alertService: AlertService, public dialogRef: MatDialogRef<CustomerDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  constructor(private alertService: AlertService,
+              private dataService: DataService,
+              public translate: TranslateService,
+              public dialogRef: MatDialogRef<CustomerDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onCloseClick(): void {
+    this.dialogRef.close();
+  }
+
+  saveData(){
+    this.updateDynamicControls(this.customerForm.controls['type'].value);
+    if (this.customerForm.valid) {
+      console.log(JSON.stringify(this.customerForm.getRawValue()));
+      this.dataService.addCustomer(JSON.parse(JSON.stringify(this.customerForm.getRawValue()))).subscribe(
+        data => this.dialogRef.close(data),
+        error => this.alertService.error(error.error.message)
+      )
+    } else {
+      this.translate.get(['customerDialog']).subscribe(translation => {
+       let errorMessage = translation.customerDialog.customer_form_error_message;
+        this.alertService.error(errorMessage);
+      })
+    }
+  }
+
+  ngOnInit(): void {
+    this.setFormGroup();
+  }
+
+  onSelectChange(element: string){
+    this.updateDynamicControls(element);
+    this.customerForm.controls['type'].setValue(element);
+  }
+
+  editSliderChange(event: MatSlideToggleChange) {
+    if (event.checked){
+      this.customerForm.enable();
+      this.saveButton = true;
+    }else{
+      this.customerForm.disable();
+      this.saveButton = false;
+    }
+  }
 
   setFormGroup(){
     if(this.data){
@@ -43,9 +90,10 @@ export class CustomerDialogComponent implements OnInit {
         country: new FormControl({value: this.data.country, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, [])
       });
+      this.updateDynamicControls(this.data.type);
     } else {
       this.customerForm = new FormGroup({
-        code: new FormControl({disabled: true}, []),
+        code: new FormControl('', []),
         civility: new FormControl('', []),
         lastname: new FormControl('', [Validators.required]),
         firstname: new FormControl('', []),
@@ -64,37 +112,25 @@ export class CustomerDialogComponent implements OnInit {
     }
   }
 
-
-  onCloseClick(): void {
-    this.dialogRef.close();
-  }
-
-  saveData(){
-    console.log(this.customerForm.valid);
-    if (this.customerForm.valid) {
-      this.dialogRef.close(this.customerForm.getRawValue());
-    } else {
-      this.alertService.error("there was an error");
-      console.log(JSON.stringify(this.customerForm.getRawValue()));
-      console.log(this.customerForm.errors);
-    }
-  }
-
-  ngOnInit(): void {
-    this.setFormGroup();
-  }
-
-  onSelectChange(element: string){
-    this.customerForm.controls['type'].setValue(element);
-  }
-
-  editSliderChange(event: MatSlideToggleChange) {
-    if (event.checked){
-      this.customerForm.enable();
-      this.saveButton = true;
-    }else{
-      this.customerForm.disable();
-      this.saveButton = false;
+  updateDynamicControls(type: string){
+    switch(type){
+      case 'private' : {
+        this.customerForm.controls['civility'].enable();
+        this.customerForm.controls['lastname'].enable();
+        this.customerForm.controls['firstname'].enable();
+        this.customerForm.controls['name'].disable();
+        this.customerForm.controls['legalForm'].disable();
+        this.customerForm.controls['siret'].disable();
+        break;
+      }
+      case 'professional' : {
+        this.customerForm.controls['name'].enable();
+        this.customerForm.controls['legalForm'].enable();
+        this.customerForm.controls['siret'].enable();
+        this.customerForm.controls['civility'].disable();
+        this.customerForm.controls['lastname'].disable();
+        this.customerForm.controls['firstname'].disable();
+      }
     }
   }
 }

@@ -37,7 +37,7 @@ export class ContactsComponent implements OnInit {
   @ViewChild('providerPaginator') providerPaginator: MatPaginator;
   @ViewChild('providerSort') providerSort: MatSort;
 
-  constructor(public dialog: MatDialog, private translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public dialog: MatDialog, public translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -204,7 +204,8 @@ export class ContactsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.customer = result;
+        this.alertService.success(result.message);
+        this.customer = result.data;
         console.log(this.customer);
       }
 
