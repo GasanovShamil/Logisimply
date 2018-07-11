@@ -7,7 +7,7 @@ module.exports = {
             text: text,
             width: width,
             align: align || "left",
-            font: font || {name: "./pdf/_config/fonts/arial.ttf"},
+            font: font || {name: "./pdf/config/fonts/arial.ttf"},
             background: "#111f46",
             color: "#FFFFFF"
         };
@@ -59,7 +59,7 @@ module.exports = {
         document.addContent("foot_text", localization[language].pdf.generated);
         document.addImage("foot_image", "./pdf/_config/images/logo.png", {width: 50});
 
-        document.save(".pdf", function(result) {
+        document.save("./pdf/" + quote.user._id + "_" + quote.code + ".pdf", function(result) {
             document.clear();
             if (result !== null)
                 console.log("generateQuote KO " + quote.user._id + "/" + quote.code);
