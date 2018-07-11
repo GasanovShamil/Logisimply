@@ -14,7 +14,7 @@ contentSchema.methods.withTotal = function() {
     return {
         reference: this.reference,
         label: this.label,
-        description: this.description,
+        description: this.description || "",
         type: this.type,
         unitPriceET: this.unitPriceET,
         quantity: this.quantity,

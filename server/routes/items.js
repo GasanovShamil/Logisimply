@@ -103,7 +103,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
     let items = await itemModel.find({user: req.loggedUser._id});
-    for (let i = 0; i < quotes.length; i++)
+    for (let i = 0; i < items.length; i++)
         items[i] = await items[i].fullFormat();
     res.status(200).json(items);
 }));

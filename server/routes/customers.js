@@ -184,7 +184,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
     let customers = await customerModel.find({user: req.loggedUser._id});
-    for (let i = 0; i < quotes.length; i++)
+    for (let i = 0; i < customers.length; i++)
         customers[i] = await customers[i].fullFormat();
     res.status(200).json(customers);
 }));

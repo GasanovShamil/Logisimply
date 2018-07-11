@@ -35,19 +35,21 @@ quoteSchema.methods.fullFormat = function(include) {
         customer: this.customer,
         code: this.code,
         dateQuote: this.dateQuote,
-        subject: this.subject,
+        subject: this.subject || "",
         content: arrayContent,
         discount: discount,
         totalPriceET: totalPriceET,
         datePayment: this.datePayment,
         validity: this.validity,
         collectionCost: this.collectionCost,
-        comment: this.comment,
+        comment: this.comment || "",
         status: this.status,
         user: this.user,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
+
+    //TODO: check why only the first call in loaded
 
     if (include && include.logged) {
         if (include.customer)

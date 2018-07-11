@@ -3,7 +3,7 @@ let customerModel = require("../models/Customer");
 
 module.exports = {
     user: async (object, user) => {
-        object.user = await userModel.findOne({_id: user});
+        object.user = (await userModel.findOne({_id: user}).exec()).shortUser();
         return object;
     },
     customer: async (object, user) => {
