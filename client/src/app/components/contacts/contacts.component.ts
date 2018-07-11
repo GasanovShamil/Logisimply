@@ -197,12 +197,12 @@ export class ContactsComponent implements OnInit {
 
   openCustomerDialog(customer?: Customer): void {
     let dialogRef = this.dialog.open(CustomerDialogComponent, {
-      width: '500px',
+      maxWidth: '500px',
+      minWidth: '100px',
       data: (customer)?customer:null
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       if(result){
         this.customer = result;
         console.log(this.customer);

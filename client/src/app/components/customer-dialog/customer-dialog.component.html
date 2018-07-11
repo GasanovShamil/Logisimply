@@ -5,7 +5,7 @@
         <h3>{{ 'customerDialog.title' | translate }} <span *ngIf="data && data.code">- {{data.code}}</span> </h3>
       </td>
       <td width="50%">
-        <button mat-icon-button color="warn" class="close-button" (click)="onNoClick()">
+        <button mat-icon-button color="warn" class="close-button" (click)="onCloseClick()">
           <mat-icon>clear</mat-icon>
         </button>
       </td>
@@ -104,7 +104,7 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions *ngIf="saveButton">
-  <button mat-raised-button color="primary" (click)="submitData()"><mat-icon>save</mat-icon></button>
+  <button mat-raised-button color="primary" (click)="saveData()"><mat-icon>save</mat-icon></button>
 </div>
 
 

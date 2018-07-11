@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSlideToggleChange, MatOption} from '@angular/material';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {AlertService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-customer-dialog',
@@ -20,7 +21,7 @@ export class CustomerDialogComponent implements OnInit {
       "value": "professional"
     }];
   customerForm: FormGroup;
-  constructor( public dialogRef: MatDialogRef<CustomerDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor( private alertService: AlertService, public dialogRef: MatDialogRef<CustomerDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   setFormGroup(){
     if(this.data){
@@ -33,7 +34,7 @@ export class CustomerDialogComponent implements OnInit {
         name: new FormControl({value: this.data.name, disabled: true}, [Validators.required]),
         legalForm: new FormControl({value: this.data.legalForm, disabled: true}, []),
         siret: new FormControl({value: this.data.siret, disabled: true}, [Validators.maxLength(14), Validators.minLength(14), Validators.pattern('^\\d+$')]),
-        type: new FormControl({value: this.data.type, disabled: true}, [Validators.required]),
+        type: new FormControl({value: this.data.type, disabled: true}, []),
         phone: new FormControl({value: this.data.phone, disabled: true}, []),
         email: new FormControl({value: this.data.email, disabled: true}, [Validators.required, Validators.email]),
         address: new FormControl({value: this.data.address, disabled: true}, [Validators.required]),
@@ -42,7 +43,7 @@ export class CustomerDialogComponent implements OnInit {
         country: new FormControl({value: this.data.country, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, [])
       });
-    }else {
+    } else {
       this.customerForm = new FormGroup({
         code: new FormControl({disabled: true}, []),
         civility: new FormControl('', []),
@@ -51,7 +52,7 @@ export class CustomerDialogComponent implements OnInit {
         name: new FormControl('', [Validators.required]),
         legalForm: new FormControl('', []),
         siret: new FormControl('', [Validators.maxLength(14), Validators.minLength(14), Validators.pattern('^\\d+$')]),
-        type: new FormControl({value: 'private', disabled: false}, [Validators.required]),
+        type: new FormControl({value: 'private', disabled: false}, []),
         phone: new FormControl('', []),
         email: new FormControl('', [Validators.required, Validators.email]),
         address: new FormControl('', [Validators.required]),
@@ -64,17 +65,19 @@ export class CustomerDialogComponent implements OnInit {
   }
 
 
-  onNoClick(): void {
+  onCloseClick(): void {
     this.dialogRef.close();
   }
 
-  submitData(){
-    if(this.customerForm.valid){
-      this.dialogRef.close(this.customerForm.value);
+  saveData(){
+    console.log(this.customerForm.valid);
+    if (this.customerForm.valid) {
+      this.dialogRef.close(this.customerForm.getRawValue());
     } else {
-
+      this.alertService.error("there was an error");
+      console.log(JSON.stringify(this.customerForm.getRawValue()));
+      console.log(this.customerForm.errors);
     }
-
   }
 
   ngOnInit(): void {

@@ -32,7 +32,7 @@ export class SignupComponent implements OnInit {
   }
 
   signup () {
-    if(this.registerForm.valid){
+    if (this.registerForm.valid) {
       this.userService.addUser(JSON.parse(JSON.stringify(this.registerForm.getRawValue()))).subscribe(
         data => {
           this.alertService.success('User created!');
@@ -44,7 +44,7 @@ export class SignupComponent implements OnInit {
         }
       );
 
-    }else{
+    } else {
       this.alertService.error('Please fill up required fields :)');
     }
 
