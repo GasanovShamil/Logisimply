@@ -57,6 +57,8 @@ invoiceSchema.methods.fullFormat = function(include) {
     //TODO: check why only the first call in loaded
 
     if (include && include.logged) {
+        if (include.infos)
+            result = load.infos(result, include.logged);
         if (include.customer)
             result = load.customer(result, include.logged);
         if (include.user)

@@ -37,9 +37,9 @@ module.exports = {
     generateQuote: async (quote, user, language) => {
         let document = require("lx-pdf")("./pdf/config/templates/quote.json");
 
-        document.addContent("company_name", user.activityEntitled);
+        document.addContent("company_name", quote.user.activityEntitled);
         document.addContent("date_quote", "Date : " + quote.dateQuote);
-        document.addContent("company_infos", this.formatTextBloc(["Siret : " + user.siret, user.firstname + " " user.lastname + " - " + user.email, user.address, user.zipCode + " " + user.town, user.country]));
+        document.addContent("company_infos", this.formatTextBloc(["Siret : " + quote.user.siret, quote.user.firstname + " " + quote.user.lastname + " - " + quote.user.email, quote.user.address, quote.user.zipCode + " " + quote.user.town, quote.user.country]));
         document.addContent("customer_infos", this.formatTextBloc([quote.customer.civility + " " + quote.customer.name, quote.customer.address, quote.customer.zipCode + " " + quote.customer.town, quote.customer.country]));
         document.addContent("banner", "Devis - " + quote.code);
         if (quote.subject)
@@ -59,13 +59,12 @@ module.exports = {
         document.addContent("foot_text", localization[language].pdf.generated);
         document.addImage("foot_image", "./pdf/_config/images/logo.png", {width: 50});
 
-        document.save("document.pdf", function(result) {
+        document.save(".pdf", function(result) {
             document.clear();
             if (result !== null)
-                console.log("generateQuote KO " + user._id + "/" + quote.code);
+                console.log("generateQuote KO " + quote.user._id + "/" + quote.code);
             else
-                console.log("generateQuote OK " + user._id + "/" + quote.code);
+                console.log("generateQuote OK " + quote.user._id + "/" + quote.code);
         });
-
     }
 };
