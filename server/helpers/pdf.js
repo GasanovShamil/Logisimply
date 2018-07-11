@@ -35,7 +35,7 @@ module.exports = {
         result.push(['']);
         return result;
     },
-    generateQuote: function(quote, language) {
+    getQuote: function(quote, language) {
         let document = require("lx-pdf")("./pdf/config/templates/quote.json");
 
         document.addContent("company_name", quote.user.activityEntitled);
@@ -72,7 +72,7 @@ module.exports = {
             }
         });
     },
-    generateInvoice: function(quote, language) {
+    getInvoice: function(quote, language) {
         let document = require("lx-pdf")("./pdf/config/templates/quote.json");
 
         document.addContent("company_name", quote.user.activityEntitled);
