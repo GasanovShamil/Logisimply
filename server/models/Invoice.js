@@ -39,7 +39,7 @@ invoiceSchema.methods.fullFormat = function(include) {
         customer: this.customer,
         code: this.code,
         dateInvoice: this.dateInvoice,
-        subject: this.subject,
+        subject: this.subject || "",
         content: arrayContent,
         discount: discount,
         totalPriceET: totalPriceET,
@@ -47,14 +47,18 @@ invoiceSchema.methods.fullFormat = function(include) {
         dateExecution: this.dateExecution,
         collectionCost: this.collectionCost,
         advancedPayment: this.advancedPayment,
-        comment: this.comment,
+        comment: this.comment || "",
         status: this.status,
         user: this.user,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
 
+    //TODO: check why only the first call in loaded
+
     if (include && include.logged) {
+        if (include.infos)
+            result = load.infos(result, include.logged);
         if (include.customer)
             result = load.customer(result, include.logged);
         if (include.user)
