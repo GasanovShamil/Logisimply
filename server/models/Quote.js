@@ -1,4 +1,5 @@
 let config = require("../config");
+let load = require("../helpers/load");
 let content = require("./Content");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
@@ -13,25 +14,24 @@ let quoteSchema = mongoose.Schema ({
     validity: Number,
     collectionCost: Boolean,
     comment: String,
-    status: Number,
-    idUser: String,
+    status: String,
+    user: String,
     createdAt: Date,
     updatedAt: Date
 });
 
-quoteSchema.methods.withTotal = function() {
+quoteSchema.methods.fullFormat = function(include) {
     let arrayContent = [];
     let discount = 0;
     let totalPriceET = 0;
     for (let i = 0; i < this.content.length; i++) {
         let line = this.content[i].withTotal();
         arrayContent.push(line);
-        if (line.discount)
-            discount += line.discount;
+        discount += line.discount;
         totalPriceET += line.totalPriceET;
     }
 
-    return {
+    let result = {
         customer: this.customer,
         code: this.code,
         dateQuote: this.dateQuote,
@@ -44,10 +44,19 @@ quoteSchema.methods.withTotal = function() {
         collectionCost: this.collectionCost,
         comment: this.comment,
         status: this.status,
-        idUser: this.idUser,
+        user: this.user,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
+
+    if (include && include.logged) {
+        if (include.customer)
+            result = load.customer(result, include.logged);
+        if (include.user)
+            result = load.user(result, include.logged);
+    }
+
+    return result;
 };
 
 module.exports = mongoose.model("Quote", quoteSchema);

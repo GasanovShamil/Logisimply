@@ -8,13 +8,15 @@ let bodyParser = require("body-parser");
 let cors = require("cors");
 let swaggerJSDoc = require("swagger-jsdoc");
 
-//let test = require("./routes/test");
+let test = require("./routes/test");
 let users = require("./routes/users");
 let customers = require("./routes/customers");
 let providers = require("./routes/providers");
 let items = require("./routes/items");
 let quotes = require("./routes/quotes");
 let invoices = require("./routes/invoices");
+let assets = require("./routes/assets");
+let incomes = require("./routes/incomes");
 
 let app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -55,13 +57,15 @@ app.get("/swagger.json", function(req, res) {
     res.send(swaggerSpec);
 });
 
-//app.use("/api/test", test);
+app.use("/api/test", test);
 app.use("/api/users", users);
 app.use("/api/customers", customers);
 app.use("/api/providers", providers);
 app.use("/api/items", items);
 app.use("/api/quotes", quotes);
 app.use("/api/invoices", invoices);
+app.use("/api/assets", assets);
+app.use("/api/incomes", incomes);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

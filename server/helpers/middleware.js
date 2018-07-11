@@ -1,6 +1,5 @@
 let config = require("../config");
 let localization = require("../localization/localize");
-let constants = require("../helpers/constants");
 let jwt = require("jsonwebtoken");
 
 module.exports = {
@@ -12,7 +11,7 @@ module.exports = {
             jwt.verify(bearerToken, config.jwt_key, (err, decoded) => {
                 if (err)
                     res.status(403).json({message: localization[req.language].middleware.failed});
-                else if (decoded.status !== constants.UserStatus.active)
+                else if (decoded.status !== "active")
                     res.status(403).json({message: localization[req.language].users.inactive});
                 else {
                     req.loggedUser = decoded;
