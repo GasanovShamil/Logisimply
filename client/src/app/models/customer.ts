@@ -13,6 +13,7 @@ export class Customer {
   zipCode: string;
   town: string;
   country: string;
+  assets: number;
   comment: string;
   idUser: string;
   createdAt: string;

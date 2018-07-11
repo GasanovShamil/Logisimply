@@ -208,8 +208,8 @@ export class ContactsComponent implements OnInit {
         if(result.editMode){
           console.log(JSON.stringify(result.data));
           let index: number = this.customerDataSource.data.findIndex(i => i.code === result.data.code);
-          this.customerDataSource.data.splice(index, 1);
-          this.customerDataSource.data.push(result.data);
+          this.customerDataSource.data.splice(index, 1, result.data);
+         // this.customerDataSource.data.push(result.data);
           this.customerDataSource._updateChangeSubscription();
         } else {
           this.customerDataSource.data.push(result.data);

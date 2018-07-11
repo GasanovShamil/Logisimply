@@ -1,0 +1,25 @@
+.full-width {
+  width: 100%;
+}
+form {
+  min-width: 100px;
+  max-width: 500px;
+  width: 100%;
+  padding: 2em 2em 2em 2em;
+  background: #fafafa;
+}
+mat-form-field {
+  width: 100%;
+}
+
+.fill-remaining-space{
+  flex: 1 1 auto;
+}
+
+.right {
+  text-align: right;
+}
+
+.close-button{
+  float: right;
+}
