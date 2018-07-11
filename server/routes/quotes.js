@@ -180,7 +180,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     if (!quote)
         res.status(400).json({message: localization[req.language].quotes.code.failed});
     else {
-        let result = await quote.fullFormat({logged: req.loggedUser._id, customer: true});
+        let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
         res.status(200).json(result);
     }
 }));

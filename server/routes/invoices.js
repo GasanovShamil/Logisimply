@@ -159,7 +159,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
     let invoices = await invoiceModel.find({user: req.loggedUser._id});
-    for (let i = 0; i < quotes.length; i++)
+    for (let i = 0; i < invoices.length; i++)
         invoices[i] = await invoices[i].fullFormat({logged: req.loggedUser._id, customer: true});
     res.status(200).json(invoices);
 }));

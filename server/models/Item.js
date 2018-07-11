@@ -20,7 +20,7 @@ itemSchema.methods.fullFormat = function(include) {
         reference: this.reference,
         label: this.label,
         priceET: this.priceET,
-        description: this.description,
+        description: this.description || "",
         user: this.user,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
