@@ -206,7 +206,7 @@
               "height": 23
             }
           },
-          "legal_notice_1": {
+          "legal_notice_immatriculation": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
@@ -272,11 +272,11 @@
               "align": "left",
               "left": 15,
               "top": 450,
-              "width": 120,
+              "width": 250,
               "height": 320
             }
           },
-          "legal_notice_2": {
+          "collection_cost": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
