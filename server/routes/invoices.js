@@ -243,7 +243,8 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         else {
             paramInvoice.advancedPayment = {amount: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
             paramInvoice.updatedAt = new Date();
-            let invoice = await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
+            await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
+            let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
             if (!invoice)
                 res.status(400).json({message: localization[req.language].invoices.code.failed});
             else {

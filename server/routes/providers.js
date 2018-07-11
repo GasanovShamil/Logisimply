@@ -198,7 +198,8 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramProvider.updatedAt = new Date();
-        let provider = await providerModel.findOneAndUpdate({code: paramProvider.code, user: req.loggedUser._id}, paramProvider, null);
+        await providerModel.findOneAndUpdate({code: paramProvider.code, user: req.loggedUser._id}, paramProvider, null);
+        let provider = await providerModel.findOne({code: paramProvider.code, user: req.loggedUser._id});
         if (!provider)
             res.status(400).json({message: localization[req.language].providers.code.failed});
         else {

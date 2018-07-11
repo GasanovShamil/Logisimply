@@ -4,7 +4,7 @@
   "debug": false,
   "header": {
     "font": {
-      "name": "./pdf/_config/fonts/arial.ttf",
+      "name": "./pdf/config/fonts/arial.ttf",
       "size": 10,
       "color": "#808080"
     },
@@ -15,7 +15,7 @@
   },
   "footer": {
     "font": {
-      "name": "./pdf/_config/fonts/arial.ttf",
+      "name": "./pdf/config/fonts/arial.ttf",
       "size": 6,
       "color": "#000000"
     },
@@ -42,7 +42,7 @@
           }
         },
         "background": {
-          "filename": "./pdf/_config/images/background.png",
+          "filename": "./pdf/config/images/background.png",
           "imageformat": {
             "fit": [595.28, 841.89]
           }
@@ -50,7 +50,7 @@
         "sections": {
           "list": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -64,7 +64,7 @@
           },
           "linebreak": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 12,
               "color": "#000000"
             },
@@ -78,7 +78,7 @@
           },
           "toosmall": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -92,7 +92,7 @@
           },
           "date": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -106,7 +106,7 @@
           },
           "subject": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 11,
               "color": "#000000"
             },
@@ -120,7 +120,7 @@
           },
           "company_name": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 16,
               "color": "#000000"
             },
@@ -134,7 +134,7 @@
           },
           "company_infos": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -148,7 +148,7 @@
           },
           "customer_infos": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -162,7 +162,7 @@
           },
           "date_invoice": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 12,
               "color": "#000000"
             },
@@ -176,7 +176,7 @@
           },
           "banner": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 20,
               "color": "#FFFFFF"
             },
@@ -194,7 +194,7 @@
           },
           "object": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -208,7 +208,7 @@
           },
           "legal_notice_1": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
               "color": "#000000"
             },
@@ -222,7 +222,7 @@
           },
           "content": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 9,
               "color": "#000000"
             },
@@ -236,7 +236,7 @@
           },
           "advancedPayment": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -250,7 +250,7 @@
           },
           "discount": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -262,9 +262,9 @@
               "height": 320
             }
           },
-          "datePayment": {
+          "date_payment": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
               "color": "#000000"
             },
@@ -278,7 +278,7 @@
           },
           "legal_notice_2": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
               "color": "#000000"
             },
@@ -292,7 +292,7 @@
           },
           "total": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -306,7 +306,7 @@
           },
           "comment": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
               "color": "#000000"
             },
@@ -320,7 +320,7 @@
           },
           "signature": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -334,7 +334,7 @@
           },
           "foot_text": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
               "color": "#000000"
             },
@@ -348,7 +348,7 @@
           },
           "foot_image": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 6,
               "color": "#000000"
             },
@@ -373,7 +373,7 @@
           }
         },
         "background": {
-          "filename": "./pdf/_config/images/background.png",
+          "filename": "./pdf/config/images/background.png",
           "imageformat": {
             "fit": [595.28, 841.89]
           }
@@ -381,7 +381,7 @@
         "sections": {
           "area50": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 12,
               "color": "#000000"
             },
@@ -395,7 +395,7 @@
           },
           "area51": {
             "font": {
-              "name": "./pdf/_config/fonts/arial.ttf",
+              "name": "./pdf/config/fonts/arial.ttf",
               "size": 12,
               "color": "#000000"
             },

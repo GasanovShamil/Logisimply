@@ -348,7 +348,8 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     else {
         paramUser.password = md5(paramUser.password);
         paramUser.updatedAt = new Date();
-        let user = await userModel.findOneAndUpdate({_id: req.loggedUser._id}, paramUser, null);
+        await userModel.findOneAndUpdate({_id: req.loggedUser._id}, paramUser, null);
+        let user = await userModel.findOne({_id: req.loggedUser._id});
         jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function(err, token) {
             if (err)
                 res.status(500).json({message: err});

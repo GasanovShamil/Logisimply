@@ -180,7 +180,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     if (!quote)
         res.status(400).json({message: localization[req.language].quotes.code.failed});
     else {
-        let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
+        let result = await quote.fullFormat({logged: req.loggedUser._id, customer: true});
         res.status(200).json(result);
     }
 }));
@@ -222,7 +222,8 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         else {
             paramQuote.status = "pending";
             paramQuote.updatedAt = new Date();
-            let quote = await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, paramQuote, null);
+            await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, paramQuote, null);
+            let quote = await quoteModel.findOne({code: paramQuote.code, user: req.loggedUser._id});
             if (!quote)
                 res.status(400).json({message: localization[req.language].quotes.code.failed});
             else {

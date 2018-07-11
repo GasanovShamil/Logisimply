@@ -1,4 +1,5 @@
 let config = require("../config");
+let utils = require("../helpers/utils");
 let load = require("../helpers/load");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
@@ -8,7 +9,7 @@ let incomeSchema = mongoose.Schema ({
     method: String,
     amount: Number,
     user: String,
-    createdAt: Date
+    date: Date
 });
 
 incomeSchema.methods.fullFormat = function(include) {
@@ -17,7 +18,7 @@ incomeSchema.methods.fullFormat = function(include) {
         method: this.method,
         amount: this.amount,
         user: this.user,
-        createdAt: this.createdAt
+        date: utils.formatDate(this.date)
     };
 
     if (include && include.logged) {

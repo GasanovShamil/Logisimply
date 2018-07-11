@@ -48,5 +48,13 @@ module.exports = {
             collectionCost: quote.collectionCost,
             comment: quote.comment
         };
+    },
+    formatDate: function(date) {
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        if (month < 10)
+            month = "0" + month;
+        let year = date.getFullYear();
+        return day + "/" + month + "/" + year;
     }
 };
