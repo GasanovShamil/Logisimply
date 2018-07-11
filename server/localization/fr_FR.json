@@ -1,6 +1,7 @@
 {
   "fields": {
-    "required": "Merci de bien remplir les champs obligatoires"
+    "required": "Merci de bien remplir les champs obligatoires",
+    "prohibited": "Impossible d'insérer ces valeurs car incorrectes"
   },
   "email": {
     "invalid": "Le format de l'adresse email n'est pas correct",

@@ -18,7 +18,7 @@ contentSchema.methods.withTotal = function() {
         type: this.type,
         unitPriceET: this.unitPriceET,
         quantity: this.quantity,
-        discount: this.discount,
+        discount: this.discount || 0,
         totalPriceET: (this.unitPriceET * this.quantity) - (this.discount ? this.discount : 0)
     };
 };

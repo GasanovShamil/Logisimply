@@ -1,5 +1,5 @@
-module.exports = {
-    UserStatus: Object.freeze({inactive: 0, active: 1, banned: 2}),
-    QuoteStatus: Object.freeze({created: 0, sent: 1}),
-    InvoiceStatus: Object.freeze({created: 0, sent: 1, payed: 2})
-};
+// user.status: inactive, active, banned
+// customer.status: private, professional
+// quote.status: draft, sent
+// invoice.status: draft, sent, payed
+// invoice.advancedPayment.status: none, pending, payed
