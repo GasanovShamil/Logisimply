@@ -12,8 +12,12 @@ let invoiceSchema = mongoose.Schema ({
     datePayment: Date,
     dateExecution: Date,
     collectionCost: Boolean,
+    advancedPayment: {
+      value: Number,
+      status: String
+    },
     comment: String,
-    status: Number,
+    status: String,
     idUser: String,
     createdAt: Date,
     updatedAt: Date
@@ -42,6 +46,7 @@ invoiceSchema.methods.withTotal = function() {
         datePayment: this.datePayment,
         dateExecution: this.dateExecution,
         collectionCost: this.collectionCost,
+        advancedPayment: this.advancedPayment,
         comment: this.comment,
         status: this.status,
         idUser: this.idUser,

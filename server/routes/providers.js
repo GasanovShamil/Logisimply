@@ -37,11 +37,9 @@ let router = express.Router();
  *       idUser:
  *         type: string
  *       createdAt:
- *         type: string
- *         format: date
+ *         type: date
  *       updatedAt:
- *         type: string
- *         format: date
+ *         type: date
  *     required:
  *       - companyName
  *       - legalForm

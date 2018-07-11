@@ -1,6 +1,7 @@
 {
   "fields": {
-    "required": ""
+    "required": "",
+    "prohibited": ""
   },
   "email": {
     "invalid": "",

@@ -1,6 +1,5 @@
 let config = require("../config");
 let localization = require("../localization/localize");
-let constants = require("../helpers/constants");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let mailer = require("../helpers/mailer");
@@ -20,7 +19,6 @@ let md5 = require("md5");
  *         type: string
  *       password:
  *         type: string
- *         format: password
  *       firstname:
  *         type: string
  *       lastname:
@@ -34,8 +32,7 @@ let md5 = require("md5");
  *       activityEntitled:
  *         type: string
  *       activityStarted:
- *         type: string
- *         format: date
+ *         type: date
  *       siret:
  *         type: string
  *       address:
@@ -47,15 +44,13 @@ let md5 = require("md5");
  *       country:
  *         type: string
  *       status:
- *         type: number
+ *         type: string
  *       activationToken:
  *         type: string
  *       createdAt:
- *         type: string
- *         format: date
+ *         type: date
  *       updatedAt:
- *         type: string
- *         format: date
+ *         type: date
  *     required:
  *       - email
  *       - password
@@ -106,7 +101,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         if (count !== 0)
             res.status(400).json({message: localization[req.language].users.email.used});
         else {
-            paramUser.status = constants.UserStatus.inactive;
+            paramUser.status = "inactive";
             paramUser.activationToken = md5(paramUser.email);
             paramUser.password = md5(paramUser.password);
             paramUser.createdAt = new Date();
@@ -138,11 +133,11 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  */
 router.get("/activate/:token", middleware.wrapper(async (req, res) => {
     let paramToken = req.params.token;
-    let user = await userModel.findOne({status: constants.UserStatus.inactive, activationToken: paramToken});
+    let user = await userModel.findOne({status: "inactive", activationToken: paramToken});
     if (!user)
         res.render("error", {message: localization[req.language].users.token.failed})
     else {
-        user.status = constants.UserStatus.active;
+        user.status = "active";
         user.activationToken = "";
         user.save();
         res.render("activate", {user: user});
@@ -179,7 +174,7 @@ router.post("/forgetPassword", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramEmail))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let user = await userModel.findOne({status: constants.UserStatus.active, email: paramEmail});
+        let user = await userModel.findOne({status: "active", email: paramEmail});
         if (!user)
             res.status(400).json({message: localization[req.language].users.email.failed});
         else {
@@ -222,7 +217,7 @@ router.post("/resendActivationUrl", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramEmail))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let user = await userModel.findOne({status: constants.UserStatus.inactive, email: paramEmail});
+        let user = await userModel.findOne({status: "inactive", email: paramEmail});
         if (!user)
             res.status(400).json({message: localization[req.language].users.email.failed});
         else {
@@ -275,15 +270,15 @@ router.post("/login", middleware.wrapper(async (req, res) => {
             res.status(400).json({message: localization[req.language].users.email.failed});
         else
             switch (user.status) {
-                case constants.UserStatus.banned:
+                case "banned":
                     res.status(403).json({message: localization[req.language].users.banned});
                     break;
 
-                case constants.UserStatus.inactive:
+                case "inactive":
                     res.status(403).json({message: localization[req.language].users.inactive});
                     break;
 
-                case constants.UserStatus.active:
+                case "active":
                     if (user.password === md5(paramPassword))
                         jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function (err, token) {
                             if (err)

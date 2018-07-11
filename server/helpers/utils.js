@@ -24,7 +24,7 @@ module.exports = {
         return quote.customer && quote.dateQuote && this.isContentComplete(quote.content) && quote.datePayment && quote.validity && quote.collectionCost;
     },
     isInvoiceComplete: function(invoice) {
-        return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && invoice.collectionCost;
+        return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && (typeof(invoice.collectionCost) === "boolean");
     },
     getCode: function(number) {
         let nextCode = "00000" + number;

@@ -1,5 +1,4 @@
 let localization = require("../localization/localize");
-let constants = require("../helpers/constants");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let userModel = require("../models/User");
@@ -19,8 +18,7 @@ let router = express.Router();
  *       code:
  *         type: string
  *       dateInvoice:
- *         type: string
- *         format: date
+ *         type: date
  *       subject:
  *         type: string
  *       content:
@@ -51,10 +49,16 @@ let router = express.Router();
  *       datePayment:
  *         type: string
  *       dateExecution:
- *         type: string
- *         format: date
+ *         type: date
  *       collectionCost:
  *         type: boolean
+ *       advancedPayment:
+ *         type: object
+ *         properties:
+ *           value:
+ *             type: number
+ *           status:
+ *             type: string
  *       comment:
  *         type: string
  *       status:
@@ -62,11 +66,9 @@ let router = express.Router();
  *       idUser:
  *         type: string
  *       createdAt:
- *         type: string
- *         format: date
+ *         type: date
  *       updatedAt:
- *         type: string
- *         format: date
+ *         type: date
  *     required:
  *       - customer
  *       - dateInvoice
@@ -89,12 +91,18 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Invoice object
+ *       - name: invoice
+ *         description: Invoice object
  *         in: body
  *         required: true
  *         type: object
  *         schema:
  *           $ref: '#/definitions/Invoice'
+ *       - name: advancedPaymentValue
+ *         description: Advanced payment value
+ *         in: body
+ *         required: true
+ *         type: number
  *     responses:
  *       403:
  *         description: Error - user is logged out
@@ -106,7 +114,8 @@ router.use(middleware.isLogged);
  *           $ref: '#/definitions/Invoice'
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
-    let paramInvoice = req.body;
+    let paramInvoice = req.body.invoice;
+    let paramAdvancedPaymentValue = req.body.advancedPaymentValue;
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
@@ -118,7 +127,8 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             user.parameters.invoices += 1;
             user.save();
             paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
-            paramInvoice.status = constants.InvoiceStatus.created;
+            paramInvoice.advancedPayment = {value: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
+            paramInvoice.status = "pending";
             paramInvoice.idUser = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
             let invoice = await invoiceModel.create(paramInvoice);
@@ -194,12 +204,18 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Invoice to update
+ *       - name: invoice
+ *         description: Invoice to update
  *         in: body
  *         required: true
  *         type: object
  *         schema:
  *           $ref: '#/definitions/Invoice'
+ *       - name: advancedPaymentValue
+ *         description: Advanced payment value
+ *         in: body
+ *         required: true
+ *         type: number
  *     responses:
  *       403:
  *         description: Error - user is logged out
@@ -211,7 +227,8 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  *           $ref: '#/definitions/Invoice'
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
-    let paramInvoice = req.body;
+    let paramInvoice = req.body.invoice;
+    let paramAdvancedPaymentValue = req.body.advancedPaymentValue;
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
@@ -219,6 +236,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
+            paramInvoice.advancedPayment = {value: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
             paramInvoice.updatedAt = new Date();
             let invoice = await invoiceModel.findOneAndUpdate({code: paramInvoice.code, idUser: req.loggedUser._id}, paramInvoice, null);
             if (!invoice)

@@ -16,7 +16,7 @@ let userSchema = mongoose.Schema ({
     zipCode: String,
     town: String,
     country: String,
-    status: Number,
+    status: String,
     activationToken: String,
     parameters: {
         customers: Number,

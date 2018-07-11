@@ -1,5 +1,4 @@
 let localization = require("../localization/localize");
-let constants = require("../helpers/constants");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let userModel = require("../models/User");
@@ -20,8 +19,7 @@ let router = express.Router();
  *       code:
  *         type: string
  *       dateQuote:
- *         type: string
- *         format: date
+ *         type: date
  *       subject:
  *         type: string
  *       content:
@@ -62,11 +60,9 @@ let router = express.Router();
  *       idUser:
  *         type: string
  *       createdAt:
- *         type: string
- *         format: date
+ *         type: date
  *       updatedAt:
- *         type: string
- *         format: date
+ *         type: date
  *     required:
  *       - customer
  *       - dateQuote
@@ -118,7 +114,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             user.parameters.quotes += 1;
             user.save();
             paramQuote.code = "DE" + utils.getDateCode() + utils.getCode(user.parameters.quotes);
-            paramQuote.status = constants.QuoteStatus.created;
+            paramQuote.status = "pending";
             paramQuote.idUser = req.loggedUser._id;
             paramQuote.createdAt = new Date();
             let quote = await quoteModel.create(paramQuote);
@@ -219,6 +215,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
+            paramQuote.status = "pending";
             paramQuote.updatedAt = new Date();
             let quote = await quoteModel.findOneAndUpdate({code: paramQuote.code, idUser: req.loggedUser._id}, paramQuote, null);
             if (!quote)
@@ -336,7 +333,8 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
             user.parameters.invoices += 1;
             user.save();
             paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
-            paramInvoice.status = constants.InvoiceStatus.created;
+            paramInvoice.advandedPayment = {value: 0, status: "none"};
+            paramInvoice.status = "pending";
             paramInvoice.idUser = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
             let invoice = await invoiceModel.create(paramInvoice);

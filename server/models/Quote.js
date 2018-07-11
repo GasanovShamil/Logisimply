@@ -13,7 +13,7 @@ let quoteSchema = mongoose.Schema ({
     validity: Number,
     collectionCost: Boolean,
     comment: String,
-    status: Number,
+    status: String,
     idUser: String,
     createdAt: Date,
     updatedAt: Date
@@ -26,8 +26,7 @@ quoteSchema.methods.withTotal = function() {
     for (let i = 0; i < this.content.length; i++) {
         let line = this.content[i].withTotal();
         arrayContent.push(line);
-        if (line.discount)
-            discount += line.discount;
+        discount += line.discount;
         totalPriceET += line.totalPriceET;
     }
 

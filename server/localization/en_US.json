@@ -1,6 +1,7 @@
 {
   "fields": {
-    "required": "Please fill all the required fields"
+    "required": "Please fill all the required fields",
+    "prohibited": "Fields invalid"
   },
   "email": {
     "invalid": "Email is invalid",

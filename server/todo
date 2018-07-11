@@ -2,5 +2,6 @@ Design page activate.ejs
 Design page error.ejs
 PDF
 XLSX
-Define criteria (update + delete) on (customers, quotes, bills)
+Define criteria (update + delete) on (customers, quotes, invoices)
+Assets
 Readme
