@@ -14,6 +14,7 @@ export class CustomerDialogComponent implements OnInit {
   saveButton: boolean = (this.data)?false:true;
   editLablePosition = 'before';
   customerForm: FormGroup;
+  editMode: boolean = false;
 
   types = [
     {
@@ -38,11 +39,17 @@ export class CustomerDialogComponent implements OnInit {
   saveData(){
     this.updateDynamicControls(this.customerForm.controls['type'].value);
     if (this.customerForm.valid) {
-      console.log(JSON.stringify(this.customerForm.getRawValue()));
-      this.dataService.addCustomer(JSON.parse(JSON.stringify(this.customerForm.getRawValue()))).subscribe(
-        data => this.dialogRef.close(data),
-        error => this.alertService.error(error.error.message)
-      )
+      if(this.editMode){
+        this.dataService.updateCustomer(this.customerForm.getRawValue()).subscribe(
+          data => this.dialogRef.close({ data: data.data, message: data.message, editMode: this.editMode }),
+          error => this.alertService.error(error.error.message)
+        )
+      }else{
+        this.dataService.addCustomer(this.customerForm.getRawValue()).subscribe(
+          data => this.dialogRef.close(data),
+          error => this.alertService.error(error.error.message)
+        )
+      }
     } else {
       this.translate.get(['customerDialog']).subscribe(translation => {
        let errorMessage = translation.customerDialog.customer_form_error_message;
@@ -64,9 +71,12 @@ export class CustomerDialogComponent implements OnInit {
     if (event.checked){
       this.customerForm.enable();
       this.saveButton = true;
+      this.editMode = true;
     }else{
       this.customerForm.disable();
       this.saveButton = false;
+      this.editMode = false;
+      this.setFormGroup();
     }
   }
 
@@ -90,7 +100,6 @@ export class CustomerDialogComponent implements OnInit {
         country: new FormControl({value: this.data.country, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, [])
       });
-      this.updateDynamicControls(this.data.type);
     } else {
       this.customerForm = new FormGroup({
         code: new FormControl('', []),

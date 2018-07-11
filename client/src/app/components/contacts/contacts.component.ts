@@ -205,11 +205,17 @@ export class ContactsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);
-        this.customer = result.data;
-        console.log(this.customer);
+        if(result.editMode){
+          console.log(JSON.stringify(result.data));
+          let index: number = this.customerDataSource.data.findIndex(i => i.code === result.data.code);
+          this.customerDataSource.data.splice(index, 1);
+          this.customerDataSource.data.push(result.data);
+          this.customerDataSource._updateChangeSubscription();
+        } else {
+          this.customerDataSource.data.push(result.data);
+          this.customerDataSource._updateChangeSubscription();
+        }
       }
-
-
     });
   }
 
