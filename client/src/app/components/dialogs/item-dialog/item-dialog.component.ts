@@ -89,7 +89,7 @@ export class ItemDialogComponent implements OnInit {
       this.saveButton = false;
       this.itemForm = new FormGroup({
         type: new FormControl({value: this.data.type, disabled: true}, [Validators.required]),
-        reference: new FormControl({value: this.data.reference, disabled: true}, [Validators.required]),
+        reference: new FormControl({value: this.data.reference, disabled: true}, []),
         label: new FormControl({value: this.data.label, disabled: true}, [Validators.required]),
         priceET: new FormControl({value: this.data.priceET, disabled: true}, [Validators.required, Validators.pattern('[+-]?([0-9]*[.])?[0-9]+')]),
         description: new FormControl({value: this.data.description, disabled: true}, [Validators.required])
@@ -97,7 +97,7 @@ export class ItemDialogComponent implements OnInit {
     } else {
       this.itemForm = new FormGroup({
         type: new FormControl({value: 'product', disabled: false}, [Validators.required]),
-        reference: new FormControl('', [Validators.required]),
+        reference: new FormControl('', []),
         label: new FormControl('', [Validators.required]),
         priceET: new FormControl('', [Validators.required,Validators.pattern('[+-]?([0-9]*[.])?[0-9]+')]),
         description: new FormControl('', [Validators.required])
