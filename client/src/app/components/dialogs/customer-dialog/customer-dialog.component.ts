@@ -4,7 +4,6 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertService} from "../../../services/alert.service";
 import {DataService} from "../../../services/data.service";
 import {TranslateService} from "@ngx-translate/core";
-import {DataSelect} from "../../../models/dataSelect";
 
 @Component({
   selector: 'app-customer-dialog',
@@ -17,7 +16,14 @@ export class CustomerDialogComponent implements OnInit {
   customerForm: FormGroup;
   editMode: boolean = false;
   close: boolean = false;
-  types = DataSelect.customerTypes;
+  types = [{
+    "name": "dataSelect.private_customer",
+    "value": "private"
+  },
+    {
+      "name": "dataSelect.professional_customer",
+      "value": "professional"
+    }];
 
   constructor(private alertService: AlertService,
               private dataService: DataService,

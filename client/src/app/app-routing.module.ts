@@ -8,6 +8,7 @@ import {DashboardComponent} from "./components/dashboard/dashboard.component";
 import {ContactsComponent} from "./components/contacts/contacts.component";
 import {NavigationComponent} from "./components/navigation/navigation.component";
 import {SignupComponent} from "./components/signup/signup.component";
+import {ItemsComponent} from "./components/items/items.component";
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
@@ -17,7 +18,8 @@ const routes: Routes = [
       { path: '', canActivate: [AuthGuard], redirectTo: '/home', pathMatch: 'full' },
       { path: 'home', canActivate: [AuthGuard], component: HomeComponent},
       { path: 'dashboard', canActivate: [AuthGuard], component: DashboardComponent},
-      { path: 'contacts', canActivate: [AuthGuard], component: ContactsComponent}
+      { path: 'contacts', canActivate: [AuthGuard], component: ContactsComponent},
+      { path: 'items', canActivate: [AuthGuard], component: ItemsComponent}
     ]
   }
 ];

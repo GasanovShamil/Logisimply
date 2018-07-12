@@ -25,6 +25,8 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { CustomerDialogComponent } from './components/dialogs/customer-dialog/customer-dialog.component';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import { ProviderDialogComponent } from './components/dialogs/provider-dialog/provider-dialog.component';
+import { ItemsComponent } from './components/items/items.component';
+import { ItemDialogComponent } from './components/dialogs/item-dialog/item-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -41,9 +43,11 @@ export function tokenGetter() {
     SignupComponent,
     AlertComponent,
     CustomerDialogComponent,
-    ProviderDialogComponent
+    ProviderDialogComponent,
+    ItemsComponent,
+    ItemDialogComponent
   ],
-  entryComponents: [CustomerDialogComponent, ProviderDialogComponent],
+  entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

@@ -5,6 +5,7 @@ import {User} from "../../models/user";
 import {AuthService} from "../../services/auth.service";
 import * as jwt_decode from "jwt-decode";
 import {AlertService} from "../../services/alert.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,9 @@ import {AlertService} from "../../services/alert.service";
 export class LoginComponent implements OnInit {
   hide = true;
   user: User = new User();
-  constructor(private router: Router, private auth: AuthService, private alertService: AlertService) { }
+  errorMessage: string;
+
+  constructor(public translate: TranslateService, private router: Router, private auth: AuthService, private alertService: AlertService) { }
 
   ngOnInit() {
     if(this.auth.isLogedIn()){
@@ -40,11 +43,33 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  forgetPassword() {
+  forgotPassword() {
     if(!this.user.email){
-      this.alertService.error("Enter your email please");
+      this.translate.get(['login']).subscribe(translation => {
+        this.errorMessage = translation.login.enter_email_error;
+        this.alertService.error(this.errorMessage, true);
+      })
     }else{
       this.auth.forgetPassword({'email':this.user.email}).subscribe(
+        data => {
+          this.alertService.success(data.message);
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+
+    }
+  }
+
+  resendActivationEmail() {
+    if(!this.user.email){
+      this.translate.get(['login']).subscribe(translation => {
+        this.errorMessage = translation.login.enter_email_error;
+        this.alertService.error(this.errorMessage, true);
+      })
+    }else{
+      this.auth.resendActivationUrl({'email':this.user.email}).subscribe(
         data => {
           this.alertService.success(data.message);
         },
