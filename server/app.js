@@ -29,7 +29,7 @@ let swaggerDefinition = {
         version: "1.1.0",
         description: "Welcome to the Logisimply API documentation",
     },
-    host: config.site.url + ":" + config.site.port,
+    host: config.url,
     basePath: "/",
 };
 
