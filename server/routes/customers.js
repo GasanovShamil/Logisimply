@@ -136,27 +136,22 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].fields.prohibited});
     else {
         if (paramCustomer.type === "private")
-            paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
+            paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
         if (!utils.isCustomerComplete(paramCustomer))
             res.status(400).json({message: localization[req.language].fields.required});
         else if (!utils.isEmailValid(paramCustomer.email))
             res.status(400).json({message: localization[req.language].email.invalid});
         else {
-            let count = await customerModel.countDocuments({email: paramCustomer.email, user: req.loggedUser._id});
-            if (count !== 0)
-                res.status(400).json({message: localization[req.language].customers.code.used});
-            else {
-                let user = await userModel.findOne({_id: req.loggedUser._id});
-                user.parameters.customers += 1;
-                user.save();
-                paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
-                paramCustomer.assets = 0;
-                paramCustomer.user = req.loggedUser._id;
-                paramCustomer.createdAt = new Date();
-                let customer = await customerModel.create(paramCustomer);
-                let result = await customer.fullFormat();
-                res.status(200).json({message: localization[req.language].customers.add, data: result});
-            }
+            let user = await userModel.findOne({_id: req.loggedUser._id});
+            user.parameters.customers += 1;
+            user.save();
+            paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
+            paramCustomer.assets = 0;
+            paramCustomer.user = req.loggedUser._id;
+            paramCustomer.createdAt = new Date();
+            let customer = await customerModel.create(paramCustomer);
+            let result = await customer.fullFormat();
+            res.status(200).json({message: localization[req.language].customers.add, data: result});
         }
     }
 }));
@@ -266,7 +261,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         if (paramCustomer.type === "private")
-            paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
+            paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
         paramCustomer.updatedAt = new Date();
         await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, paramCustomer, null);
         let customer = await customerModel.findOne({code: paramCustomer.code, user: req.loggedUser._id});
