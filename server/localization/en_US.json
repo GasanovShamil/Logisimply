@@ -102,8 +102,9 @@
     "update": "Quote successfully updated",
     "delete": {
       "one": "Quote successfully deleted",
-      "multiple": "Quote successfully deleted"
-    }
+      "multiple": "Quotes successfully deleted"
+    },
+    "send": "Quote successfully sent"
   },
   "invoices": {
     "add": "Invoice successfully created",
@@ -113,7 +114,8 @@
     "update": "Invoice successfully updated",
     "delete": {
       "one": "Invoice successfully deleted",
-      "multiple": "Invoice successfully deleted"
-    }
+      "multiple": "Invoices successfully deleted"
+    },
+    "send": "Invoice successfully sent"
   }
 }

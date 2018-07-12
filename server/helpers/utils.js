@@ -60,7 +60,7 @@ module.exports = {
         return day + "/" + month + "/" + year;
     },
     getPdfPath: function(user, code) {
-        return "./pdf/storage/" + user + "_" + code + ".pdf";
+        return "./pdf/" + user + "_" + code + ".pdf";
     },
     removePdf: function(path) {
         fs.unlink(path, function(err) {

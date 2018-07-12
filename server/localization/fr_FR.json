@@ -103,7 +103,8 @@
     "delete": {
       "one": "Devis supprimé avec succès",
       "multiple": "Devis supprimés avec succès"
-    }
+    },
+    "send": "Devis envoyé avec succès"
   },
   "invoices": {
     "add": "Facture créee avec succès",
@@ -114,6 +115,7 @@
     "delete": {
       "one": "Facture supprimée avec succès",
       "multiple": "Factures supprimées avec succès"
-    }
+    },
+    "send": "Facture envoyée avec succès"
   }
 }
