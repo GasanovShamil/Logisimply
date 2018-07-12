@@ -1,32 +1,23 @@
 import {Component, Inject, OnInit} from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSlideToggleChange, MatOption} from '@angular/material';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../../services/alert.service";
+import {DataService} from "../../../services/data.service";
 import {TranslateService} from "@ngx-translate/core";
-import {CustomerDialogComponent} from "../customer-dialog/customer-dialog.component";
-import {MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange} from "@angular/material";
-import {DataService} from "../../services/data.service";
+import {DataSelect} from "../../../models/dataSelect";
 
 @Component({
-  selector: 'app-provider-dialog',
-  templateUrl: './provider-dialog.component.html',
-  styleUrls: ['./provider-dialog.component.css']
+  selector: 'app-customer-dialog',
+  templateUrl: './customer-dialog.component.html',
+  styleUrls: ['./customer-dialog.component.css']
 })
-export class ProviderDialogComponent implements OnInit {
-
+export class CustomerDialogComponent implements OnInit {
   saveButton: boolean = (this.data)?false:true;
   editLablePosition = 'before';
   customerForm: FormGroup;
   editMode: boolean = false;
-
-  types = [
-    {
-      "name": "customerDialog.private_customer",
-      "value": "private"
-    },
-    {
-      "name": "customerDialog.professional_customer",
-      "value": "professional"
-    }];
+  close: boolean = false;
+  types = DataSelect.customerTypes;
 
   constructor(private alertService: AlertService,
               private dataService: DataService,
@@ -35,28 +26,31 @@ export class ProviderDialogComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onCloseClick(): void {
+    this.close = true;
     this.dialogRef.close();
   }
 
   saveData(){
-    this.updateDynamicControls(this.customerForm.controls['type'].value);
-    if (this.customerForm.valid) {
-      if(this.editMode){
-        this.dataService.updateCustomer(this.customerForm.getRawValue()).subscribe(
-          data => this.dialogRef.close({ data: data.data, message: data.message, editMode: this.editMode }),
-          error => this.alertService.error(error.error.message)
-        )
-      }else{
-        this.dataService.addCustomer(this.customerForm.getRawValue()).subscribe(
-          data => this.dialogRef.close(data),
-          error => this.alertService.error(error.error.message)
-        )
+    if(!this.close) {
+      this.updateDynamicControls(this.customerForm.controls['type'].value);
+      if (this.customerForm.valid) {
+        if (this.editMode) {
+          this.dataService.updateCustomer(this.customerForm.getRawValue()).subscribe(
+            data => this.dialogRef.close({data: data.data, message: data.message, editMode: this.editMode}),
+            error => this.alertService.error(error.error.message)
+          )
+        } else {
+          this.dataService.addCustomer(this.customerForm.getRawValue()).subscribe(
+            data => this.dialogRef.close(data),
+            error => this.alertService.error(error.error.message)
+          )
+        }
+      } else {
+        this.translate.get(['contactsDialog']).subscribe(translation => {
+          let errorMessage = translation.contactsDialog.contacts_form_error_message;
+          this.alertService.error(errorMessage);
+        })
       }
-    } else {
-      this.translate.get(['customerDialog']).subscribe(translation => {
-        let errorMessage = translation.customerDialog.customer_form_error_message;
-        this.alertService.error(errorMessage);
-      })
     }
   }
 
@@ -115,7 +109,7 @@ export class ProviderDialogComponent implements OnInit {
         phone: new FormControl('', []),
         email: new FormControl('', [Validators.required, Validators.email]),
         address: new FormControl('', [Validators.required]),
-        zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5)]),
+        zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5),Validators.pattern('^\\d+$')]),
         town: new FormControl('', [Validators.required]),
         country: new FormControl('', [Validators.required]),
         comment: new FormControl('', [])
@@ -144,5 +138,4 @@ export class ProviderDialogComponent implements OnInit {
       }
     }
   }
-
 }

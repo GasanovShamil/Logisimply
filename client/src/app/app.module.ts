@@ -22,9 +22,9 @@ import { DataService } from './services/data.service';
 import {JwtInterceptor} from "./helpers/jwt.interceptor";
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import { CustomerDialogComponent } from './components/customer-dialog/customer-dialog.component';
+import { CustomerDialogComponent } from './components/dialogs/customer-dialog/customer-dialog.component';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import { ProviderDialogComponent } from './components/provider-dialog/provider-dialog.component';
+import { ProviderDialogComponent } from './components/dialogs/provider-dialog/provider-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -43,7 +43,7 @@ export function tokenGetter() {
     CustomerDialogComponent,
     ProviderDialogComponent
   ],
-  entryComponents: [CustomerDialogComponent],
+  entryComponents: [CustomerDialogComponent, ProviderDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

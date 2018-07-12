@@ -73,7 +73,7 @@
         <input matInput (keyup)="applyProviderFilter($event.target.value)" placeholder="{{ 'contacts.filter' | translate }}">
       </mat-form-field>
       <div class="button-row myrow">
-        <button mat-icon-button matTooltip="{{ 'contacts.add_new_provider' | translate }}">
+        <button mat-icon-button matTooltip="{{ 'contacts.add_new_provider' | translate }}" (click)="openProviderDialog()">
           <mat-icon color="primary">add</mat-icon>
         </button>
         <button mat-icon-button matTooltip="{{ 'contacts.delete_selected' | translate }}" (click)="onDeleteProviderClick()">
@@ -118,9 +118,9 @@
           <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="info">
-          <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="editProvider(row)">
+            <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="openProviderDialog(row)">
               <mat-icon color="primary">info</mat-icon>
             </button>
           </mat-cell>

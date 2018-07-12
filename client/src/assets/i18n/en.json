@@ -47,7 +47,7 @@
     "code": "Code",
     "select_at_least_one": "You need to select at least one element !"
   },
-  "customerDialog": {
+  "contactsDialog": {
     "title": "Customer",
     "type": "Type",
     "comment": "Comment",
@@ -64,8 +64,15 @@
     "siret": "Siret",
     "email_placeholder": "Email",
     "name": "Name",
+    "companyName": "Company name",
     "legalForm": "Legal form",
     "edit_mode": "Edit",
-    "customer_form_error_message": "Please fill in all required form fields"
+    "website": "Website",
+    "contacts_form_error_message": "Please fill in all required form fields"
+  },
+
+  "dataSelect": {
+    "private_customer": "Private",
+    "professional_customer": "Professional"
   }
 }

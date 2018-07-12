@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit {
     activityStarted: new FormControl('', [Validators.required]),
     siret: new FormControl('', [Validators.required, Validators.maxLength(14), Validators.minLength(14), Validators.pattern('^\\d+$')]),
     address: new FormControl('', [Validators.required]),
-    zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5)]),
+    zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5),Validators.pattern('^\\d+$')]),
     town: new FormControl('', [Validators.required]),
     country: new FormControl('', [Validators.required]),
   });

@@ -8,7 +8,8 @@ import {Provider} from "../../models/provider";
 import {SelectionModel} from "@angular/cdk/collections";
 import {TranslateService} from "@ngx-translate/core";
 import {MatDialog, MatDialogRef} from '@angular/material';
-import {CustomerDialogComponent} from "../customer-dialog/customer-dialog.component";
+import {CustomerDialogComponent} from "../dialogs/customer-dialog/customer-dialog.component";
+import {ProviderDialogComponent} from "../dialogs/provider-dialog/provider-dialog.component";
 
 @Component({
   selector: 'app-contacts',
@@ -82,10 +83,6 @@ export class ContactsComponent implements OnInit {
   }
 
 
-  editProvider (customer) {
-
-  }
-
   getProviders() {
     this.isLoadingResults = true;
     this.dataService.getMyProviders().subscribe(
@@ -131,11 +128,23 @@ export class ContactsComponent implements OnInit {
     return numSelected === numRows;
   }
 
+  isAllProvidersSelected() {
+    const numSelected = this.providerSelection.selected.length;
+    const numRows = this.providerDataSource.data.length;
+    return numSelected === numRows;
+  }
+
   customerToggle() {
     this.isAllCustomersSelected() ?
       this.customerSelection.clear() :
       this.customerDataSource.data.forEach(row => this.customerSelection.select(row));
   }
+  providerToggle() {
+    this.isAllProvidersSelected() ?
+      this.providerSelection.clear() :
+      this.providerDataSource.data.forEach(row => this.providerSelection.select(row));
+  }
+
 
   onDeleteCustomerClick(){
     if(this.customerSelection.isEmpty()){
@@ -158,18 +167,6 @@ export class ContactsComponent implements OnInit {
         }
       )
     }
-  }
-
-  isAllProvidersSelected() {
-    const numSelected = this.providerSelection.selected.length;
-    const numRows = this.providerDataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  providerToggle() {
-    this.isAllProvidersSelected() ?
-      this.providerSelection.clear() :
-      this.providerDataSource.data.forEach(row => this.providerSelection.select(row));
   }
 
   onDeleteProviderClick(){
@@ -201,7 +198,6 @@ export class ContactsComponent implements OnInit {
       minWidth: '100px',
       data: (customer)?customer:null
     });
-
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);
@@ -209,11 +205,31 @@ export class ContactsComponent implements OnInit {
           console.log(JSON.stringify(result.data));
           let index: number = this.customerDataSource.data.findIndex(i => i.code === result.data.code);
           this.customerDataSource.data.splice(index, 1, result.data);
-         // this.customerDataSource.data.push(result.data);
           this.customerDataSource._updateChangeSubscription();
         } else {
           this.customerDataSource.data.push(result.data);
           this.customerDataSource._updateChangeSubscription();
+        }
+      }
+    });
+  }
+
+  openProviderDialog(provider?: Provider): void {
+    let dialogRef = this.dialog.open(ProviderDialogComponent, {
+      maxWidth: '500px',
+      minWidth: '100px',
+      data: (provider)?provider:null
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.alertService.success(result.message);
+        if(result.editMode){
+          let index: number = this.providerDataSource.data.findIndex(i => i.code === result.data.code);
+          this.providerDataSource.data.splice(index, 1, result.data);
+          this.providerDataSource._updateChangeSubscription();
+        } else {
+          this.providerDataSource.data.push(result.data);
+          this.providerDataSource._updateChangeSubscription();
         }
       }
     });

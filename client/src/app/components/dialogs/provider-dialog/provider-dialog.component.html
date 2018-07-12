@@ -1,0 +1,92 @@
+<form [formGroup]="providerForm" (submit)="saveData()">
+<div class="dialog-title" mat-dialog-title>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <h3>{{ 'contactsDialog.title' | translate }} <span *ngIf="data && data.code">- {{data.code}}</span> </h3>
+      </td>
+      <td width="50%">
+        <button mat-icon-button color="warn" class="close-button" (click)="onCloseClick()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </td>
+    </tr>
+  </table>
+  <mat-slide-toggle *ngIf="data" [labelPosition]="editLablePosition" (change)="editSliderChange($event)">{{ 'contactsDialog.edit_mode' | translate }}</mat-slide-toggle>
+</div>
+<div mat-dialog-content [formGroup]="providerForm">
+  <table class="full-width" cellspacing="0">
+    <mat-form-field>
+      <input matInput placeholder="{{ 'contactsDialog.companyName' | translate }}" formControlName="companyName" required >
+    </mat-form-field>
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'contactsDialog.legalForm' | translate }}" formControlName="legalForm" >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput #siretHint placeholder="{{ 'contactsDialog.siret' | translate }}" formControlName="siret" >
+          <mat-hint align="end">{{siretHint.value.length}} / 14</mat-hint>
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'contactsDialog.email_placeholder' | translate }}" formControlName="email" required >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'contactsDialog.phone' | translate }}"  formControlName="phone" >
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <mat-form-field class="full-width">
+    <input  matInput  placeholder="{{ 'contactsDialog.address' | translate }}" formControlName="address" required >
+  </mat-form-field>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'contactsDialog.town' | translate }}" formControlName="town" required >
+        </mat-form-field>
+      </td>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput placeholder="{{ 'contactsDialog.country' | translate }}" formControlName="country" required >
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        <mat-form-field>
+          <input matInput #postalCode placeholder="{{ 'contactsDialog.zipcode' | translate }}" formControlName="zipCode" required >
+          <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
+        </mat-form-field>
+      </td>
+      <td width="50%">
+      </td>
+    </tr>
+  </table>
+  <mat-form-field>
+    <input matInput placeholder="{{ 'contactsDialog.website' | translate }}" formControlName="website" >
+  </mat-form-field>
+</div>
+  <div mat-dialog-actions *ngIf="saveButton">
+    <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon></button>
+  </div>
+</form>
+
+
+
+
+
+

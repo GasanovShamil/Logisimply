@@ -15,7 +15,7 @@ export class Customer {
   country: string;
   assets: number;
   comment: string;
-  idUser: string;
+  user: string;
   createdAt: string;
   updatedAt: string;
 }
