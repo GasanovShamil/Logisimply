@@ -15,7 +15,7 @@ module.exports = {
         return provider.companyName && provider.legalForm && provider.siret && provider.email && provider.website && provider.address && provider.zipCode && provider.town;
     },
     isItemComplete: function(item) {
-        return item.type && item.reference && item.label && item.priceET && item.description;
+        return item.type && item.label && item.priceET && item.description;
     },
     isContentComplete: function(content) {
         return content && content.length > 0 && content.every(function(line) {
