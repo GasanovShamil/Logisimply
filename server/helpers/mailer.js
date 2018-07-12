@@ -60,9 +60,9 @@ module.exports = {
 
         transporter.sendMail(mailOptions, function(err) {
             if (err)
-                console.log("Mail quote failed - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX : " + user.email + " / error : " + err);
+                console.log("Mail quote failed - user : " + quote.user._id + " / quote : " + quote.code);
             else {
-                console.log("Mail quote succeeded - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX : " + user.email);
+                console.log("Mail quote succeeded - user : " + quote.user._id + " / quote : " + quote.code);
                 utils.removePdf(path);
             }
         });
