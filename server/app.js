@@ -8,7 +8,7 @@ let bodyParser = require("body-parser");
 let cors = require("cors");
 let swaggerJSDoc = require("swagger-jsdoc");
 
-let test = require("./routes/test");
+//let test = require("./routes/test");
 let users = require("./routes/users");
 let customers = require("./routes/customers");
 let providers = require("./routes/providers");
@@ -17,6 +17,7 @@ let quotes = require("./routes/quotes");
 let invoices = require("./routes/invoices");
 let assets = require("./routes/assets");
 let incomes = require("./routes/incomes");
+let activate = require("./routes/activate");
 
 let app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -28,7 +29,7 @@ let swaggerDefinition = {
         version: "1.1.0",
         description: "Welcome to the Logisimply API documentation",
     },
-    host: config.base_url,
+    host: config.site.url + ":" + config.site.port,
     basePath: "/",
 };
 
@@ -57,7 +58,7 @@ app.get("/swagger.json", function(req, res) {
     res.send(swaggerSpec);
 });
 
-app.use("/api/test", test);
+//app.use("/api/test", test);
 app.use("/api/users", users);
 app.use("/api/customers", customers);
 app.use("/api/providers", providers);
@@ -66,6 +67,7 @@ app.use("/api/quotes", quotes);
 app.use("/api/invoices", invoices);
 app.use("/api/assets", assets);
 app.use("/api/incomes", incomes);
+app.use("/activate", activate);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
