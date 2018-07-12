@@ -11,10 +11,13 @@
     }
   },
   "pdf": {
-    "legal_notice_1": "Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers (RM).",
-    "legal_notice_2_1": "En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
-    "legal_notice_2_2": "TVA non applicable, art. 293 B du CGI",
-    "generated": "Cette facture a été générée par "
+    "immatriculation": "Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers (RM).",
+    "collection_cost": "En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
+    "tva": "TVA non applicable, art. 293 B du CGI",
+    "generated": {
+      "quote": "Ce devis a été généré par ",
+      "invoice": "Cette facture a été générée par "
+    }
   },
   "middleware": {
     "failed": "Token d'authentification incorrect",

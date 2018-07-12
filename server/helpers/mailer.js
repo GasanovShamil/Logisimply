@@ -20,11 +20,11 @@ module.exports = {
             html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
         };
 
-        transporter.sendMail(mailOptions, function(err, info) {
+        transporter.sendMail(mailOptions, function(err) {
             if (err)
-                console.log("sendActivationUrl KO " + user.email + " - " + err);
+                console.log("Mail activation failed - email : " + user.email + " / error : " + err);
             else
-                console.log("sendActivationUrl OK " + user.email + " - " + info.response);
+                console.log("Mail activation succeeded - email : " + user.email);
         });
     },
     sendPassword: function(user, language) {
@@ -36,11 +36,11 @@ module.exports = {
             html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
         };
 
-        transporter.sendMail(mailOptions, function(err, info) {
+        transporter.sendMail(mailOptions, function(err) {
             if (err)
-                console.log("sendPassword KO " + this.email + " - " + err);
+                console.log("Mail password failed - email : " + user.email + " / error : " + err);
             else
-                console.log("sendPassword OK " + this.email + " - " + info.response);
+                console.log("Mail password succeeded - email : " + user.email);
         });
     }
 };

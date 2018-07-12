@@ -234,7 +234,7 @@
               "height": 600
             }
           },
-          "advancedPayment": {
+          "advanced_payment": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
               "size": 10,
@@ -301,6 +301,20 @@
               "left": 500,
               "top": 510,
               "width": 120,
+              "height": 320
+            }
+          },
+          "legal_notice_tva": {
+            "font": {
+              "name": "./pdf/config/fonts/arial.ttf",
+              "size": 8,
+              "color": "#000000"
+            },
+            "format": {
+              "align": "left",
+              "left": 433,
+              "top": 540,
+              "width": 200,
               "height": 320
             }
           },
