@@ -48,6 +48,7 @@ let router = express.Router();
  *       - address
  *       - zipCode
  *       - town
+ *       -country
  */
 
 router.use(middleware.localize);
