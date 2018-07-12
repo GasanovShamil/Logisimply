@@ -1,6 +1,7 @@
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
+let userModel = require("../models/User");
 let itemModel = require("../models/Item");
 let express = require("express");
 let router = express.Router();
@@ -73,6 +74,10 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         if (count !== 0)
             res.status(400).json({message: localization[req.language].items.reference.used});
         else {
+            let user = await userModel.findOne({_id: req.loggedUser._id});
+            user.parameters.items += 1;
+            user.save();
+            paramItem.reference = "" + utils.getCode(user.parameters.items);
             paramItem.user = req.loggedUser._id;
             paramItem.createdAt = new Date();
             let item = await itemModel.create(paramItem);
@@ -174,21 +179,15 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     if (!utils.isItemComplete(paramItem))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
-        if (count !== 0)
-            res.status(400).json({message: localization[req.language].items.reference.used});
+        paramItem.updatedAt = new Date();
+        await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, paramItem, null);
+        let item = await itemModel.findOne({reference: paramItem.reference, user: req.loggedUser._id});
+        if (!item)
+            res.status(400).json({message: localization[req.language].items.reference.failed});
         else {
-            paramItem.updatedAt = new Date();
-            await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, paramItem, null);
-            let item = await itemModel.findOne({reference: paramItem.reference, user: req.loggedUser._id});
-            if (!item)
-                res.status(400).json({message: localization[req.language].items.reference.failed});
-            else {
-                let result = await item.fullFormat();
-                res.status(200).json({message: localization[req.language].items.update, data: result});
-            }
+            let result = await item.fullFormat();
+            res.status(200).json({message: localization[req.language].items.update, data: result});
         }
-
     }
 }));
 

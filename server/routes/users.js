@@ -105,7 +105,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             paramUser.activationToken = md5(paramUser.email);
             paramUser.password = md5(paramUser.password);
             paramUser.createdAt = new Date();
-            paramUser.parameters = {customers: 0, providers: 0, quotes: 0, invoices: 0};
+            paramUser.parameters = {customers: 0, providers: 0, quotes: 0, invoices: 0, items: 0};
             let user = await userModel.create(paramUser);
             mailer.sendActivationUrl(user, req.language);
             res.status(200).json({message: localization[req.language].users.add});
@@ -280,7 +280,7 @@ router.post("/login", middleware.wrapper(async (req, res) => {
 
                 case "active":
                     if (user.password === md5(paramPassword))
-                        jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function (err, token) {
+                        jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function (err, token) {
                             if (err)
                                 res.status(500).json({message: err});
                             else
@@ -350,7 +350,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         paramUser.updatedAt = new Date();
         await userModel.findOneAndUpdate({_id: req.loggedUser._id}, paramUser, null);
         let user = await userModel.findOne({_id: req.loggedUser._id});
-        jwt.sign(JSON.stringify(user.shortUser()), config.jwt_key, function(err, token) {
+        jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function(err, token) {
             if (err)
                 res.status(500).json({message: err});
             else

@@ -23,13 +23,14 @@ let userSchema = mongoose.Schema ({
         customers: Number,
         providers: Number,
         quotes: Number,
-        invoices: Number
+        invoices: Number,
+        items: Number
     },
     createdAt: Date,
     updatedAt: Date
 });
 
-userSchema.methods.shortUser = function() {
+userSchema.methods.fullFormat = function() {
     return {
         _id: this._id,
         email: this.email,
