@@ -53,8 +53,8 @@ module.exports = {
             from: config.email.user,
             to: quote.customer.email,
             subject: localization[language].email.template.password,
-            text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
-            html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>",
+            text: "Bonjour",
+            html: "<p>Bonjour " + quote.customer.name + "</p>",
             attachments: [{filename: "Devis - " + quote.code + ".pdf", path: path}]
         };
 

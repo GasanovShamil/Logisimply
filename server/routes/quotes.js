@@ -352,7 +352,7 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
     }
 }));
 
-router.get("/sent/:code", middleware.wrapper(async (req, res) => {
+router.get("/send/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!quote)

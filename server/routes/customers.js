@@ -136,7 +136,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].fields.prohibited});
     else {
         if (paramCustomer.type === "private")
-            paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
+            paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
         if (!utils.isCustomerComplete(paramCustomer))
             res.status(400).json({message: localization[req.language].fields.required});
         else if (!utils.isEmailValid(paramCustomer.email))
@@ -261,7 +261,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         if (paramCustomer.type === "private")
-            paramCustomer.name = (paramCustomer.lastname + " " + paramCustomer.firstname).trim();
+            paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
         paramCustomer.updatedAt = new Date();
         await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, paramCustomer, null);
         let customer = await customerModel.findOne({code: paramCustomer.code, user: req.loggedUser._id});
