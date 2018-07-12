@@ -3,7 +3,8 @@
     "logout": "Logout",
     "home": "Home",
     "dashboard": "Dashboard",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "items": "Catalog"
   },
   "login": {
     "email_placeholder": "Email",
