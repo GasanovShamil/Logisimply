@@ -5,7 +5,6 @@ import {TranslateService} from "@ngx-translate/core";
 import {CustomerDialogComponent} from "../customer-dialog/customer-dialog.component";
 import {MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange} from "@angular/material";
 import {DataService} from "../../../services/data.service";
-import {DataSelect} from "../../../models/dataSelect";
 
 @Component({
   selector: 'app-provider-dialog',
@@ -19,7 +18,7 @@ export class ProviderDialogComponent implements OnInit {
   editMode: boolean = false;
   close: boolean = false;
 
-  types = DataSelect.customerTypes;
+
 
   constructor(private alertService: AlertService,
               private dataService: DataService,
@@ -57,10 +56,6 @@ export class ProviderDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.setFormGroup();
-  }
-
-  onSelectChange(element: string){
-    this.providerForm.controls['type'].setValue(element);
   }
 
   editSliderChange(event: MatSlideToggleChange) {

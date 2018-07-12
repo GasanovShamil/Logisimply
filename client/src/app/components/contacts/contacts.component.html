@@ -38,7 +38,7 @@
         </ng-container>
         <ng-container matColumnDef="type">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.type' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{'contacts.'+row.type | translate}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.name' | translate }} </mat-header-cell>
@@ -46,7 +46,7 @@
         </ng-container>
         <ng-container matColumnDef="email">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.email' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.email}}% </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.email}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="town">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.town' | translate }} </mat-header-cell>
@@ -107,7 +107,7 @@
         </ng-container>
         <ng-container matColumnDef="legalForm">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.legal_form' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.legalForm}}% </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.legalForm}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="email">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.email' | translate }} </mat-header-cell>

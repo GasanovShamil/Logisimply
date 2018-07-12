@@ -1,3 +1,62 @@
-<p>
-  items works!
-</p>
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+<div class="filter-header">
+  <mat-form-field>
+    <input matInput (keyup)="applyItemFilter($event.target.value)" placeholder="{{ 'items.filter' | translate }}">
+  </mat-form-field>
+  <div class="button-row myrow">
+    <button mat-icon-button matTooltip="{{ 'items.add_new_item' | translate }}" (click)="openItemDialog()">
+      <mat-icon color="primary">add</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="{{ 'items.delete_selected' | translate }}" (click)="onDeleteItemClick()">
+      <mat-icon color="warn">delete</mat-icon>
+    </button>
+  </div>
+</div>
+<div class="example-container mat-elevation-z8">
+  <mat-table #itemSort="matSort" [dataSource]="itemDataSource" matSort>
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? itemToggle() : null"
+                      [checked]="itemSelection.hasValue() && isAllItemsSelected()"
+                      [indeterminate]="itemSelection.hasValue() && !isAllItemsSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? itemSelection.toggle(row) : null"
+                      [checked]="itemSelection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="reference">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'items.reference' | translate }} </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.reference}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'items.type' | translate }} </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="label">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'items.label' | translate }} </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.label}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="priceET">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'items.priceET' | translate }} </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.priceET}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="info">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-icon-button matTooltip="{{ 'items.details_edit' | translate }}" (click)="openItemDialog(row)">
+          <mat-icon color="primary">info</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedItemColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedItemColumns;">
+    </mat-row>
+  </mat-table>
+  <mat-paginator #itemPaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>

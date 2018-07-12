@@ -11,7 +11,9 @@
     "password_placeholder": "Enter your password",
     "login_button": "Login",
     "create_button": "Create",
-    "forgot_password": "Forgot password ?"
+    "forgot_password": "Forgot password ?",
+    "resend_activation_mail": "Resend activation email",
+    "enter_email_error": "Enter your email please"
   },
   "signup" :{
     "email_placeholder": "Email",
@@ -46,6 +48,8 @@
     "legal_form": "Legal form",
     "details_edit": "Details/Edit",
     "code": "Code",
+    "private": "Private",
+    "professional": "Professional",
     "select_at_least_one": "You need to select at least one element !"
   },
   "contactsDialog": {
@@ -59,8 +63,8 @@
     "town": "City",
     "country": "Country",
     "zipcode": "ZipCode",
-    "private_customer": "Private",
-    "professional_customer": "Professional",
+    "private": "Private",
+    "professional": "Professional",
     "phone": "Phone",
     "siret": "Siret",
     "email_placeholder": "Email",
@@ -71,9 +75,30 @@
     "website": "Website",
     "contacts_form_error_message": "Please fill in all required form fields"
   },
-
+  "itemsDialog":{
+    "title": "Product/Service",
+    "type": "Type",
+    "reference":	"Reference",
+    "label":	"Label",
+    "priceET":	"Price H.T.",
+    "description":	"Description",
+    "product": "Product",
+    "service": "Service",
+    "edit_mode": "Edit"
+  },
   "dataSelect": {
     "private_customer": "Private",
-    "professional_customer": "Professional"
+    "professional_customer": "Professional",
+    "product": "Product",
+    "service": "Service"
+  },
+  "items":{
+    "filter":	"Filter",
+    "type":	"Type",
+    "reference":	"Reference",
+    "label":	"Label",
+    "priceET":	"Price H.T.",
+    "description":	"Description",
+    "details_edit": "Details/Edit"
   }
 }

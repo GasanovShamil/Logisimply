@@ -49,6 +49,12 @@ export class AuthService {
     );
   }
 
+  resendActivationUrl(data){
+    return this.http.post<any>('/api/users/resendActivationUrl', data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     // if (error.error instanceof ErrorEvent) {

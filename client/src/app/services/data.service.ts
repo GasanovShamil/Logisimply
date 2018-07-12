@@ -5,6 +5,7 @@ import {catchError} from "rxjs/operators";
 import {Customer} from "../models/customer";
 import {User} from "../models/user";
 import {Provider} from "../models/provider";
+import {Item} from "../models/item";
 
 @Injectable()
 export class DataService {
@@ -86,6 +87,44 @@ export class DataService {
       catchError(this.handleError)
     );
   }
+
+
+///////////////////////////// ITEM SECTION /////////////////////////////
+
+
+  addItem(itemData) {
+    return this.http.post<any>('/api/items/add', itemData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateItem(itemData) {
+    return this.http.put<any>('api/items/update', itemData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getMyItems() {
+    return this.http.get<any>('/api/items/me').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteItemById(itemId) {
+    return this.http.delete<any>('/api/items/'+itemId).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteItems(items: Item[]){
+    return this.http.post<any>('/api/items/delete', items).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
+
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
