@@ -1,0 +1,19 @@
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.fill-remaining-space{
+  flex: 1 1 auto;
+}
+
+.right {
+  text-align: right;
+}
+
+.close-button{
+  float: right;
+}

@@ -15,7 +15,6 @@ export class User {
   town:	string;
   country: string;
   status:	string;
-  activationToken: string;
   createdAt: string;
   updatedAt:string;
 }

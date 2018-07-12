@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule} from './app.material.module';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule, HttpClient} from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './components/home/home.component';
@@ -20,6 +20,11 @@ import { AlertService } from './services/alert.service';
 import { AlertComponent } from './components/alert/alert.component';
 import { DataService } from './services/data.service';
 import {JwtInterceptor} from "./helpers/jwt.interceptor";
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { CustomerDialogComponent } from './components/dialogs/customer-dialog/customer-dialog.component';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import { ProviderDialogComponent } from './components/dialogs/provider-dialog/provider-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -34,8 +39,11 @@ export function tokenGetter() {
     ContactsComponent,
     NavigationComponent,
     SignupComponent,
-    AlertComponent
+    AlertComponent,
+    CustomerDialogComponent,
+    ProviderDialogComponent
   ],
+  entryComponents: [CustomerDialogComponent, ProviderDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -43,7 +51,14 @@ export function tokenGetter() {
     ReactiveFormsModule,
     BrowserAnimationsModule,
     AppMaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     UserService,
@@ -61,3 +76,9 @@ export function tokenGetter() {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+platformBrowserDynamic().bootstrapModule(AppModule);

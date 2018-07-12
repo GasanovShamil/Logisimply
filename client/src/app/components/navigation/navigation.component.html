@@ -3,14 +3,20 @@
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
     <h1 class="app-name">Logisimply</h1>
     <span class="fill-remaining-space"></span>
-    <button i18n mat-button color="accent" (click)="logout()">Logout</button>
+    <mat-form-field>
+      <mat-select #langSelect [(value)]="language" (change)="translate.use(langSelect.value)">
+        <mat-option value="en">En</mat-option>
+        <mat-option value="fr">Fr</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button i18n mat-button color="accent" (click)="logout()">{{ 'navigation.logout' | translate }}</button>
   </mat-toolbar>
   <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-nav-list>
-        <a i18n mat-list-item routerLink="/home" color="primary"><mat-icon mat-list-icon>home</mat-icon> Home</a>
-        <a i18n mat-list-item routerLink="/dashboard" color="primary"><mat-icon mat-list-icon>dashboard</mat-icon> Dashboard</a>
-        <a i18n mat-list-item routerLink="/contacts" color="primary"><mat-icon mat-list-icon>group</mat-icon> Contacts</a>
+        <a i18n mat-list-item routerLink="/home" color="primary"><mat-icon mat-list-icon color="primary">home</mat-icon>{{ 'navigation.home' | translate }}</a>
+        <a i18n mat-list-item routerLink="/dashboard" color="primary"><mat-icon mat-list-icon color="primary">dashboard</mat-icon>{{ 'navigation.dashboard' | translate }}</a>
+        <a i18n mat-list-item routerLink="/contacts" color="primary"><mat-icon mat-list-icon color="primary">group</mat-icon>{{ 'navigation.contacts' | translate }}</a>
         <mat-divider></mat-divider>
        <!-- <mat-accordion>
           <mat-expansion-panel>

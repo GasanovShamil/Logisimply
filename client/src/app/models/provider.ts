@@ -10,7 +10,7 @@ export class Provider{
   zipCode: string;
   town: string;
   country: string;
-  idUser: string;
+  user: string;
   createdAt: string;
   updatedAt: string;
 }

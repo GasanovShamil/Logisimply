@@ -2,7 +2,18 @@ import {
   MatInputModule, MatFormFieldModule, MatExpansionModule, MatListModule, MatDividerModule, MatButtonModule,
   MatCheckboxModule, MatSidenavModule, MatCardModule, MatIconModule, MatToolbarModule, MatSelectModule,
   MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatTableModule, MatPaginatorModule, MatTabsModule,
-  MatProgressSpinnerModule, MatSortModule, MatTooltipModule
+  MatProgressSpinnerModule, MatSortModule, MatTooltipModule, MatDialogModule,
+  MatAutocompleteModule,
+  MatButtonToggleModule,
+  MatChipsModule,
+  MatGridListModule,
+  MatMenuModule,
+  MatProgressBarModule,
+  MatRadioModule,
+  MatRippleModule,
+  MatSliderModule,
+  MatSlideToggleModule,
+  MatStepperModule
 } from '@angular/material';
 import {NgModule} from "@angular/core";
 import { CommonModule } from '@angular/common';
@@ -30,7 +41,19 @@ import { CommonModule } from '@angular/common';
     MatTabsModule,
     MatProgressSpinnerModule,
     MatSortModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule,
+    MatAutocompleteModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatGridListModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatStepperModule
   ],
   exports: [
     CommonModule,
@@ -54,7 +77,19 @@ import { CommonModule } from '@angular/common';
     MatTabsModule,
     MatProgressSpinnerModule,
     MatSortModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule,
+    MatAutocompleteModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatGridListModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatStepperModule
   ],
 })
 export class AppMaterialModule { }

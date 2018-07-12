@@ -21,19 +21,18 @@ export class SignupComponent implements OnInit {
     categoryType: new FormControl('', []),
     activityEntitled: new FormControl('', [Validators.required]),
     activityStarted: new FormControl('', [Validators.required]),
-    siret: new FormControl('', [Validators.required, Validators.maxLength(14), Validators.minLength(14)]),
+    siret: new FormControl('', [Validators.required, Validators.maxLength(14), Validators.minLength(14), Validators.pattern('^\\d+$')]),
     address: new FormControl('', [Validators.required]),
-    zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5)]),
+    zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5),Validators.pattern('^\\d+$')]),
     town: new FormControl('', [Validators.required]),
     country: new FormControl('', [Validators.required]),
-
   });
 
   ngOnInit() {
   }
 
   signup () {
-    if(this.registerForm.valid){
+    if (this.registerForm.valid) {
       this.userService.addUser(JSON.parse(JSON.stringify(this.registerForm.getRawValue()))).subscribe(
         data => {
           this.alertService.success('User created!');
@@ -45,7 +44,7 @@ export class SignupComponent implements OnInit {
         }
       );
 
-    }else{
+    } else {
       this.alertService.error('Please fill up required fields :)');
     }
 

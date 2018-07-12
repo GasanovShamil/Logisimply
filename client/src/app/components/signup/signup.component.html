@@ -3,12 +3,12 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Email" formControlName="email" required>
+          <input matInput placeholder="{{ 'signup.email_placeholder' | translate }}" formControlName="email" required>
         </mat-form-field>
       </td>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" formControlName="password" required>
+          <input matInput placeholder="{{ 'signup.password_placeholder' | translate }}" [type]="hide ? 'password' : 'text'" formControlName="password" required>
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
       </td>
@@ -18,31 +18,31 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Lastname" formControlName="lastname" required>
+          <input matInput placeholder="{{ 'signup.lastname' | translate }}" formControlName="lastname" required>
         </mat-form-field>
       </td>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Firstname" formControlName="firstname" required>
+          <input matInput placeholder="{{ 'signup.firstname' | translate }}" formControlName="firstname" required>
         </mat-form-field>
       </td>
     </tr>
   </table>
 
     <mat-form-field class="full-width">
-      <input  matInput  placeholder="Address" formControlName="address" required>
+      <input  matInput  placeholder="{{ 'signup.address' | translate }}" formControlName="address" required>
     </mat-form-field>
 
   <table class="full-width" cellspacing="0">
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="City" formControlName="town" required>
+          <input matInput placeholder="{{ 'signup.town' | translate }}" formControlName="town" required>
         </mat-form-field>
       </td>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Country" formControlName="country" required>
+          <input matInput placeholder="{{ 'signup.country' | translate }}" formControlName="country" required>
         </mat-form-field>
       </td>
     </tr>
@@ -51,7 +51,7 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput #postalCode placeholder="Postal Code" formControlName="zipCode" required>
+          <input matInput #postalCode placeholder="{{ 'signup.zipcode' | translate }}" formControlName="zipCode" required>
           <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
         </mat-form-field>
       </td>
@@ -63,12 +63,12 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Activity type" formControlName="activityType">
+          <input matInput placeholder="{{ 'signup.activity_type' | translate }}" formControlName="activityType">
         </mat-form-field>
       </td>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Category type" formControlName="categoryType">
+          <input matInput placeholder="{{ 'signup.category_type' | translate }}" formControlName="categoryType">
         </mat-form-field>
       </td>
     </tr>
@@ -77,12 +77,12 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Activity entitled" formControlName="activityEntitled" required>
+          <input matInput placeholder="{{ 'signup.activity_entitled' | translate }}" formControlName="activityEntitled" required>
         </mat-form-field>
       </td>
       <td width="50%">
         <mat-form-field>
-          <input matInput [matDatepicker]="picker" placeholder="Activity started" formControlName="activityStarted" required>
+          <input matInput [matDatepicker]="picker" placeholder="{{ 'signup.activity_started' | translate }}" formControlName="activityStarted" required>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
@@ -93,31 +93,14 @@
     <tr>
       <td width="50%">
         <mat-form-field>
-          <input matInput placeholder="Siret" formControlName="siret" required>
+          <input matInput #siretHint placeholder="{{ 'signup.siret' | translate }}" formControlName="siret" required>
+          <mat-hint align="end">{{siretHint.value.length}} / 14</mat-hint>
         </mat-form-field>
       </td>
       <td width="50%">
       </td>
     </tr>
   </table>
-    <button mat-raised-button color="primary" type="submit" name="action" >Signup</button>
-    <a mat-button type="button" routerLink="/login">Login</a>
+    <button mat-raised-button color="primary" type="submit" name="action" >{{ 'signup.signup_button' | translate }}</button>
+    <a mat-button type="button" routerLink="/login">{{ 'signup.login_button' | translate }}</a>
 </form>
-
-
-
-
-  <!--// emailAddress*	string-->
-  <!--// password*	string($password)-->
-  <!--// lastname*	string-->
-  <!--// firstname*	string-->
-  <!--// activityType	string-->
-  <!--// activityField	string-->
-  <!--// categoryType	string-->
-  <!--// activityEntitled*	string-->
-  <!--// activityStarted*	string-->
-  <!--// sirenSiret*	string-->
-  <!--// address*	string-->
-  <!--// zipCode*	string-->
-  <!--// town*	string-->
-  <!--// country	string-->

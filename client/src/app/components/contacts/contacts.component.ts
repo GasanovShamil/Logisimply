@@ -6,7 +6,10 @@ import {Customer} from "../../models/customer";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {Provider} from "../../models/provider";
 import {SelectionModel} from "@angular/cdk/collections";
-import {forEach} from "@angular/router/src/utils/collection";
+import {TranslateService} from "@ngx-translate/core";
+import {MatDialog, MatDialogRef} from '@angular/material';
+import {CustomerDialogComponent} from "../dialogs/customer-dialog/customer-dialog.component";
+import {ProviderDialogComponent} from "../dialogs/provider-dialog/provider-dialog.component";
 
 @Component({
   selector: 'app-contacts',
@@ -25,13 +28,17 @@ export class ContactsComponent implements OnInit {
   providers: Provider[] = [];
   customerSelection = new SelectionModel<Customer>(true, []);
   providerSelection = new SelectionModel<Provider>(true, []);
+  errorMessage = '';
+  customer: Customer = new Customer();
+  provider: Provider = new Provider();
+
 
   @ViewChild('customerPaginator') customerPaginator: MatPaginator;
   @ViewChild('customerSort') customerSort: MatSort;
   @ViewChild('providerPaginator') providerPaginator: MatPaginator;
   @ViewChild('providerSort') providerSort: MatSort;
 
-  constructor(private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public dialog: MatDialog, public translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -53,8 +60,8 @@ export class ContactsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.displayedCustomerColumns = (this.mobileQuery.matches)?['select', 'name', 'email', 'actions']:['select', 'type', 'name', 'email', 'town', 'info'];
-    this.displayedProviderColumns = (this.mobileQuery.matches)?['select', 'companyName', 'email', 'actions']:['select', 'companyName', 'legalForm', 'email', 'town', 'info'];
+    this.displayedCustomerColumns = (this.mobileQuery.matches)?['select','code', 'name',  'info']:['select','code', 'type', 'name', 'email', 'town', 'info'];
+    this.displayedProviderColumns = (this.mobileQuery.matches)?['select','code', 'companyName', 'info']:['select','code', 'companyName', 'legalForm', 'email', 'town', 'info'];
     this.getCustomers();
   }
 
@@ -62,7 +69,6 @@ export class ContactsComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataService.getMyCustomers().subscribe(
       data => {
-        console.log(JSON.stringify(data));
         this.customers = data;
         this.customerDataSource = new MatTableDataSource(this.customers);
         this.customerDataSource.paginator = this.customerPaginator;
@@ -76,19 +82,11 @@ export class ContactsComponent implements OnInit {
     );
   }
 
-  editCustomer (customer) {
-
-  }
-
-  editProvider (customer) {
-
-  }
 
   getProviders() {
     this.isLoadingResults = true;
     this.dataService.getMyProviders().subscribe(
       data => {
-        console.log(JSON.stringify(data));
         this.providers = data;
         this.providerDataSource = new MatTableDataSource(this.providers);
         this.providerDataSource.paginator = this.providerPaginator;
@@ -130,15 +128,30 @@ export class ContactsComponent implements OnInit {
     return numSelected === numRows;
   }
 
+  isAllProvidersSelected() {
+    const numSelected = this.providerSelection.selected.length;
+    const numRows = this.providerDataSource.data.length;
+    return numSelected === numRows;
+  }
+
   customerToggle() {
     this.isAllCustomersSelected() ?
       this.customerSelection.clear() :
       this.customerDataSource.data.forEach(row => this.customerSelection.select(row));
   }
+  providerToggle() {
+    this.isAllProvidersSelected() ?
+      this.providerSelection.clear() :
+      this.providerDataSource.data.forEach(row => this.providerSelection.select(row));
+  }
+
 
   onDeleteCustomerClick(){
     if(this.customerSelection.isEmpty()){
-      this.alertService.error("You need to select at least one element !");
+      this.translate.get(['contacts']).subscribe(translation => {
+        this.errorMessage = translation.contacts.select_at_least_one;
+        this.alertService.error(this.errorMessage);
+      })
     } else {
       this.dataService.deleteCustomers(this.customerSelection.selected).subscribe(
         data => {
@@ -153,26 +166,15 @@ export class ContactsComponent implements OnInit {
           this.alertService.error(error.error.message);
         }
       )
-
-
     }
-  }
-
-  isAllProvidersSelected() {
-    const numSelected = this.providerSelection.selected.length;
-    const numRows = this.providerDataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  providerToggle() {
-    this.isAllProvidersSelected() ?
-      this.providerSelection.clear() :
-      this.providerDataSource.data.forEach(row => this.providerSelection.select(row));
   }
 
   onDeleteProviderClick(){
     if(this.providerSelection.isEmpty()){
-      this.alertService.error("You need to select at least one element !");
+      this.translate.get(['contacts']).subscribe(translation => {
+        this.errorMessage = translation.contacts.select_at_least_one;
+        this.alertService.error(this.errorMessage);
+      })
     } else {
       this.dataService.deleteProviders(this.providerSelection.selected).subscribe(
         data => {
@@ -187,9 +189,50 @@ export class ContactsComponent implements OnInit {
           this.alertService.error(error.error.message);
         }
       )
-
-
     }
+  }
+
+  openCustomerDialog(customer?: Customer): void {
+    let dialogRef = this.dialog.open(CustomerDialogComponent, {
+      maxWidth: '500px',
+      minWidth: '100px',
+      data: (customer)?customer:null
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.alertService.success(result.message);
+        if(result.editMode){
+          console.log(JSON.stringify(result.data));
+          let index: number = this.customerDataSource.data.findIndex(i => i.code === result.data.code);
+          this.customerDataSource.data.splice(index, 1, result.data);
+          this.customerDataSource._updateChangeSubscription();
+        } else {
+          this.customerDataSource.data.push(result.data);
+          this.customerDataSource._updateChangeSubscription();
+        }
+      }
+    });
+  }
+
+  openProviderDialog(provider?: Provider): void {
+    let dialogRef = this.dialog.open(ProviderDialogComponent, {
+      maxWidth: '500px',
+      minWidth: '100px',
+      data: (provider)?provider:null
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.alertService.success(result.message);
+        if(result.editMode){
+          let index: number = this.providerDataSource.data.findIndex(i => i.code === result.data.code);
+          this.providerDataSource.data.splice(index, 1, result.data);
+          this.providerDataSource._updateChangeSubscription();
+        } else {
+          this.providerDataSource.data.push(result.data);
+          this.providerDataSource._updateChangeSubscription();
+        }
+      }
+    });
   }
 
 }
