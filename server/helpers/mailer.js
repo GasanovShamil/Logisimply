@@ -1,5 +1,7 @@
 let config = require("../config");
 let localization = require("../localization/localize");
+let utils = require("../helpers/utils");
+let pdf = require("./pdf");
 let nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({
     service: config.email.service,
@@ -20,11 +22,11 @@ module.exports = {
             html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
         };
 
-        transporter.sendMail(mailOptions, function(err, info) {
+        transporter.sendMail(mailOptions, function(err) {
             if (err)
-                console.log("sendActivationUrl KO " + user.email + " - " + err);
+                console.log("Mail activation failed - email : " + user.email + " / error : " + err);
             else
-                console.log("sendActivationUrl OK " + user.email + " - " + info.response);
+                console.log("Mail activation succeeded - email : " + user.email);
         });
     },
     sendPassword: function(user, language) {
@@ -36,11 +38,33 @@ module.exports = {
             html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>"
         };
 
-        transporter.sendMail(mailOptions, function(err, info) {
+        transporter.sendMail(mailOptions, function(err) {
             if (err)
-                console.log("sendPassword KO " + this.email + " - " + err);
+                console.log("Mail password failed - email : " + user.email + " / error : " + err);
             else
-                console.log("sendPassword OK " + this.email + " - " + info.response);
+                console.log("Mail password succeeded - email : " + user.email);
+        });
+    },
+    sendQuote: function(quote, language) {
+        pdf.getQuote(quote, language);
+        let path = utils.getPdfPath(quote.user._id, quote.code);
+
+        let mailOptions = {
+            from: config.email.user,
+            to: quote.customer.email,
+            subject: localization[language].email.template.password,
+            text: "Bonjour",
+            html: "<p>Bonjour " + quote.customer.name + "</p>",
+            attachments: [{filename: "Devis - " + quote.code + ".pdf", path: path}]
+        };
+
+        transporter.sendMail(mailOptions, function(err) {
+            if (err)
+                console.log("Mail quote failed - user : " + quote.user._id + " / quote : " + quote.code);
+            else {
+                console.log("Mail quote succeeded - user : " + quote.user._id + " / quote : " + quote.code);
+                utils.removePdf(path);
+            }
         });
     }
 };

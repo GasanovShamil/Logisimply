@@ -1,3 +1,5 @@
+let fs = require("fs");
+
 module.exports = {
     isEmailValid: function(email) {
         let regex = /^(([^<>()\[\]\\.,8;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -56,5 +58,16 @@ module.exports = {
             month = "0" + month;
         let year = date.getFullYear();
         return day + "/" + month + "/" + year;
+    },
+    getPdfPath: function(user, code) {
+        return "./pdf/" + user + "_" + code + ".pdf";
+    },
+    removePdf: function(path) {
+        fs.unlink(path, function(err) {
+            if (err)
+                console.log("PDF delete failed - path : " + path);
+            else
+                console.log("PDF delete succeeded - path : " + path);
+        });
     }
 };

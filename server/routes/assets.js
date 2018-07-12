@@ -9,7 +9,7 @@ router.use(middleware.isLogged);
 
 /**
  * @swagger
- * /assets/add/{code}:
+ * /assets/add:
  *   post:
  *     tags:
  *       - Assets
@@ -17,6 +17,12 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
+ *       - description: Customer's code
+ *         in: body
+ *         required: true
+ *         properties:
+ *           code:
+ *             type: string
  *       - description: Amount to add
  *         in: body
  *         required: true
@@ -35,9 +41,9 @@ router.use(middleware.isLogged);
  *             - $ref: '#/definitions/PrivateCustomer'
  *             - $ref: '#/definitions/ProfessionalCustomer'
  */
-router.post("/add/:code", middleware.wrapper(async (req, res) => {
-    let paramCode = req.params.code;
-    let paramAmount = req.body.amount
+router.post("/add", middleware.wrapper(async (req, res) => {
+    let paramCode = req.body.code;
+    let paramAmount = req.body.amount;
     let customer = await customerModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!customer)
         res.status(400).json({message: localization[req.language].customers.code.failed});

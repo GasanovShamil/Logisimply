@@ -206,7 +206,7 @@
               "height": 23
             }
           },
-          "legal_notice_1": {
+          "legal_notice_immatriculation": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
               "size": 8,
@@ -237,7 +237,7 @@
           "discount": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 10,
+              "size": 11,
               "color": "#000000"
             },
             "format": {
@@ -251,27 +251,27 @@
           "date_payment": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 8,
-              "color": "#000000"
-            },
-            "format": {
-              "align": "left",
-              "left": 15,
-              "top": 450,
-              "width": 120,
-              "height": 320
-            }
-          },
-          "legal_notice_2": {
-            "font": {
-              "name": "./pdf/config/fonts/arial.ttf",
-              "size": 8,
+              "size": 9,
               "color": "#000000"
             },
             "format": {
               "align": "left",
               "left": 15,
               "top": 480,
+              "width": 250,
+              "height": 320
+            }
+          },
+          "collection_cost": {
+            "font": {
+              "name": "./pdf/config/fonts/arial.ttf",
+              "size": 9,
+              "color": "#000000"
+            },
+            "format": {
+              "align": "left",
+              "left": 15,
+              "top": 510,
               "width": 420,
               "height": 320
             }
@@ -279,7 +279,7 @@
           "total": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 10,
+              "size": 11,
               "color": "#000000"
             },
             "format": {
@@ -287,6 +287,20 @@
               "left": 500,
               "top": 510,
               "width": 120,
+              "height": 320
+            }
+          },
+          "legal_notice_tva": {
+            "font": {
+              "name": "./pdf/config/fonts/arial.ttf",
+              "size": 8,
+              "color": "#000000"
+            },
+            "format": {
+              "align": "left",
+              "left": 433,
+              "top": 550,
+              "width": 200,
               "height": 320
             }
           },
