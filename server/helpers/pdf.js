@@ -1,5 +1,5 @@
-let config = require("../config");
 let localization = require("../localization/localize");
+let utils = require("../helpers/utils");
 
 module.exports = {
     getCell: function(text, width, align, font) {
@@ -48,7 +48,7 @@ module.exports = {
         document.addContent("legal_notice_immatriculation", localization[language].pdf.immatriculation);
 
         document.addTable("content", this.getTableBody(quote.content), this.getTableHead());
-        document.addTable("discount", [[quote.discount + " €"]], [this.getCell(localization[language].discount, 70, "center")]);
+        document.addTable("discount", [[quote.discount]], [this.getCell(localization[language].discount, 70, "center")]);
         document.addTable("total", [[quote.totalPriceET + " €"]], [this.getCell(localization[language].total, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
@@ -62,17 +62,12 @@ module.exports = {
         document.addContent("foot_text", localization[language].pdf.generated.quote);
         document.addImage("foot_image", "./pdf/config/images/logo.png", {width: 50});
 
-        let filename = "./pdf/" + quote.user._id + "_" + quote.code + ".pdf";
-
-        document.save(filename, function(result) {
+        document.save(utils.getPdfPath(quote.user._id, quote.code), function(result) {
             document.clear();
-            if (result !== null) {
-                console.log("PDF generation failed - user : " + quote.user._id + " / quote : " + quote.code);
-                return false;
-            } else {
-                console.log("PDF generation succeeded - user : " + quote.user._id + " / quote : " + quote.code);
-                return filename;
-            }
+            if (result !== null)
+                console.log("PDF generate failed - user : " + quote.user._id + " / quote : " + quote.code);
+            else
+                console.log("PDF generate succeeded - user : " + quote.user._id + " / quote : " + quote.code);
         });
     },
     getInvoice: function(invoice, language) {
@@ -89,7 +84,7 @@ module.exports = {
 
         document.addTable("content", this.getTableBody(invoice.content), this.getTableHead());
         document.addTable("advanced_payment", [[invoice.advancedPayment.amount + " €"]], [this.getCell(localization[language].advanced_payment, 70, "center")]);
-        document.addTable("discount", [[invoice.discount + " €"]], [this.getCell(localization[language].discount, 70, "center")]);
+        document.addTable("discount", [[invoice.discount]], [this.getCell(localization[language].discount, 70, "center")]);
         document.addTable("total", [[invoice.totalPriceET + " €"]], [this.getCell(localization[language].total, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
@@ -103,17 +98,12 @@ module.exports = {
         document.addContent("foot_text", localization[language].pdf.generated.invoice);
         document.addImage("foot_image", "./pdf/config/images/logo.png", {width: 50});
 
-        let filename = "./pdf/" + invoice.user._id + "_" + invoice.code + ".pdf";
-
-        document.save(filename, function(result) {
+        document.save(utils.getPdfPath(invoice.user._id, invoice.code), function(result) {
             document.clear();
-            if (result !== null) {
-                console.log("PDF generation failed - user : " + invoice.user._id + " / invoice : " + invoice.code);
-                return false;
-            } else {
-                console.log("PDF generation succeeded - user : " + invoice.user._id + " / invoice : " + invoice.code);
-                return filename;
-            }
+            if (result !== null)
+                console.log("PDF generate failed - user : " + invoice.user._id + " / invoice : " + invoice.code);
+            else
+                console.log("PDF generate succeeded - user : " + invoice.user._id + " / invoice : " + invoice.code);
         });
     }
 

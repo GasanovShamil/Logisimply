@@ -1,6 +1,7 @@
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
+let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let quoteModel = require("../models/Quote");
@@ -220,7 +221,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
-            paramQuote.status = "pending";
+            paramQuote.status = "draft";
             paramQuote.updatedAt = new Date();
             await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, paramQuote, null);
             let quote = await quoteModel.findOne({code: paramQuote.code, user: req.loggedUser._id});
@@ -342,12 +343,24 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
             user.save();
             paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
             paramInvoice.advandedPayment = {value: 0, status: "none"};
-            paramInvoice.status = "pending";
+            paramInvoice.status = "draft";
             paramInvoice.user = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
             let invoice = await invoiceModel.create(paramInvoice);
             res.status(200).json({message: localization[req.language].invoices.add, data: invoice});
         }
+    }
+}));
+
+router.get("/sent/:code", middleware.wrapper(async (req, res) => {
+    let paramCode = req.params.code;
+    let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
+    if (!quote)
+        res.status(400).json({message: localization[req.language].quotes.code.failed});
+    else {
+        let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
+        mailer.sendQuote(result, req.language)
+        res.status(200).json({message: "YEAH"});
     }
 }));
 

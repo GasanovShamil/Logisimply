@@ -1,5 +1,7 @@
 let config = require("../config");
 let localization = require("../localization/localize");
+let utils = require("../helpers/utils");
+let pdf = require("./pdf");
 let nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({
     service: config.email.service,
@@ -41,6 +43,28 @@ module.exports = {
                 console.log("Mail password failed - email : " + user.email + " / error : " + err);
             else
                 console.log("Mail password succeeded - email : " + user.email);
+        });
+    },
+    sendQuote: function(quote, language) {
+        pdf.getQuote(quote, language);
+        let path = utils.getPdfPath(quote.user._id, quote.code);
+
+        let mailOptions = {
+            from: config.email.user,
+            to: quote.customer.email,
+            subject: localization[language].email.template.password,
+            text: "Bonjour " + user.firstname + ", votre nouveau mot de passe est : " + user.password,
+            html: "<p>Bonjour " + user.firstname + "</p><p>Votre nouveau mot de passe est : " + user.password + "</p>",
+            attachments: [{filename: "Devis - " + quote.code + ".pdf", path: path}]
+        };
+
+        transporter.sendMail(mailOptions, function(err) {
+            if (err)
+                console.log("Mail quote failed - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX : " + user.email + " / error : " + err);
+            else {
+                console.log("Mail quote succeeded - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX : " + user.email);
+                utils.removePdf(path);
+            }
         });
     }
 };

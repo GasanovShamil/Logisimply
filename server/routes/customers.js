@@ -142,21 +142,16 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         else if (!utils.isEmailValid(paramCustomer.email))
             res.status(400).json({message: localization[req.language].email.invalid});
         else {
-            let count = await customerModel.countDocuments({email: paramCustomer.email, user: req.loggedUser._id});
-            if (count !== 0)
-                res.status(400).json({message: localization[req.language].customers.code.used});
-            else {
-                let user = await userModel.findOne({_id: req.loggedUser._id});
-                user.parameters.customers += 1;
-                user.save();
-                paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
-                paramCustomer.assets = 0;
-                paramCustomer.user = req.loggedUser._id;
-                paramCustomer.createdAt = new Date();
-                let customer = await customerModel.create(paramCustomer);
-                let result = await customer.fullFormat();
-                res.status(200).json({message: localization[req.language].customers.add, data: result});
-            }
+            let user = await userModel.findOne({_id: req.loggedUser._id});
+            user.parameters.customers += 1;
+            user.save();
+            paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
+            paramCustomer.assets = 0;
+            paramCustomer.user = req.loggedUser._id;
+            paramCustomer.createdAt = new Date();
+            let customer = await customerModel.create(paramCustomer);
+            let result = await customer.fullFormat();
+            res.status(200).json({message: localization[req.language].customers.add, data: result});
         }
     }
 }));
