@@ -104,7 +104,11 @@
       "one": "Quote successfully deleted",
       "multiple": "Quotes successfully deleted"
     },
-    "send": "Quote successfully sent"
+    "send": "Quote successfully sent",
+    "download": {
+      "success": "Quote successfully downloaded",
+      "error": "Error while downloading the quote"
+    }
   },
   "invoices": {
     "add": "Invoice successfully created",
@@ -116,6 +120,10 @@
       "one": "Invoice successfully deleted",
       "multiple": "Invoices successfully deleted"
     },
-    "send": "Invoice successfully sent"
+    "send": "Invoice successfully sent",
+    "download": {
+      "success": "Invoice successfully downloaded",
+      "error": "Error while downloading the invoice"
+    }
   }
 }

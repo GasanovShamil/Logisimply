@@ -1,6 +1,8 @@
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
+let pdf = require("../helpers/pdf");
+let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let invoiceModel = require("../models/Invoice");
@@ -323,6 +325,87 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
             count++;
     }
     res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: count});
+}));
+
+/**
+ * @swagger
+ * /invoices/send/{code}:
+ *   get:
+ *     tags:
+ *       - Invoices
+ *     description: Logged - Send an invoice to the customer by email
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Invoice's code
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Invoice sent
+ *         schema:
+ *           $ref: '#/definitions/Invoice'
+ */
+router.get("/send/:code", middleware.wrapper(async (req, res) => {
+    let paramCode = req.params.code;
+    let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
+    if (!invoice)
+        res.status(400).json({message: localization[req.language].invoices.code.failed});
+    else {
+        invoice.status = "sent";
+        invoice.save();
+        let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
+        pdf.getInvoice(result, req.language);
+        mailer.sendInvoice(result, req.language);
+        utils.removePdf(utils.getPdfPath(result.user._id, result.code));
+        res.status(200).json({message: localization[req.language].invoices.send, data: result});
+    }
+}));
+
+/**
+ * @swagger
+ * /invoices/download/{code}:
+ *   get:
+ *     tags:
+ *       - Invoices
+ *     description: Logged - Download a quote
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Quote's code
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       500:
+ *         description: Error - user is logged out
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Quote download
+ *         schema:
+ *           $ref: '#/definitions/Quote'
+ */
+router.get("/send/:code", middleware.wrapper(async (req, res) => {
+    let paramCode = req.params.code;
+    let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
+    if (!invoice)
+        res.status(400).json({message: localization[req.language].invoices.code.failed});
+    else {
+        let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
+        pdf.getQuote(result, req.language);
+        res.download(utils.getPdfPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err){
+            if (err)
+                res.status(500).json({message: localization[req.language].invoices.download.error});
+            else {
+                utils.removePdf(utils.getPdfPath(result.user._id, result.code));
+                res.status(200).json({message: localization[req.language].invoices.download.success, data: result});
+            }
+        });
+    }
 }));
 
 module.exports = router;
