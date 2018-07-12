@@ -20,6 +20,7 @@ let userSchema = mongoose.Schema ({
     status: String,
     activationToken: String,
     parameters: {
+        credentials: String,
         customers: Number,
         providers: Number,
         quotes: Number,
@@ -30,8 +31,8 @@ let userSchema = mongoose.Schema ({
     updatedAt: Date
 });
 
-userSchema.methods.fullFormat = function() {
-    return {
+userSchema.methods.fullFormat = function(include) {
+    let result = {
         _id: this._id,
         email: this.email,
         firstname: this.firstname,
@@ -50,6 +51,13 @@ userSchema.methods.fullFormat = function() {
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
+
+    if (include) {
+        if (include.credentials)
+            result.credentials = this.parameters.credentials;
+    }
+
+    return result;
 };
 
 module.exports = mongoose.model("User", userSchema);

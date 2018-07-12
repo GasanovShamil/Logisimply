@@ -4,10 +4,10 @@ let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
-let express = require("express");
-let router = express.Router();
 let jwt = require("jsonwebtoken");
 let md5 = require("md5");
+let express = require("express");
+let router = express.Router();
 
 /**
  * @swagger
@@ -105,7 +105,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             paramUser.activationToken = md5(paramUser.email);
             paramUser.password = md5(paramUser.password);
             paramUser.createdAt = new Date();
-            paramUser.parameters = {customers: 0, providers: 0, quotes: 0, invoices: 0, items: 0};
+            paramUser.parameters = {credentials: "", customers: 0, providers: 0, quotes: 0, invoices: 0, items: 0};
             let user = await userModel.create(paramUser);
             mailer.sendActivationUrl(user, req.language);
             res.status(200).json({message: localization[req.language].users.add});
@@ -128,19 +128,23 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  *         required: true
  *         type: string
  *     responses:
- *       default:
- *         description: Render
+ *       400:
+ *         description: Error - no inactive user for token
+ *       200:
+ *         description: User activated
+ *         schema:
+ *           $ref: '#/definitions/User'
  */
 router.get("/activate/:token", middleware.wrapper(async (req, res) => {
     let paramToken = req.params.token;
     let user = await userModel.findOne({status: "inactive", activationToken: paramToken});
     if (!user)
-        res.render("error", {message: localization[req.language].users.token.failed})
+        res.status(400).json({message: localization[req.language].users.token.failed});
     else {
         user.status = "active";
         user.activationToken = "";
         user.save();
-        res.render("activate", {user: user});
+        res.status(200).json(user.fullFormat());
     }
 }));
 
@@ -238,7 +242,7 @@ router.post("/resendActivationUrl", middleware.wrapper(async (req, res) => {
  *       - application/json
  *     parameters:
  *       - description: Login object
- *         in:  body
+ *         in: body
  *         required: true
  *         type: object
  *         properties:
@@ -357,6 +361,37 @@ router.put("/update", middleware.wrapper(async (req, res) => {
                 res.status(200).json({message: localization[req.language].users.update, token: token});
         });
     }
+}));
+
+/**
+ * @swagger
+ * /users/credentials:
+ *   post:
+ *     tags:
+ *       - Users
+ *     description: Logged - Set paypal client id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Paypay client id
+ *         in: body
+ *         required: true
+ *         type: object
+ *         properties:
+ *           credentials:
+ *             type: string
+ *     responses:
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Credentials set
+ */
+router.post("/users/credentials", middleware.wrapper(async (req, res) => {
+    let paramCredentials = req.body.credentials;
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user.parameters.credentials = paramCredentials;
+    user.save();
+    res.status(200).json(user.fullFormat());
 }));
 
 module.exports = router;

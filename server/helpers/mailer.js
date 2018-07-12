@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport({
 
 module.exports = {
     sendActivationUrl: function(user, language) {
-        let url = "http://" + config.base_url + "/api/users/activate/" + user.activationToken;
+        let url =  + "/activate/" + user.activationToken;
         let mailOptions = {
             from: config.email.user,
             to: user.email,
