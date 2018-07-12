@@ -104,7 +104,11 @@
       "one": "Devis supprimé avec succès",
       "multiple": "Devis supprimés avec succès"
     },
-    "send": "Devis envoyé avec succès"
+    "send": "Devis envoyé avec succès",
+    "download": {
+      "success": "Devis téléchargée avec succès",
+      "error": "Problème lors du téléchargement du devis"
+    }
   },
   "invoices": {
     "add": "Facture créee avec succès",
@@ -116,6 +120,10 @@
       "one": "Facture supprimée avec succès",
       "multiple": "Factures supprimées avec succès"
     },
-    "send": "Facture envoyée avec succès"
+    "send": "Facture envoyée avec succès",
+    "download": {
+      "success": "Facture téléchargée avec succès",
+      "error": "Problème lors du téléchargement de la facture"
+    }
   }
 }
