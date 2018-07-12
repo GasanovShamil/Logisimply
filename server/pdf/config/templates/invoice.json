@@ -251,7 +251,7 @@
           "discount": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 10,
+              "size": 11,
               "color": "#000000"
             },
             "format": {
@@ -265,7 +265,7 @@
           "date_payment": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 8,
+              "size": 9,
               "color": "#000000"
             },
             "format": {
@@ -279,7 +279,7 @@
           "collection_cost": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 8,
+              "size": 9,
               "color": "#000000"
             },
             "format": {
@@ -293,7 +293,7 @@
           "total": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
-              "size": 10,
+              "size": 11,
               "color": "#000000"
             },
             "format": {
@@ -313,7 +313,7 @@
             "format": {
               "align": "left",
               "left": 433,
-              "top": 540,
+              "top": 550,
               "width": 200,
               "height": 320
             }

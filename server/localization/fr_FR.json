@@ -17,7 +17,23 @@
     "generated": {
       "quote": "Ce devis a été généré par ",
       "invoice": "Cette facture a été générée par "
-    }
+    },
+    "date": "Date : ",
+    "siret": "Siret : ",
+    "banner": {
+      "quote": "Devis - ",
+      "invoice": "Facture - "
+    },
+    "subject": "Objet : ",
+    "discount": "Remise",
+    "advanced_payment": "Acompte",
+    "total": "Net à payer",
+    "date_payment": "Date d'échéance de paiement : ",
+    "validity": "Durée de validité (jours) : ",
+    "date_execution": "Date de la vente/prestation : ",
+    "comment": "Commentaire : ",
+    "accord": "Bon pour accord le : ",
+    "signature": "Signature : "
   },
   "middleware": {
     "failed": "Token d'authentification incorrect",
