@@ -1,0 +1,44 @@
+<form [formGroup]="itemForm" (submit)="saveData()">
+  <div class="dialog-title" mat-dialog-title>
+    <table class="full-width" cellspacing="0">
+      <tr>
+        <td width="50%">
+          <h3>{{ 'itemsDialog.'+this.itemForm.controls['type'].value | translate }} <span *ngIf="data && data.reference"> {{data.reference}}</span> </h3>
+        </td>
+        <td width="50%">
+          <button mat-icon-button color="warn" class="close-button" (click)="onCloseClick()">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <mat-slide-toggle *ngIf="data" [labelPosition]="editLablePosition" (change)="editSliderChange($event)">{{ 'itemsDialog.edit_mode' | translate }}</mat-slide-toggle>
+  </div>
+  <div mat-dialog-content [formGroup]="itemForm">
+    <mat-form-field>
+      <mat-select placeholder="{{ 'itemsDialog.type' | translate }}" #typeSelect formControlName="type" (change)="onSelectChange(typeSelect.value)" required cdkFocusInitial>
+        <mat-option *ngFor="let item of types" [value]="item.value">
+          {{ item.name | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="{{ 'itemsDialog.label' | translate }}" formControlName="label" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput #siretHint placeholder="{{ 'itemsDialog.priceET' | translate }}" formControlName="priceET" required>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput placeholder="{{ 'itemsDialog.description' | translate }}" formControlName="description" required ></textarea>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions *ngIf="saveButton">
+    <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon></button>
+  </div>
+</form>
+
+
+
+
+
+

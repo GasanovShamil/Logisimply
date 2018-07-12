@@ -1,0 +1,136 @@
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <div class="loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <mat-tab label="{{ 'contacts.customers' | translate }}">
+    <div class="filter-header">
+      <mat-form-field>
+        <input matInput (keyup)="applyCustomerFilter($event.target.value)" placeholder="{{ 'contacts.filter' | translate }}">
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-icon-button matTooltip="{{ 'contacts.add_new_customer' | translate }}" (click)="openCustomerDialog()">
+          <mat-icon color="primary">add</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="{{ 'contacts.delete_selected' | translate }}" (click)="onDeleteCustomerClick()">
+          <mat-icon color="warn">delete</mat-icon>
+        </button>
+      </div>
+  </div>
+    <div class="example-container mat-elevation-z8">
+      <mat-table #customerSort="matSort" [dataSource]="customerDataSource" matSort>
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? customerToggle() : null"
+                          [checked]="customerSelection.hasValue() && isAllCustomersSelected()"
+                          [indeterminate]="customerSelection.hasValue() && !isAllCustomersSelected()">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? customerSelection.toggle(row) : null"
+                          [checked]="customerSelection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.code' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.type' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{'contacts.'+row.type | translate}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.name' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.email' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.email}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="town">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.town' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="info">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="openCustomerDialog(row)">
+              <mat-icon color="primary">info</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedCustomerColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedCustomerColumns;">
+        </mat-row>
+      </mat-table>
+      <mat-paginator #customerPaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-tab>
+  <mat-tab label="{{ 'contacts.providers' | translate }}">
+    <div class="filter-header">
+      <mat-form-field>
+        <input matInput (keyup)="applyProviderFilter($event.target.value)" placeholder="{{ 'contacts.filter' | translate }}">
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-icon-button matTooltip="{{ 'contacts.add_new_provider' | translate }}" (click)="openProviderDialog()">
+          <mat-icon color="primary">add</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="{{ 'contacts.delete_selected' | translate }}" (click)="onDeleteProviderClick()">
+          <mat-icon color="warn">delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="example-container mat-elevation-z8">
+      <mat-table #providerSort="matSort" [dataSource]="providerDataSource" matSort>
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? providerToggle() : null"
+                          [checked]="providerSelection.hasValue() && isAllProvidersSelected()"
+                          [indeterminate]="providerSelection.hasValue() && !isAllProvidersSelected()">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? providerSelection.toggle(row) : null"
+                          [checked]="providerSelection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.code' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="companyName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.company_name' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.companyName}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="legalForm">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.legal_form' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.legalForm}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'contacts.email' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.email}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="town">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'contacts.town' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="info">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="openProviderDialog(row)">
+              <mat-icon color="primary">info</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedProviderColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedProviderColumns;">
+        </mat-row>
+      </mat-table>
+      <mat-paginator #providerPaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
