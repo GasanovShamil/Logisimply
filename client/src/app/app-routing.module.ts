@@ -9,9 +9,15 @@ import {ContactsComponent} from "./components/contacts/contacts.component";
 import {NavigationComponent} from "./components/navigation/navigation.component";
 import {SignupComponent} from "./components/signup/signup.component";
 import {ItemsComponent} from "./components/items/items.component";
+import {WelcomeComponent} from "./components/welcome/welcome.component";
+import {ActivateComponent} from "./components/activate/activate.component";
+import {PaymentComponent} from "./components/payment/payment.component";
 const routes: Routes = [
+  { path: 'welcome', component: WelcomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'activate', component: ActivateComponent },
+  { path: 'payment', component: PaymentComponent },
   {
     path: '', canActivate: [AuthGuard], component: NavigationComponent,
     children: [
