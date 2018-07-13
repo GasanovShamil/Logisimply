@@ -270,9 +270,9 @@
             },
             "format": {
               "align": "left",
-              "left": 500,
+              "left": 490,
               "top": 450,
-              "width": 120,
+              "width": 130,
               "height": 320
             }
           },
@@ -284,9 +284,9 @@
             },
             "format": {
               "align": "left",
-              "left": 500,
+              "left": 490,
               "top": 480,
-              "width": 120,
+              "width": 130,
               "height": 320
             }
           },
@@ -298,9 +298,9 @@
             },
             "format": {
               "align": "left",
-              "left": 500,
+              "left": 490,
               "top": 510,
-              "width": 120,
+              "width": 130,
               "height": 320
             }
           },
@@ -312,9 +312,9 @@
             },
             "format": {
               "align": "left",
-              "left": 500,
+              "left": 490,
               "top": 540,
-              "width": 120,
+              "width": 130,
               "height": 320
             }
           },

@@ -82,9 +82,9 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramProvider = req.body;
-    if (!utils.isProviderComplete(paramProvider))
+    if (!utils.fields.isProviderComplete(paramProvider))
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramProvider.email))
+    else if (!utils.fields.isEmailValid(paramProvider.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let countProvider = await providerModel.countDocuments({email: paramProvider.email, siret: paramProvider.siret, user: req.loggedUser._id});
@@ -94,7 +94,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.providers += 1;
             user.save();
-            paramProvider.code = "P" + utils.getCode(user.parameters.providers);
+            paramProvider.code = "P" + utils.format.getCode(user.parameters.providers);
             paramProvider.user = req.loggedUser._id;
             paramProvider.createdAt = new Date();
             let provider = await providerModel.create(paramProvider);
@@ -193,9 +193,9 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramProvider = req.body;
-    if (!utils.isProviderComplete(paramProvider))
+    if (!utils.fields.isProviderComplete(paramProvider))
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramProvider.email))
+    else if (!utils.fields.isEmailValid(paramProvider.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramProvider.updatedAt = new Date();
