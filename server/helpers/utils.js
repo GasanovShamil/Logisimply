@@ -32,6 +32,18 @@ module.exports = {
         },
         isIncomeComplete: function(income) {
             return income.method && income.amount && income.invoice && income.user && income.customer && income.dateIncome;
+        },
+        isCustomerTypeValid: function (type) {
+            return ["private", "professional"].includes(type);
+        },
+        isQuoteStatusValid: function (status) {
+            return ["draft", "sent"].includes(status);
+        },
+        isInvoiceStatusValid: function (status) {
+            return ["draft", "lock"].includes(status);
+        },
+        isIncomeMethodValid: function (method) {
+            return ["paypal", "asset", "cash", "check"].includes(method);
         }
     },
     format: {

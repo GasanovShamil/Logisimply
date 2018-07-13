@@ -215,16 +215,17 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
-    if (!utils.fields.isQuoteComplete(paramQuote))
+    if (!utils.fields.isQuoteStatusValid(paramQuote.status))
+        res.status(400).json({message: localization[req.language].fields.prohibited});
+    else if (!utils.fields.isQuoteComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
         if (countCustomer === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
-            paramQuote.status = "draft";
             paramQuote.updatedAt = new Date();
-            await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, paramQuote, null);
+            await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, {$set: paramQuote}, null);
             let quote = await quoteModel.findOne({code: paramQuote.code, user: req.loggedUser._id});
             if (!quote)
                 res.status(400).json({message: localization[req.language].quotes.code.failed});

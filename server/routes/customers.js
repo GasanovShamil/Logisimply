@@ -132,7 +132,7 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
-    if (paramCustomer.type !== "professional" && paramCustomer.type !== "private")
+    if (!utils.fields.isCustomerTypeValid(paramCustomer.type))
         res.status(400).json({message: localization[req.language].fields.prohibited});
     else {
         if (paramCustomer.type === "private")
@@ -260,7 +260,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         if (paramCustomer.type === "private")
             paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
         paramCustomer.updatedAt = new Date();
-        await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, paramCustomer, null);
+        await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, {$set: paramCustomer}, null);
         let customer = await customerModel.findOne({code: paramCustomer.code, user: req.loggedUser._id});
         if (!customer)
             res.status(400).json({message: localization[req.language].customers.code.failed});

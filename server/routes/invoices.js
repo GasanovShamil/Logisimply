@@ -168,28 +168,33 @@ router.get("/:user/:code/payment", middleware.wrapper(async (req, res) => {
  */
 router.post("/incomes/add", middleware.wrapper(async (req, res) => {
     let paramIncome = req.body;
-    if (!utils.fields.isIncomeComplete(paramIncome))
+    if (!utils.fields.isIncomeMethodValid(paramIncome.method))
+        res.status(400).json({message: localization[req.language].fields.prohibited});
+    else if (!utils.fields.isIncomeComplete(paramIncome))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let invoice = await invoiceModel.findOne({code: paramIncome.invoice, status: "lock", user: paramIncome.user});
-        if (!invoice)
+        let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
+        if (countInvoice === 0)
             res.status(400).json({message: localization[req.language].invoices.income.impossible});
         else {
             paramIncome.createdAt = new Date();
-            let income = await incomeModel.create(paramIncome);
-            if (income.method === "asset") {
-                let customer = await customerModel.findOne({code: income.customer, user: income.user});
-                if (!customer)
+            if (paramIncome.method === "asset") {
+                let customer = await customerModel.findOne({code: paramIncome.customer, user: paramIncome.user});
+                if (!customer) {
                     res.status(400).json({message: localization[req.language].customers.code.failed});
-                else {
-                    if (income.amount > customer.assets)
+                    return;
+                } else {
+                    if (paramIncome.amount > customer.assets) {
                         res.status(403).json({message: localization[req.language].customers.assets.failed});
-                    else {
-                        customer.assets -= income.amount;
+                        return;
+                    } else {
+                        customer.assets -= paramIncome.amount;
                         customer.save();
                     }
                 }
             }
+            let income = await incomeModel.create(paramIncome);
+            let invoice = await invoiceModel.findOne({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
             let check = await invoice.fullFormat({owner: income.user, incomes: true});
             if (check.sumToPay === 0) {
                 invoice.status = "payed";
@@ -343,7 +348,9 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
-    if (!utils.fields.isInvoiceComplete(paramInvoice))
+    if (!utils.fields.isInvoiceStatusValid(paramInvoice.status))
+        res.status(400).json({message: localization[req.language].fields.prohibited});
+    else if (!utils.fields.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
@@ -357,7 +364,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
                 if (!paramInvoice.advancedPayment)
                     paramInvoice.advancedPayment = 0;
                 paramInvoice.updatedAt = new Date();
-                await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
+                await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, {$set: paramInvoice}, null);
                 let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
                 if (!invoice)
                     res.status(400).json({message: localization[req.language].invoices.code.failed});
