@@ -31,7 +31,7 @@ module.exports = {
             return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && (typeof(invoice.collectionCost) === "boolean");
         },
         isIncomeComplete: function(income) {
-            return income.method && income.amount && income.invoice && income.user && income.dateIncome;
+            return income.method && income.amount && income.invoice && income.user && income.customer && income.dateIncome;
         }
     },
     format: {

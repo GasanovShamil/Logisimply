@@ -85,6 +85,8 @@ let router = express.Router();
  *         type: string
  *       user:
  *         type: string
+ *       customer:
+ *         type: string
  *       dateIncome:
  *         type: date
  *       createdAt:
@@ -96,6 +98,7 @@ let router = express.Router();
  *       - amount
  *       - invoice
  *       - user
+ *       - customer
  *       - dateIncome
  */
 
@@ -134,8 +137,67 @@ router.get("/:user/:code/payment", middleware.wrapper(async (req, res) => {
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.income.impossible});
     else {
-        let result = await invoice.fullFormat({logged: paramUser, infos: true});
+        let result = await invoice.fullFormat({owner: paramUser, infos: true});
         res.status(200).json(result);
+    }
+}));
+
+/**
+ * @swagger
+ * /invoices/incomes/add:
+ *   post:
+ *     tags:
+ *       - Invoices
+ *     description: Logged - Add an income to an invoice
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Income to add
+ *         in: body
+ *         required: true
+ *         type: number
+ *     responses:
+ *       403:
+ *         description: Error - customer assets is lower than amount
+ *       400:
+ *         description: Error - no customer for code
+ *       200:
+ *         description: Amount added
+ *         schema:
+ *           $ref: '#/definitions/Income'
+ */
+router.post("/incomes/add", middleware.wrapper(async (req, res) => {
+    let paramIncome = req.body;
+    if (!utils.fields.isIncomeComplete(paramIncome))
+        res.status(400).json({message: localization[req.language].fields.required});
+    else {
+        let invoice = await invoiceModel.findOne({code: paramIncome.invoice, status: "lock", user: paramIncome.user});
+        if (!invoice)
+            res.status(400).json({message: localization[req.language].invoices.income.impossible});
+        else {
+            paramIncome.createdAt = new Date();
+            let income = await incomeModel.create(paramIncome);
+            if (income.method === "asset") {
+                let customer = await customerModel.findOne({code: income.customer, user: income.user});
+                if (!customer)
+                    res.status(400).json({message: localization[req.language].customers.code.failed});
+                else {
+                    if (income.amount > customer.assets)
+                        res.status(403).json({message: localization[req.language].customers.assets.failed});
+                    else {
+                        customer.assets -= income.amount;
+                        customer.save();
+                    }
+                }
+            }
+            let check = await invoice.fullFormat({owner: income.user, incomes: true});
+            if (check.sumToPay === 0) {
+                invoice.status = "payed";
+                invoice.save();
+            }
+            let result = await income.fullFormat();
+            res.status(200).json({message: localization[req.language].invoices.income.success, data: result});
+        }
     }
 }));
 
@@ -186,7 +248,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             paramInvoice.user = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
             let invoice = await invoiceModel.create(paramInvoice);
-            let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+            let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
             res.status(200).json({message: localization[req.language].invoices.add, data: result});
         }
     }
@@ -214,7 +276,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
 router.get("/me", middleware.wrapper(async (req, res) => {
     let invoices = await invoiceModel.find({user: req.loggedUser._id});
     for (let i = 0; i < invoices.length; i++)
-        invoices[i] = await invoices[i].fullFormat({logged: req.loggedUser._id, customer: true});
+        invoices[i] = await invoices[i].fullFormat({owner: req.loggedUser._id, customer: true});
     res.status(200).json(invoices);
 }));
 
@@ -248,7 +310,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.code.failed});
     else {
-        let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+        let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
         res.status(200).json(result);
     }
 }));
@@ -300,7 +362,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
                 if (!invoice)
                     res.status(400).json({message: localization[req.language].invoices.code.failed});
                 else {
-                    let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+                    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
                     res.status(200).json({message: localization[req.language].invoices.update.success, data: result});
                 }
             }
@@ -339,7 +401,7 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].invoices.delete.impossible});
     else {
         let invoice = await invoiceModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
-        let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+        let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
         res.status(200).json({message: localization[req.language].invoices.delete.one, data: result});
     }
 }));
@@ -412,7 +474,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
     else {
         invoice.status = "lock";
         invoice.save();
-        let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
+        let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
         pdf.getInvoice(result, req.language, mailer.sendInvoice);
         res.status(200).json({message: localization[req.language].invoices.send, data: result});
     }
@@ -448,7 +510,7 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.code.failed});
     else {
-        let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
+        let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
         pdf.getInvoice(result, req.language);
         res.download(utils.pdf.getPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err){
             if (err)
@@ -458,47 +520,6 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
                 res.status(200).json({message: localization[req.language].invoices.download.success, data: result});
             }
         });
-    }
-}));
-
-/**
- * @swagger
- * /invoices/incomes/add:
- *   post:
- *     tags:
- *       - Invoices
- *     description: Logged - Add an income to an invoice
- *     produces:
- *       - application/json
- *     parameters:
- *       - description: Income to add
- *         in: body
- *         required: true
- *         type: number
- *     responses:
- *       403:
- *         description: Error - user is logged out
- *       400:
- *         description: Error - no customer for code
- *       200:
- *         description: Amount added
- *         schema:
- *           $ref: '#/definitions/Income'
- */
-router.post("/incomes/add", middleware.wrapper(async (req, res) => {
-    let paramIncome = req.body;
-    if (!utils.fields.isIncomeComplete(paramIncome))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, status: "lock", user: paramIncome.user});
-        if (countInvoice === 0)
-            res.status(400).json({message: localization[req.language].invoices.income.impossible});
-        else {
-            paramIncome.createdAt = new Date();
-            let income = await incomeModel.create(paramIncome);
-            let result = await income.fullFormat();
-            res.status(200).json({message: localization[req.language].invoices.income.success, data: result});
-        }
     }
 }));
 
@@ -522,80 +543,6 @@ router.post("/incomes/add", middleware.wrapper(async (req, res) => {
  *             $ref: '#/definitions/Income'
  */
 router.get("/incomes/me", middleware.wrapper(async (req, res) => {
-    let customers = await customerModel.find({assets: {$gt: 0}, user: req.loggedUser._id});
-    res.status(200).json(customers);
-}));
-
-/**
- * @swagger
- * /invoices/assets/add:
- *   post:
- *     tags:
- *       - Invoices
- *     description: Logged - Add an asset to a customer
- *     produces:
- *       - application/json
- *     parameters:
- *       - description: Customer's code
- *         in: body
- *         required: true
- *         properties:
- *           code:
- *             type: string
- *       - description: Amount to add
- *         in: body
- *         required: true
- *         properties:
- *           amount:
- *             type: number
- *     responses:
- *       403:
- *         description: Error - user is logged out
- *       400:
- *         description: Error - no customer for code
- *       200:
- *         description: Amount added
- *         schema:
- *           oneOf:
- *             - $ref: '#/definitions/PrivateCustomer'
- *             - $ref: '#/definitions/ProfessionalCustomer'
- */
-router.post("/assets/add", middleware.wrapper(async (req, res) => {
-    let paramCode = req.body.code;
-    let paramAmount = req.body.amount;
-    let customer = await customerModel.findOne({code: paramCode, user: req.loggedUser._id});
-    if (!customer)
-        res.status(400).json({message: localization[req.language].customers.code.failed});
-    else {
-        customer.assets += paramAmount;
-        customer.save();
-        res.status(200).json({message: localization[req.language].customers.assets.add, data: customer});
-    }
-
-}));
-
-/**
- * @swagger
- * /invoices/assets/me:
- *   get:
- *     tags:
- *       - Invoices
- *     description: Logged - Get all my assets
- *     produces:
- *       - application/json
- *     responses:
- *       403:
- *         description: Error - user is logged out
- *       200:
- *         description: An array of requested customers with assets
- *         schema:
- *           type: array
- *           items:
- *             oneOf:
- *               - $ref: '#/definitions/PrivateCustomer'
- *               - $ref: '#/definitions/ProfessionalCustomer'
- */
-router.get("/assets/me", middleware.wrapper(async (req, res) => {
     let customers = await customerModel.find({assets: {$gt: 0}, user: req.loggedUser._id});
     res.status(200).json(customers);
 }));
