@@ -110,7 +110,7 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: PrivateCustomer or ProfessionalCustomer
+ *       - description: PrivateCustomer or ProfessionalCustomer to add
  *         in: body
  *         required: true
  *         type: object

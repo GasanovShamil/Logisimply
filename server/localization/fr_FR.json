@@ -138,6 +138,10 @@
     "download": {
       "success": "Facture téléchargée avec succès",
       "error": "Problème lors du téléchargement de la facture"
+    },
+    "income": {
+      "success": "Recette ajoutée avec succès",
+      "impossible": "Aucune facture ne correspond au code et à l'utilisateur demandés"
     }
   }
 }

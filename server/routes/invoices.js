@@ -88,7 +88,7 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Invoice object
+ *       - description: Invoice to add
  *         in: body
  *         required: true
  *         type: object

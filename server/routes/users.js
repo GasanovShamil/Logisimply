@@ -76,7 +76,7 @@ router.use(middleware.localize);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: User object
+ *       - description: User to add
  *         in: body
  *         required: true
  *         type: object

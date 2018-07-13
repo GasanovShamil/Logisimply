@@ -64,7 +64,7 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Provider object
+ *       - description: Provider to add
  *         in: body
  *         required: true
  *         type: object

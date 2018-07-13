@@ -137,6 +137,10 @@
     "download": {
       "success": "Invoice successfully downloaded",
       "error": "Error while downloading the invoice"
-    }
+    },
+     "income": {
+       "success": "Income successfully added",
+       "impossible": "No invoice match this code and user"
+     }
   }
 }

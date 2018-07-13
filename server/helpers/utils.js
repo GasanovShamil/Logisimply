@@ -28,6 +28,9 @@ module.exports = {
     isInvoiceComplete: function(invoice) {
         return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && (typeof(invoice.collectionCost) === "boolean");
     },
+    isIncomeComplete: function(income) {
+        return income.type && income.amount && income.invoice && income.user && income.dateIncome;
+    },
     getCode: function(number) {
         let nextCode = "00000" + number;
         return nextCode.substring(nextCode.length - 5, nextCode.length);
