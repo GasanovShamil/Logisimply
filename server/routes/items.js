@@ -142,7 +142,7 @@ router.get("/:reference", middleware.wrapper(async (req, res) => {
     if (!item)
         res.status(400).json({message: localization[req.language].items.reference.failed});
     else {
-        let result = await item.fullFormat();
+        let result = await item.fullFormat({logged: req.loggedUser._id, user: true});
         res.status(200).json(result);
     }
 }));
