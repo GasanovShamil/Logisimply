@@ -9,6 +9,7 @@ let incomeSchema = mongoose.Schema ({
     amount: Number,
     invoice: String,
     user: String,
+    customer: String,
     dateIncome: Date,
     createdAt: Date,
     updatedAt: Date
@@ -23,9 +24,9 @@ incomeSchema.methods.fullFormat = function(include) {
         dateIncome: utils.format.formatDate(this.dateIncome)
     };
 
-    if (include && include.logged) {
+    if (include && include.owner) {
         if (include.user)
-            result = load.user(result, include.logged);
+            result = load.user(result, include.owner);
     }
 
     return result;

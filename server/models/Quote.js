@@ -52,13 +52,13 @@ quoteSchema.methods.fullFormat = function(include) {
 
     //TODO: check why only the first call in loaded
 
-    if (include && include.logged) {
+    if (include && include.owner) {
         if (include.infos)
-            result = load.infos(result, include.logged);
+            result = load.infos(result, include.owner);
         if (include.customer)
-            result = load.customer(result, include.logged);
+            result = load.customer(result, include.owner);
         if (include.user)
-            result = load.user(result, include.logged);
+            result = load.user(result, include.owner);
     }
 
     return result;

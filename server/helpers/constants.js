@@ -2,4 +2,4 @@
 // customer.status: private, professional
 // quote.status: draft, sent
 // invoice.status: draft, lock, payed
-// invoice.advancedPayment.status: none, pending, payed
+// income.method: paypal, asset, cash, check

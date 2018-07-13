@@ -290,7 +290,7 @@
               "height": 320
             }
           },
-          "advanced_payment": {
+          "payed": {
             "font": {
               "name": "./pdf/config/fonts/arial.ttf",
               "size": 11,
