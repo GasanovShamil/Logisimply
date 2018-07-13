@@ -30,7 +30,6 @@ let router = express.Router();
  *         type: date
  *     required:
  *       - type
- *       - reference
  *       - label
  *       - priceET
  *       - description
@@ -49,7 +48,7 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Item object
+ *       - description: Item to add
  *         in: body
  *         required: true
  *         type: object
@@ -70,8 +69,8 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isItemComplete(paramItem))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
-        if (count !== 0)
+        let countItem = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
+        if (countItem !== 0)
             res.status(400).json({message: localization[req.language].items.reference.used});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
@@ -118,7 +117,7 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  * /items/{reference}:
  *   get:
  *     tags:
- *       - Items000000
+ *       - Items
  *     description: Logged - Get one of my items
  *     produces:
  *       - application/json

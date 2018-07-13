@@ -8,7 +8,7 @@ let bodyParser = require("body-parser");
 let cors = require("cors");
 let swaggerJSDoc = require("swagger-jsdoc");
 
-//let test = require("./routes/test");
+let test = require("./routes/test");
 let users = require("./routes/users");
 let customers = require("./routes/customers");
 let providers = require("./routes/providers");
@@ -58,7 +58,7 @@ app.get("/swagger.json", function(req, res) {
     res.send(swaggerSpec);
 });
 
-//app.use("/api/test", test);
+app.use("/api/test", test);
 app.use("/api/users", users);
 app.use("/api/customers", customers);
 app.use("/api/providers", providers);

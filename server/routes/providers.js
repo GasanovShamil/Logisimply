@@ -64,7 +64,7 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Provider object
+ *       - description: Provider to add
  *         in: body
  *         required: true
  *         type: object
@@ -87,8 +87,8 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramProvider.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let count = await providerModel.countDocuments({email: paramProvider.email, siret: paramProvider.siret, user: req.loggedUser._id});
-        if (count !== 0)
+        let countProvider = await providerModel.countDocuments({email: paramProvider.email, siret: paramProvider.siret, user: req.loggedUser._id});
+        if (countProvider !== 0)
             res.status(400).json({message: localization[req.language].providers.code.used});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
