@@ -102,5 +102,13 @@
     "priceET":	"Price H.T.",
     "description":	"Description",
     "details_edit": "Details/Edit"
+  },
+  "welcome":{
+    "header_presentation": "LogiSimply allows to new self made man to create and generate his own invoice or quote",
+    "header_presentation": "LogiSimply allows to new self made man to create and generate his own invoice or quote",
+    "header_presentation": "LogiSimply allows to new self made man to create and generate his own invoice or quote",
+    "header_presentation": "LogiSimply allows to new self made man to create and generate his own invoice or quote",
+    "header_presentation": "LogiSimply allows to new self made man to create and generate his own invoice or quote",
+    "header_presentation": "LogiSimply allows to new self made man to create and generate his own invoice or quote"
   }
 }

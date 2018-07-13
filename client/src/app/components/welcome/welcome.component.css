@@ -1,0 +1,65 @@
+/* HEADER */
+#header-image {
+  margin: 0;
+  background-image: url("/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  height: 100vh;
+  left: -50px;
+  right: -50px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+#header-image h1 {
+  margin: 0;
+  padding-top: 20%;
+  color: #FFFFFF;
+  font-size: 4em;
+}
+
+#header-image p {
+  color: #FFFFFF;
+}
+
+.center {
+  text-align: center;
+}
+
+.shadow {
+  text-shadow: 1px 1px #000000;
+}
+
+/* PRESENTATION */
+#presentation {
+  margin: 0;
+  height: 60vh;
+  background-color: #fafafa;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: #212121;
+}
+
+#presentation-header {
+  padding-left: 20%;
+}
+
+#presentation-card {
+  width: 100%;
+  margin: auto;
+}
+
+.card-type {
+  max-width: 250px;
+  display: inline-block;
+  margin-top: 8%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+/* FOOTER */
+footer {
+  background-color: #31acfc;
+}
+
+footer a {
+  color: #FFFFFF;
+}
+
