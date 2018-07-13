@@ -305,7 +305,7 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  *       403:
  *         description: Error - user is logged out
  *       200:
- *         description: Quotes deleted
+ *         description: Invoices deleted
  *         schema:
  *           type: number
  */
@@ -378,7 +378,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
  *       403:
  *         description: Error - user is logged out
  *       200:
- *         description: Quote download
+ *         description: Invoice downloaded
  *         schema:
  *           $ref: '#/definitions/Quote'
  */

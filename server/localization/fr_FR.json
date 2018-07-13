@@ -41,11 +41,11 @@
     "error": "Un problème est survenu sur le serveur"
   },
   "users": {
+    "add": "Compte créé avec succès",
     "email": {
       "used": "Cette adresse email est déjà associée à un compte",
       "failed": "Aucun compte actif ne correspond à cette adresse email"
     },
-    "add": "Compte créé avec succès",
     "token": {
       "failed": "Aucun compte inactif ne correspond à ce jeton d'activation"
     },
@@ -59,7 +59,7 @@
     "update": "Compte modifié avec succès"
   },
   "items": {
-    "add": "Produit/Service crée avec succès",
+    "add": "Produit/Service créé avec succès",
     "reference": {
       "used": "Vous avez déjà créé ce produit/service",
       "failed": "Aucun produit/service ne correspond à la référence demandée"
@@ -71,7 +71,7 @@
     }
   },
   "customers": {
-    "add": "Client crée avec succès",
+    "add": "Client créé avec succès",
     "code": {
       "used": "Vous avez déjà créé ce client",
       "failed": "Aucun client ne correspond au code demandé"
@@ -83,7 +83,7 @@
     }
   },
   "providers": {
-    "add": "Fournisseur crée avec succès",
+    "add": "Fournisseur créé avec succès",
     "code": {
       "used": "Vous avez déjà créé ce fournisseur",
       "failed": "Aucun fournisseur ne correspond au code demandé"
@@ -95,7 +95,7 @@
     }
   },
   "quotes": {
-    "add": "Devis crée avec succès",
+    "add": "Devis créé avec succès",
     "code": {
       "failed": "Aucun devis ne correspond au code demandé"
     },
@@ -111,7 +111,7 @@
     }
   },
   "invoices": {
-    "add": "Facture créee avec succès",
+    "add": "Facture créée avec succès",
     "code": {
       "failed": "Aucune facture ne correspond au code demandé"
     },

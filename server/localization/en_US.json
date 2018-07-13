@@ -41,11 +41,11 @@
     "error": "Internal Server Error"
   },
   "users": {
+   "add": "Account successfully created",
     "email": {
       "used": "This email is already used",
       "failed": "No active account match this email"
     },
-    "add": "Account successfully created",
     "token": {
       "failed": "No inactive account match this activation token"
     },
