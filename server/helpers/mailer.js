@@ -46,8 +46,7 @@ module.exports = {
         });
     },
     sendQuote: function(quote, language) {
-        pdf.getQuote(quote, language);
-        let path = utils.getPdfPath(quote.user._id, quote.code);
+        let path = utils.pdf.getPath(quote.user._id, quote.code);
 
         let mailOptions = {
             from: config.email.user,
@@ -63,13 +62,12 @@ module.exports = {
                 console.log("Mail quote failed - user : " + quote.user._id + " / quote : " + quote.code);
             else {
                 console.log("Mail quote succeeded - user : " + quote.user._id + " / quote : " + quote.code);
-                utils.removePdf(path);
+                utils.pdf.remove(path);
             }
         });
     },
     sendInvoice: function(invoice, language) {
-        pdf.getInvoice(invoice, language);
-        let path = utils.getPdfPath(invoice.user._id, invoice.code);
+        let path = utils.pdf.getPath(invoice.user._id, invoice.code);
 
         let mailOptions = {
             from: config.email.user,
@@ -85,7 +83,7 @@ module.exports = {
                 console.log("Mail invoice failed - user : " + invoice.user._id + " / invoice : " + invoice.code);
             else {
                 console.log("Mail invoice succeeded - user : " + invoice.user._id + " / invoice : " + invoice.code);
-                utils.removePdf(path);
+                utils.pdf.remove(path);
             }
         });
     }

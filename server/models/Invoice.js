@@ -36,7 +36,7 @@ invoiceSchema.methods.fullFormat = function(include) {
     let result = {
         customer: this.customer,
         code: this.code,
-        dateInvoice: utils.formatDate(this.dateInvoice),
+        dateInvoice: utils.format.formatDate(this.dateInvoice),
         subject: this.subject || "",
         content: arrayContent,
         discount: discount,
@@ -44,8 +44,8 @@ invoiceSchema.methods.fullFormat = function(include) {
         advancedPayment: this.advancedPayment,
         sumToPay: totalPriceET - discount - this.advancedPayment,
         incomes: [],
-        datePayment: utils.formatDate(this.datePayment),
-        dateExecution: utils.formatDate(this.dateExecution),
+        datePayment: utils.format.formatDate(this.datePayment),
+        dateExecution: utils.format.formatDate(this.dateExecution),
         collectionCost: this.collectionCost,
         comment: this.comment || "",
         status: this.status,
@@ -53,8 +53,6 @@ invoiceSchema.methods.fullFormat = function(include) {
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
-
-    console.log("Invoice.js / pay : " + result.sumToPay);
 
     //TODO: check why only the first call in loaded
 

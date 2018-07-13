@@ -66,7 +66,7 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramItem = req.body;
-    if (!utils.isItemComplete(paramItem))
+    if (!utils.fields.isItemComplete(paramItem))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countItem = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
@@ -76,7 +76,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.items += 1;
             user.save();
-            paramItem.reference = "" + utils.getCode(user.parameters.items);
+            paramItem.reference = "" + utils.format.getCode(user.parameters.items);
             paramItem.user = req.loggedUser._id;
             paramItem.createdAt = new Date();
             let item = await itemModel.create(paramItem);
@@ -175,7 +175,7 @@ router.get("/:reference", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramItem = req.body;
-    if (!utils.isItemComplete(paramItem))
+    if (!utils.fields.isItemComplete(paramItem))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         paramItem.updatedAt = new Date();

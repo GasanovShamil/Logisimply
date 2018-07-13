@@ -137,15 +137,15 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     else {
         if (paramCustomer.type === "private")
             paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
-        if (!utils.isCustomerComplete(paramCustomer))
+        if (!utils.fields.isCustomerComplete(paramCustomer))
             res.status(400).json({message: localization[req.language].fields.required});
-        else if (!utils.isEmailValid(paramCustomer.email))
+        else if (!utils.fields.isEmailValid(paramCustomer.email))
             res.status(400).json({message: localization[req.language].email.invalid});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.customers += 1;
             user.save();
-            paramCustomer.code = "C" + utils.getCode(user.parameters.customers);
+            paramCustomer.code = "C" + utils.format.getCode(user.parameters.customers);
             paramCustomer.assets = 0;
             paramCustomer.user = req.loggedUser._id;
             paramCustomer.createdAt = new Date();
@@ -255,9 +255,9 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
     if (paramCustomer.assets)
         res.status(400).json({message: localization[req.language].fields.prohibited});
-    else if (!utils.isCustomerComplete(paramCustomer))
+    else if (!utils.fields.isCustomerComplete(paramCustomer))
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramCustomer.email))
+    else if (!utils.fields.isEmailValid(paramCustomer.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         if (paramCustomer.type === "private")

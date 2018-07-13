@@ -4,19 +4,16 @@ let incomeModel = require("../models/Income");
 
 module.exports = {
     infos: async (object, user) => {
-        console.log("load.js > start / pay : " + object.sumToPay);
         if (object.user)
             object.user = (await userModel.findOne({_id: user}).exec()).fullFormat({credentials: true});
         if (object.customer)
             object.customer = (await customerModel.findOne({code: object.customer, user: user}).exec()).fullFormat();
         if (object.incomes && object.sumToPay) {
-            console.log("load.js > inside / pay : " + object.sumToPay);
             let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
             object.incomes = incomes;
             for (let i = 0; i < incomes.length; i++)
                 object.sumToPay -= incomes[i].amount;
         }
-        console.log("load.js > end / pay : " + object.sumToPay);
         return object;
     },
     user: async (object, user) => {

@@ -130,7 +130,7 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
-    if (!utils.isInvoiceComplete(paramInvoice))
+    if (!utils.fields.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
@@ -140,7 +140,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.invoices += 1;
             user.save();
-            paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
+            paramInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.invoices);
             if (!paramInvoice.advancedPayment)
                 paramInvoice.advancedPayment = 0;
             paramInvoice.status = "draft";
@@ -242,7 +242,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
-    if (!utils.isInvoiceComplete(paramInvoice))
+    if (!utils.fields.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
@@ -374,7 +374,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
         invoice.status = "lock";
         invoice.save();
         let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
-        mailer.sendInvoice(result, req.language);
+        pdf.getInvoice(result, req.language, mailer.sendInvoice);
         res.status(200).json({message: localization[req.language].invoices.send, data: result});
     }
 }));
@@ -410,12 +410,12 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].invoices.code.failed});
     else {
         let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
-        pdf.getQuote(result, req.language);
-        res.download(utils.getPdfPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err){
+        pdf.getInvoice(result, req.language);
+        res.download(utils.pdf.getPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err){
             if (err)
                 res.status(500).json({message: localization[req.language].invoices.download.error});
             else {
-                utils.removePdf(utils.getPdfPath(result.user._id, result.code));
+                utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
                 res.status(200).json({message: localization[req.language].invoices.download.success, data: result});
             }
         });
@@ -448,11 +448,11 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
  */
 router.post("/incomes/add", middleware.wrapper(async (req, res) => {
     let paramIncome = req.body;
-    if (!utils.isIncomeComplete(paramIncome))
+    if (!utils.fields.isIncomeComplete(paramIncome))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, status: "lock", user: paramIncome.user});
-        if (countInvoice !== 0)
+        if (countInvoice === 0)
             res.status(400).json({message: localization[req.language].invoices.income.impossible});
         else {
             paramIncome.createdAt = new Date();
@@ -492,7 +492,7 @@ router.get("/incomes/me", middleware.wrapper(async (req, res) => {
  * /invoices/assets/add:
  *   post:
  *     tags:
- *       - Assets
+ *       - Invoices
  *     description: Logged - Add an asset to a customer
  *     produces:
  *       - application/json
@@ -540,7 +540,7 @@ router.post("/assets/add", middleware.wrapper(async (req, res) => {
  * /invoices/assets/me:
  *   get:
  *     tags:
- *       - Assets
+ *       - Invoices
  *     description: Logged - Get all my assets
  *     produces:
  *       - application/json
