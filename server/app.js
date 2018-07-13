@@ -17,6 +17,7 @@ let quotes = require("./routes/quotes");
 let invoices = require("./routes/invoices");
 let assets = require("./routes/assets");
 let incomes = require("./routes/incomes");
+let activate = require("./routes/activate");
 
 let app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -28,7 +29,7 @@ let swaggerDefinition = {
         version: "1.1.0",
         description: "Welcome to the Logisimply API documentation",
     },
-    host: config.base_url,
+    host: config.url,
     basePath: "/",
 };
 
@@ -66,6 +67,7 @@ app.use("/api/quotes", quotes);
 app.use("/api/invoices", invoices);
 app.use("/api/assets", assets);
 app.use("/api/incomes", incomes);
+app.use("/activate", activate);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

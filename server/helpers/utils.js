@@ -39,18 +39,6 @@ module.exports = {
             month = "0" + month;
         return "" + now.getFullYear() + month;
     },
-    generateInvoice: function(quote) {
-        return {
-            customer: quote.customer,
-            dateInvoice: quote.dateQuote,
-            subject: quote.subject,
-            content: quote.content,
-            datePayment: quote.datePayment,
-            dateExecution: quote.dateQuote,
-            collectionCost: quote.collectionCost,
-            comment: quote.comment
-        };
-    },
     formatDate: function(date) {
         let day = date.getDate();
         let month = date.getMonth() + 1;

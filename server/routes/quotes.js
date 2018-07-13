@@ -1,6 +1,7 @@
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
+let pdf = require("../helpers/pdf");
 let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
@@ -330,28 +331,100 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
  *           $ref: '#/definitions/Invoice'
  */
 router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
-    let paramInvoice = utils.generateInvoice(req.body);
-    if (!utils.isInvoiceComplete(paramInvoice))
+    let paramQuote = req.body;
+    let generatedInvoice = {
+        customer: paramQuote.customer,
+        dateInvoice: paramQuote.dateQuote,
+        subject: paramQuote.subject,
+        content: paramQuote.content,
+        datePayment: paramQuote.datePayment,
+        dateExecution: paramQuote.dateQuote,
+        collectionCost: paramQuote.collectionCost,
+        comment: paramQuote.comment
+    };
+    if (!utils.isInvoiceComplete(generatedInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
+        let count = await customerModel.countDocuments({code: generatedInvoice.customer, user: req.loggedUser._id});
         if (count === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.quotes += 1;
             user.save();
-            paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.quotes);
-            paramInvoice.advandedPayment = {value: 0, status: "none"};
-            paramInvoice.status = "draft";
-            paramInvoice.user = req.loggedUser._id;
-            paramInvoice.createdAt = new Date();
-            let invoice = await invoiceModel.create(paramInvoice);
+            generatedInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.quotes);
+            generatedInvoice.advandedPayment = {value: 0, status: "none"};
+            generatedInvoice.status = "draft";
+            generatedInvoice.user = req.loggedUser._id;
+            generatedInvoice.createdAt = new Date();
+            let invoice = await invoiceModel.create(generatedInvoice);
             res.status(200).json({message: localization[req.language].quotes.add, data: invoice});
         }
     }
 }));
 
+/**
+ * @swagger
+ * /quotes/send/{code}:
+ *   get:
+ *     tags:
+ *       - Quotes
+ *     description: Logged - Send a quote to the customer by email
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Quote's code
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Quote sent
+ *         schema:
+ *           $ref: '#/definitions/Quote'
+ */
+router.get("/send/:code", middleware.wrapper(async (req, res) => {
+    let paramCode = req.params.code;
+    let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
+    if (!quote)
+        res.status(400).json({message: localization[req.language].quotes.code.failed});
+    else {
+        quote.status = "sent";
+        quote.save();
+        let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
+        pdf.getQuote(result, req.language);
+        mailer.sendQuote(result, req.language);
+        utils.removePdf(utils.getPdfPath(result.user._id, result.code));
+        res.status(200).json({message: localization[req.language].quotes.send, data: result});
+    }
+}));
+
+/**
+ * @swagger
+ * /quotes/download/{code}:
+ *   get:
+ *     tags:
+ *       - Quotes
+ *     description: Logged - Download a quote
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Quote's code
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       500:
+ *         description: Error - user is logged out
+ *       403:
+ *         description: Error - user is logged out
+ *       200:
+ *         description: Quote download
+ *         schema:
+ *           $ref: '#/definitions/Quote'
+ */
 router.get("/send/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
@@ -359,8 +432,15 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].quotes.code.failed});
     else {
         let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
-        mailer.sendQuote(result, req.language);
-        res.status(200).json({message: localization[req.language].quotes.send, data: result});
+        pdf.getQuote(result, req.language);
+        res.download(utils.getPdfPath(result.user._id, result.code), "Devis - " + quote.code + ".pdf", function(err){
+            if (err)
+                res.status(500).json({message: localization[req.language].quotes.download.error});
+            else {
+                utils.removePdf(utils.getPdfPath(result.user._id, result.code));
+                res.status(200).json({message: localization[req.language].quotes.download.success, data: result});
+            }
+        });
     }
 }));
 

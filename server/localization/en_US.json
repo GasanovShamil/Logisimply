@@ -41,11 +41,11 @@
     "error": "Internal Server Error"
   },
   "users": {
+   "add": "Account successfully created",
     "email": {
       "used": "This email is already used",
       "failed": "No active account match this email"
     },
-    "add": "Account successfully created",
     "token": {
       "failed": "No inactive account match this activation token"
     },
@@ -104,18 +104,29 @@
       "one": "Quote successfully deleted",
       "multiple": "Quotes successfully deleted"
     },
-    "send": "Quote successfully sent"
+    "send": "Quote successfully sent",
+    "download": {
+      "success": "Quote successfully downloaded",
+      "error": "Error while downloading the quote"
+    }
   },
   "invoices": {
     "add": "Invoice successfully created",
     "code": {
       "failed": "No invoice match this code"
     },
-    "update": "Invoice successfully updated",
+    "update": {
+      "success": "Invoice successfully updated",
+      "impossible": "No updatable invoice match this code"
+    },
     "delete": {
       "one": "Invoice successfully deleted",
       "multiple": "Invoices successfully deleted"
     },
-    "send": "Invoice successfully sent"
+    "send": "Invoice successfully sent",
+    "download": {
+      "success": "Invoice successfully downloaded",
+      "error": "Error while downloading the invoice"
+    }
   }
 }
