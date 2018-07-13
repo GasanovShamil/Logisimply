@@ -87,7 +87,7 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Quote object
+ *       - description: Quote to add
  *         in: body
  *         required: true
  *         type: object
@@ -108,8 +108,8 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isQuoteComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
-        if (count === 0)
+        let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
+        if (countCustomer === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
@@ -218,8 +218,8 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     if (!utils.isProviderComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
-        if (count === 0)
+        let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
+        if (countCustomer === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
             paramQuote.status = "draft";
@@ -345,8 +345,8 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
     if (!utils.isInvoiceComplete(generatedInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: generatedInvoice.customer, user: req.loggedUser._id});
-        if (count === 0)
+        let countCustomer = await customerModel.countDocuments({code: generatedInvoice.customer, user: req.loggedUser._id});
+        if (countCustomer === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
@@ -394,9 +394,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
         quote.status = "sent";
         quote.save();
         let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
-        pdf.getQuote(result, req.language);
         mailer.sendQuote(result, req.language);
-        utils.removePdf(utils.getPdfPath(result.user._id, result.code));
         res.status(200).json({message: localization[req.language].quotes.send, data: result});
     }
 }));
@@ -425,7 +423,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
  *         schema:
  *           $ref: '#/definitions/Quote'
  */
-router.get("/send/:code", middleware.wrapper(async (req, res) => {
+router.get("/download/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!quote)

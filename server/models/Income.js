@@ -5,11 +5,13 @@ let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 
 let incomeSchema = mongoose.Schema ({
-    invoice: String,
     method: String,
     amount: Number,
+    invoice: String,
     user: String,
-    date: Date
+    dateIncome: Date,
+    createdAt: Date,
+    updatedAt: Date
 });
 
 incomeSchema.methods.fullFormat = function(include) {
@@ -18,7 +20,7 @@ incomeSchema.methods.fullFormat = function(include) {
         method: this.method,
         amount: this.amount,
         user: this.user,
-        date: utils.formatDate(this.date)
+        dateIncome: utils.formatDate(this.dateIncome)
     };
 
     if (include && include.logged) {

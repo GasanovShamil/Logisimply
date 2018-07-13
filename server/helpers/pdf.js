@@ -17,15 +17,15 @@ module.exports = {
             bloc[i] = bloc[i].trim();
         return bloc.join("\n");
     },
-    getTableHead: function() {
+    getTableHead: function(language) {
         return [
-            this.getCell("Ref", 35),
-            this.getCell("Libellé", 85),
-            this.getCell("Description", 245),
-            this.getCell("P.U. H.T.", 40),
-            this.getCell("Qte", 40, "center"),
-            this.getCell("Remise (€)", 40, "center"),
-            this.getCell("Total H.T.", 76, "center")
+            this.getCell(localization[language].pdf.content.reference, 35),
+            this.getCell(localization[language].pdf.content.label, 85),
+            this.getCell(localization[language].pdf.content.description, 245),
+            this.getCell(localization[language].pdf.content.unit_price_ET, 40),
+            this.getCell(localization[language].pdf.content.quantity, 40, "center"),
+            this.getCell(localization[language].pdf.content.discount, 40, "center"),
+            this.getCell(localization[language].pdf.content.total_price_ET, 76, "center")
         ];
     },
     getTableBody: function(content) {
@@ -80,13 +80,14 @@ module.exports = {
         document.addContent("banner", localization[language].pdf.banner.invoice + invoice.code);
         if (invoice.subject)
             document.addContent("object", localization[language].pdf.subject + invoice.subject);
-        document.addContent("legal_notice_immatriculation", localization[language].pdf.pdf.immatriculation);
+        document.addContent("legal_notice_immatriculation", localization[language].pdf.immatriculation);
 
-        document.addTable("content", this.getTableBody(invoice.content), this.getTableHead());
-        document.addTable("advanced_payment", [[invoice.advancedPayment.amount + " €"]], [this.getCell(localization[language].pdf.advanced_payment, 70, "center")]);
-        document.addTable("discount", [[invoice.discount]], [this.getCell(localization[language].pdf.discount, 70, "center")]);
+        document.addTable("content", this.getTableBody(invoice.content), this.getTableHead(language));
+        document.addTable("discount", [[invoice.discount + " €"]], [this.getCell(localization[language].pdf.discount, 70, "center")]);
         document.addTable("total", [[invoice.totalPriceET + " €"]], [this.getCell(localization[language].pdf.total, 70, "center")]);
-        document.addContent("legal_notice_tva",localization[language].pdf.pdf.tva);
+        document.addTable("advanced_payment", [[invoice.advancedPayment + " €"]], [this.getCell(localization[language].pdf.advanced_payment, 70, "center")]);
+        document.addTable("sum_to_pay", [[invoice.sumToPay + " €"]], [this.getCell(localization[language].pdf.sum_to_pay, 70, "center")]);
+        document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
         document.addContent("date_payment", this.formatTextBloc([localization[language].pdf.date_payment + invoice.datePayment, localization[language].pdf.date_execution + invoice.dateExecution]));
         if (invoice.collectionCost)
