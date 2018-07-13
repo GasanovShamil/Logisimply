@@ -223,7 +223,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  *           $ref: '#/definitions/Invoice'
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
-    let paramInvoice = req.body.invoice;
+    let paramInvoice = req.body;
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
