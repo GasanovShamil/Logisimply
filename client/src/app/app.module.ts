@@ -27,6 +27,9 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import { ProviderDialogComponent } from './components/dialogs/provider-dialog/provider-dialog.component';
 import { ItemsComponent } from './components/items/items.component';
 import { ItemDialogComponent } from './components/dialogs/item-dialog/item-dialog.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { PaymentComponent } from './components/payment/payment.component';
+import { ActivateComponent } from './components/activate/activate.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -37,6 +40,7 @@ export function tokenGetter() {
     AppComponent,
     HomeComponent,
     LoginComponent,
+    WelcomeComponent,
     DashboardComponent,
     ContactsComponent,
     NavigationComponent,
@@ -45,7 +49,10 @@ export function tokenGetter() {
     CustomerDialogComponent,
     ProviderDialogComponent,
     ItemsComponent,
-    ItemDialogComponent
+    ItemDialogComponent,
+    PaymentComponent,
+    ActivateComponent
+
   ],
   entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent],
   imports: [
