@@ -57,10 +57,12 @@ let router = express.Router();
  *       advancedPayment:
  *         type: object
  *         properties:
- *           value:
+ *           amount:
  *             type: number
  *           status:
  *             type: string
+ *         required:
+ *           - amount
  *       comment:
  *         type: string
  *       status:
@@ -93,18 +95,12 @@ router.use(middleware.isLogged);
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: invoice
- *         description: Invoice object
+ *       - description: Invoice object
  *         in: body
  *         required: true
  *         type: object
  *         schema:
  *           $ref: '#/definitions/Invoice'
- *       - name: advancedPaymentValue
- *         description: Advanced payment value
- *         in: body
- *         required: true
- *         type: number
  *     responses:
  *       403:
  *         description: Error - user is logged out
@@ -116,8 +112,7 @@ router.use(middleware.isLogged);
  *           $ref: '#/definitions/Invoice'
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
-    let paramInvoice = req.body.invoice;
-    let paramAdvancedPaymentValue = req.body.advancedPaymentValue;
+    let paramInvoice = req.body;
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
@@ -129,7 +124,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             user.parameters.invoices += 1;
             user.save();
             paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
-            paramInvoice.advancedPayment = {amount: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
+            paramInvoice.advancedPayment.status = paramInvoice.advancedPayment.amount === 0 ? "none" : "pending";
             paramInvoice.status = "draft";
             paramInvoice.user = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
@@ -211,18 +206,12 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: invoice
- *         description: Invoice to update
+ *       - description: Invoice to update
  *         in: body
  *         required: true
  *         type: object
  *         schema:
  *           $ref: '#/definitions/Invoice'
- *       - name: advancedPaymentValue
- *         description: Advanced payment value
- *         in: body
- *         required: true
- *         type: number
  *     responses:
  *       403:
  *         description: Error - user is logged out
@@ -235,23 +224,27 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body.invoice;
-    let paramAdvancedPaymentValue = req.body.advancedPaymentValue;
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
-        if (count === 0)
+        let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
+        if (countCustomer === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
-            paramInvoice.advancedPayment = {amount: paramAdvancedPaymentValue, status: (paramAdvancedPaymentValue === 0 ? "none" : "pending")};
-            paramInvoice.updatedAt = new Date();
-            await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
-            let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
-            if (!invoice)
-                res.status(400).json({message: localization[req.language].invoices.code.failed});
+            let countInvoice = await invoiceModel.countDocuments({code: paramInvoice.code, status: "draft", user: req.loggedUser._id});
+            if (countInvoice === 0)
+                res.status(400).json({message: localization[req.language].invoices.update.impossible});
             else {
-                let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
-                res.status(200).json({message: localization[req.language].invoices.update, data: result});
+                paramInvoice.advancedPayment.status = paramInvoice.advancedPayment.amount === 0 ? "none" : "pending";
+                paramInvoice.updatedAt = new Date();
+                await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
+                let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
+                if (!invoice)
+                    res.status(400).json({message: localization[req.language].invoices.code.failed});
+                else {
+                    let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
+                    res.status(200).json({message: localization[req.language].invoices.update.success, data: result});
+                }
             }
         }
     }
@@ -355,7 +348,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.code.failed});
     else {
-        invoice.status = "sent";
+        invoice.status = "lock";
         invoice.save();
         let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
         pdf.getInvoice(result, req.language);

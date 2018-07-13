@@ -115,7 +115,10 @@
     "code": {
       "failed": "No invoice match this code"
     },
-    "update": "Invoice successfully updated",
+    "update": {
+      "success": "Invoice successfully updated",
+      "impossible": "No updatable invoice match this code"
+    },
     "delete": {
       "one": "Invoice successfully deleted",
       "multiple": "Invoices successfully deleted"

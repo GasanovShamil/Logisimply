@@ -18,7 +18,7 @@ module.exports = {
             to: user.email,
             subject: localization[language].email.template.activation,
             text: "Bonjour " + user.firstname + ", veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : " + url,
-            html: "<p>Bonjour " + user.firstname + "</p><p>Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>Lien</a></p>"
+            html: "<p>Bonjour " + user.firstname + "</p><p>Pour activer votre compte Logisimply : <b><a href='" + url + "' target='_blank'>cliquez-ici</a></p>"
         };
 
         transporter.sendMail(mailOptions, function(err) {

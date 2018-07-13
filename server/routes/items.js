@@ -30,7 +30,6 @@ let router = express.Router();
  *         type: date
  *     required:
  *       - type
- *       - reference
  *       - label
  *       - priceET
  *       - description
@@ -118,7 +117,7 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  * /items/{reference}:
  *   get:
  *     tags:
- *       - Items000000
+ *       - Items
  *     description: Logged - Get one of my items
  *     produces:
  *       - application/json

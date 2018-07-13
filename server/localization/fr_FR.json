@@ -115,7 +115,10 @@
     "code": {
       "failed": "Aucune facture ne correspond au code demandé"
     },
-    "update": "Facture modifiée avec succès",
+    "update": {
+      "success": "Facture modifiée avec succès",
+      "impossible": "Aucune facture modifiable ne correspond au code demandé"
+    },
     "delete": {
       "one": "Facture supprimée avec succès",
       "multiple": "Factures supprimées avec succès"
