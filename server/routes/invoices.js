@@ -100,6 +100,45 @@ let router = express.Router();
  */
 
 router.use(middleware.localize);
+
+/**
+ * @swagger
+ * /invoices/{user}/{code}/payment:
+ *   get:
+ *     tags:
+ *       - Invoices
+ *     description: Logged - Payment of a specific invoice
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: User's id
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - description: Invoice's code
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       400:
+ *         description: Error - no invoice for code
+ *       200:
+ *         description: An object of the requested invoice
+ *         schema:
+ *           $ref: '#/definitions/Invoice'
+ */
+router.get("/:user/:code/payment", middleware.wrapper(async (req, res) => {
+    let paramUser = req.params.user;
+    let paramCode = req.params.code;
+    let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
+    if (!invoice)
+        res.status(400).json({message: localization[req.language].invoices.income.impossible});
+    else {
+        let result = await invoice.fullFormat({logged: paramUser, infos: true});
+        res.status(200).json(result);
+    }
+}));
+
 router.use(middleware.isLogged);
 
 /**
