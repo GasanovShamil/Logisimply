@@ -12,7 +12,6 @@ module.exports = {
         return object;
     },
     customer: async (object, user) => {
-        console.log(customerModel);
         object.customer = (await customerModel.findOne({code: object.customer, user: user}).exec()).fullFormat();
         return object;
     },
