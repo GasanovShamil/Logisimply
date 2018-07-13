@@ -1,6 +1,7 @@
 let config = require("../config");
 let localization = require("../localization/localize");
-let utils = require("../helpers/utils");
+let utils = require("./utils");
+let pdf = require("./pdf");
 let nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({
     service: config.email.service,
@@ -45,37 +46,47 @@ module.exports = {
         });
     },
     sendQuote: function(quote, language) {
+        pdf.getQuote(quote, language);
+        let path = utils.getPdfPath(quote.user._id, quote.code);
+
         let mailOptions = {
             from: config.email.user,
             to: quote.customer.email,
             subject: localization[language].email.template.password,
             text: "Bonjour",
             html: "<p>Bonjour " + quote.customer.name + "</p>",
-            attachments: [{filename: "Devis - " + quote.code + ".pdf", path: utils.getPdfPath(quote.user._id, quote.code)}]
+            attachments: [{filename: "Devis - " + quote.code + ".pdf", path: path}]
         };
 
         transporter.sendMail(mailOptions, function(err) {
             if (err)
                 console.log("Mail quote failed - user : " + quote.user._id + " / quote : " + quote.code);
-            else
+            else {
                 console.log("Mail quote succeeded - user : " + quote.user._id + " / quote : " + quote.code);
+                utils.removePdf(path);
+            }
         });
     },
     sendInvoice: function(invoice, language) {
+        pdf.getInvoice(invoice, language);
+        let path = utils.getPdfPath(invoice.user._id, invoice.code);
+
         let mailOptions = {
             from: config.email.user,
             to: invoice.customer.email,
             subject: localization[language].email.template.password,
             text: "Bonjour",
             html: "<p>Bonjour " + invoice.customer.name + "</p>",
-            attachments: [{filename: "Facture - " + invoice.code + ".pdf", path: utils.getPdfPath(invoice.user._id, invoice.code)}]
+            attachments: [{filename: "Facture - " + invoice.code + ".pdf", path: path}]
         };
 
         transporter.sendMail(mailOptions, function(err) {
             if (err)
                 console.log("Mail invoice failed - user : " + invoice.user._id + " / invoice : " + invoice.code);
-            else
+            else {
                 console.log("Mail invoice succeeded - user : " + invoice.user._id + " / invoice : " + invoice.code);
+                utils.removePdf(path);
+            }
         });
     }
 };

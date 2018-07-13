@@ -69,8 +69,8 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isItemComplete(paramItem))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
-        if (count !== 0)
+        let countItem = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
+        if (countItem !== 0)
             res.status(400).json({message: localization[req.language].items.reference.used});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});

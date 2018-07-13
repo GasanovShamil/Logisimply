@@ -55,14 +55,7 @@ let router = express.Router();
  *       collectionCost:
  *         type: boolean
  *       advancedPayment:
- *         type: object
- *         properties:
- *           amount:
- *             type: number
- *           status:
- *             type: string
- *         required:
- *           - amount
+ *         type: number
  *       comment:
  *         type: string
  *       status:
@@ -116,15 +109,16 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.isInvoiceComplete(paramInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
-        let count = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
-        if (count === 0)
+        let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
+        if (countCustomer === 0)
             res.status(400).json({message: localization[req.language].customers.code.failed});
         else {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.invoices += 1;
             user.save();
             paramInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.invoices);
-            paramInvoice.advancedPayment.status = paramInvoice.advancedPayment.amount === 0 ? "none" : "pending";
+            if (!paramInvoice.advancedPayment)
+                paramInvoice.advancedPayment = 0;
             paramInvoice.status = "draft";
             paramInvoice.user = req.loggedUser._id;
             paramInvoice.createdAt = new Date();
@@ -235,7 +229,8 @@ router.put("/update", middleware.wrapper(async (req, res) => {
             if (countInvoice === 0)
                 res.status(400).json({message: localization[req.language].invoices.update.impossible});
             else {
-                paramInvoice.advancedPayment.status = paramInvoice.advancedPayment.amount === 0 ? "none" : "pending";
+                if (!paramInvoice.advancedPayment)
+                    paramInvoice.advancedPayment = 0;
                 paramInvoice.updatedAt = new Date();
                 await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, paramInvoice, null);
                 let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
@@ -276,10 +271,11 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  */
 router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
-    let invoice = await invoiceModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
-    if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.code.failed});
+    let countInvoice = await invoiceModel.countDocuments({code: paramCode, status: {$ne: "lock"}, user: req.loggedUser._id});
+    if (countInvoice === 0)
+        res.status(400).json({message: localization[req.language].invoices.delete.impossible});
     else {
+        let invoice = await invoiceModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
         let result = await invoice.fullFormat({logged: req.loggedUser._id, customer: true});
         res.status(200).json({message: localization[req.language].invoices.delete.one, data: result});
     }
@@ -313,9 +309,12 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramInvoices = req.body;
     let count = 0;
     for (let i = 0; i < paramInvoices.length; i++) {
-        let invoice = await invoiceModel.findOneAndRemove({code: paramInvoices[i].code, user: req.loggedUser._id});
-        if (invoice)
-            count++;
+        let countInvoice = await invoiceModel.countDocuments({code: paramInvoices[i].code, status: {$ne: "lock"}, user: req.loggedUser._id});
+        if (countInvoice === 1) {
+            let invoice = await invoiceModel.findOneAndRemove({code: paramInvoices[i].code, user: req.loggedUser._id});
+            if (invoice)
+                count++;
+        }
     }
     res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: count});
 }));
@@ -351,9 +350,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
         invoice.status = "lock";
         invoice.save();
         let result = await invoice.fullFormat({logged: req.loggedUser._id, infos: true});
-        pdf.getInvoice(result, req.language);
         mailer.sendInvoice(result, req.language);
-        utils.removePdf(utils.getPdfPath(result.user._id, result.code));
         res.status(200).json({message: localization[req.language].invoices.send, data: result});
     }
 }));
@@ -382,7 +379,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
  *         schema:
  *           $ref: '#/definitions/Quote'
  */
-router.get("/send/:code", middleware.wrapper(async (req, res) => {
+router.get("/download/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!invoice)

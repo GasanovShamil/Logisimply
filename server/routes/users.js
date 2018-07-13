@@ -97,8 +97,8 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     else if (!utils.isEmailValid(paramUser.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
-        let count = await userModel.countDocuments({email: paramUser.email});
-        if (count !== 0)
+        let countUser = await userModel.countDocuments({email: paramUser.email});
+        if (countUser !== 0)
             res.status(400).json({message: localization[req.language].users.email.used});
         else {
             paramUser.status = "inactive";
