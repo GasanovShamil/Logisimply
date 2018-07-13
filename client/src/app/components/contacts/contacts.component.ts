@@ -196,6 +196,7 @@ export class ContactsComponent implements OnInit {
     let dialogRef = this.dialog.open(CustomerDialogComponent, {
       maxWidth: '500px',
       minWidth: '100px',
+      maxHeight: '95vh',
       data: (customer)?customer:null
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -218,6 +219,7 @@ export class ContactsComponent implements OnInit {
     let dialogRef = this.dialog.open(ProviderDialogComponent, {
       maxWidth: '500px',
       minWidth: '100px',
+      maxHeight: '95vh',
       data: (provider)?provider:null
     });
     dialogRef.afterClosed().subscribe(result => {

@@ -108,6 +108,7 @@ export class ItemsComponent implements OnInit {
     let dialogRef = this.dialog.open(ItemDialogComponent, {
       maxWidth: '500px',
       minWidth: '100px',
+      maxHeight: '95vh',
       data: (item)?item:null
     });
     dialogRef.afterClosed().subscribe(result => {

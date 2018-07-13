@@ -4,7 +4,8 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "contacts": "Contacts",
-    "items": "Catalog"
+    "items": "Catalog",
+    "bills": "Bills"
   },
   "login": {
     "email_placeholder": "Email",
@@ -102,5 +103,15 @@
     "priceET":	"Price H.T.",
     "description":	"Description",
     "details_edit": "Details/Edit"
+  },
+  "bills": {
+    "quotes": "Quotes",
+    "invoices": "Invoices",
+    "filter":	"Filter",
+    "add_new_quote":	"Add new quote",
+    "add_new_invoice":	"Add new invoice",
+    "delete_selected": "Delete selected",
+    "select_at_least_one": "You need to select at least one element !"
+
   }
 }

@@ -1,0 +1,136 @@
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <div class="loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <mat-tab label="{{ 'bills.quotes' | translate }}">
+    <div class="filter-header">
+      <mat-form-field>
+        <input matInput (keyup)="applyQuoteFilter($event.target.value)" placeholder="{{ 'bills.filter' | translate }}">
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-icon-button matTooltip="{{ 'bills.add_new_quote' | translate }}" (click)="openQuoteDialog()">
+          <mat-icon color="primary">add</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="{{ 'bills.delete_selected' | translate }}" (click)="onDeleteQuoteClick()">
+          <mat-icon color="warn">delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="example-container mat-elevation-z8">
+      <mat-table #quoteSort="matSort" [dataSource]="quoteDataSource" matSort>
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? quoteToggle() : null"
+                          [checked]="quoteSelection.hasValue() && isAllQuotesSelected()"
+                          [indeterminate]="quotesSelection.hasValue() && !isAllQuotesSelected()">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? quoteSelection.toggle(row) : null"
+                          [checked]="quoteSelection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.code' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.type' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{'bills.'+row.type | translate}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.name' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.email' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.email}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="town">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.town' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="info">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="{{ 'bills.details_edit' | translate }}" (click)="openQuoteDialog(row)">
+              <mat-icon color="primary">info</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedQuoteColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedQuoteColumns;">
+        </mat-row>
+      </mat-table>
+      <mat-paginator #quotePaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-tab>
+  <mat-tab label="{{ 'bills.invoices' | translate }}">
+    <div class="filter-header">
+      <mat-form-field>
+        <input matInput (keyup)="applyInvoiceFilter($event.target.value)" placeholder="{{ 'bills.filter' | translate }}">
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-icon-button matTooltip="{{ 'bills.add_new_invoice' | translate }}" (click)="openInvoiceDialog()">
+          <mat-icon color="primary">add</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="{{ 'bills.delete_selected' | translate }}" (click)="onDeleteInvoiceClick()">
+          <mat-icon color="warn">delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="example-container mat-elevation-z8">
+      <mat-table #invoiceSort="matSort" [dataSource]="invoiceDataSource" matSort>
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? invoiceToggle() : null"
+                          [checked]="invoiceSelection.hasValue() && isAllInvoicesSelected()"
+                          [indeterminate]="invoiceSelection.hasValue() && !isAllInvoicesSelected()">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? invoiceSelection.toggle(row) : null"
+                          [checked]="invoiceSelection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.code' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="companyName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.company_name' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.companyName}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="legalForm">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.legal_form' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.legalForm}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.email' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.email}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="town">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'bills.town' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="info">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="{{ 'bills.details_edit' | translate }}" (click)="openInvoiceDialog(row)">
+              <mat-icon color="primary">info</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedInvoiceColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedInvoiceColumns;">
+        </mat-row>
+      </mat-table>
+      <mat-paginator #invoicePaginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+

@@ -30,6 +30,9 @@ import { ItemDialogComponent } from './components/dialogs/item-dialog/item-dialo
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { ActivateComponent } from './components/activate/activate.component';
+import { BillsComponent } from './components/bills/bills.component';
+import { QuoteDialogComponent } from './components/dialogs/quote-dialog/quote-dialog.component';
+import { InvoiceDialogComponent } from './components/dialogs/invoice-dialog/invoice-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -51,10 +54,13 @@ export function tokenGetter() {
     ItemsComponent,
     ItemDialogComponent,
     PaymentComponent,
-    ActivateComponent
+    ActivateComponent,
+    BillsComponent,
+    QuoteDialogComponent,
+    InvoiceDialogComponent
 
   ],
-  entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent],
+  entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
