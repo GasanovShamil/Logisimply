@@ -54,7 +54,7 @@ module.exports = {
         document.addTable("content", utils.pdf.getTableBody(invoice.content), utils.pdf.getTableHead(language));
         document.addTable("discount", [[invoice.discount + " €"]], [utils.pdf.getCell(localization[language].pdf.discount, 70, "center")]);
         document.addTable("total", [[invoice.totalPriceET + " €"]], [utils.pdf.getCell(localization[language].pdf.total, 70, "center")]);
-        document.addTable("advanced_payment", [[invoice.advancedPayment + " €"]], [utils.pdf.getCell(localization[language].pdf.advanced_payment, 70, "center")]);
+        document.addTable("payed", [[invoice.payed + " €"]], [utils.pdf.getCell(localization[language].pdf.payed, 70, "center")]);
         document.addTable("sum_to_pay", [[invoice.sumToPay + " €"]], [utils.pdf.getCell(localization[language].pdf.sum_to_pay, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
