@@ -105,7 +105,7 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
-    if (!utils.isQuoteComplete(paramQuote))
+    if (!utils.fields.isQuoteComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
@@ -115,7 +115,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.quotes += 1;
             user.save();
-            paramQuote.code = "DE" + utils.getDateCode() + utils.getCode(user.parameters.quotes);
+            paramQuote.code = "DE" + utils.format.getDateCode() + utils.format.getCode(user.parameters.quotes);
             paramQuote.status = "draft";
             paramQuote.user = req.loggedUser._id;
             paramQuote.createdAt = new Date();
@@ -215,7 +215,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
-    if (!utils.isProviderComplete(paramQuote))
+    if (!utils.fields.isQuoteComplete(paramQuote))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
@@ -342,7 +342,7 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
         collectionCost: paramQuote.collectionCost,
         comment: paramQuote.comment
     };
-    if (!utils.isInvoiceComplete(generatedInvoice))
+    if (!utils.fields.isInvoiceComplete(generatedInvoice))
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         let countCustomer = await customerModel.countDocuments({code: generatedInvoice.customer, user: req.loggedUser._id});
@@ -352,7 +352,7 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
             let user = await userModel.findOne({_id: req.loggedUser._id});
             user.parameters.quotes += 1;
             user.save();
-            generatedInvoice.code = "FA" + utils.getDateCode() + utils.getCode(user.parameters.quotes);
+            generatedInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.quotes);
             generatedInvoice.advandedPayment = {value: 0, status: "none"};
             generatedInvoice.status = "draft";
             generatedInvoice.user = req.loggedUser._id;
@@ -394,7 +394,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
         quote.status = "sent";
         quote.save();
         let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
-        mailer.sendQuote(result, req.language);
+        pdf.getQuote(result, req.language, mailer.sendQuote);
         res.status(200).json({message: localization[req.language].quotes.send, data: result});
     }
 }));
@@ -431,11 +431,11 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
     else {
         let result = await quote.fullFormat({logged: req.loggedUser._id, infos: true});
         pdf.getQuote(result, req.language);
-        res.download(utils.getPdfPath(result.user._id, result.code), "Devis - " + quote.code + ".pdf", function(err){
+        res.download(utils.pdf.getPath(result.user._id, result.code), "Devis - " + quote.code + ".pdf", function(err){
             if (err)
                 res.status(500).json({message: localization[req.language].quotes.download.error});
             else {
-                utils.removePdf(utils.getPdfPath(result.user._id, result.code));
+                utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
                 res.status(200).json({message: localization[req.language].quotes.download.success, data: result});
             }
         });

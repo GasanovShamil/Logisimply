@@ -92,9 +92,9 @@ router.use(middleware.localize);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
-    if (!utils.isUserComplete(paramUser))
+    if (!utils.fields.isUserComplete(paramUser))
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramUser.email))
+    else if (!utils.fields.isEmailValid(paramUser.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let countUser = await userModel.countDocuments({email: paramUser.email});
@@ -175,7 +175,7 @@ router.post("/forgetPassword", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramEmail))
+    else if (!utils.fields.isEmailValid(paramEmail))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({status: "active", email: paramEmail});
@@ -218,7 +218,7 @@ router.post("/resendActivationUrl", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramEmail))
+    else if (!utils.fields.isEmailValid(paramEmail))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({status: "inactive", email: paramEmail});
@@ -266,7 +266,7 @@ router.post("/login", middleware.wrapper(async (req, res) => {
     let paramPassword = req.body.password;
     if (!(paramEmail && paramPassword))
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramEmail))
+    else if (!utils.fields.isEmailValid(paramEmail))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         let user = await userModel.findOne({email: paramEmail});
@@ -345,9 +345,9 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
-    if (!utils.isUserComplete(paramUser))
+    if (!utils.fields.isUserComplete(paramUser))
         res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.isEmailValid(paramUser.email))
+    else if (!utils.fields.isEmailValid(paramUser.email))
         res.status(400).json({message: localization[req.language].email.invalid});
     else {
         paramUser.password = md5(paramUser.password);
