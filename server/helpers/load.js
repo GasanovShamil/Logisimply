@@ -8,11 +8,13 @@ module.exports = {
             object.user = (await userModel.findOne({_id: user}).exec()).fullFormat({credentials: true});
         if (object.customer)
             object.customer = (await customerModel.findOne({code: object.customer, user: user}).exec()).fullFormat();
-        if (object.incomes && object.sumToPay) {
+        if (object.incomes && object.sumToPay && object.payed) {
             let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
             object.incomes = incomes;
-            for (let i = 0; i < incomes.length; i++)
+            for (let i = 0; i < incomes.length; i++) {
                 object.sumToPay -= incomes[i].amount;
+                object.payed += incomes[i].amount;
+            }
         }
         return object;
     },
@@ -30,8 +32,10 @@ module.exports = {
         if (object.incomes && object.sumToPay) {
             let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
             object.incomes = incomes;
-            for (let i = 0; i < incomes.length; i++)
+            for (let i = 0; i < incomes.length; i++) {
                 object.sumToPay -= incomes[i].amount;
+                object.payed += incomes[i].amount;
+            }
         }
         return object;
     }

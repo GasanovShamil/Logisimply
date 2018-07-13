@@ -30,7 +30,7 @@
     },
     "discount": "Remise",
     "total": "Total H.T.",
-    "advanced_payment": "Acompte",
+    "payed": "Total réglé",
     "sum_to_pay": "Restant dû",
     "tva": "TVA non applicable, art. 293 B du CGI",
     "date_payment": "Date d'échéance de paiement : ",
@@ -90,6 +90,9 @@
     "delete": {
       "one": "Client supprimé avec succès",
       "multiple": "Clients supprimés avec succès"
+    },
+    "assets": {
+      "failed": "Avoirs insuffisants"
     }
   },
   "providers": {

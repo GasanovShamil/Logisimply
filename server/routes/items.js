@@ -179,7 +179,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
         res.status(400).json({message: localization[req.language].fields.required});
     else {
         paramItem.updatedAt = new Date();
-        await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, paramItem, null);
+        await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, {$set: paramItem}, null);
         let item = await itemModel.findOne({reference: paramItem.reference, user: req.loggedUser._id});
         if (!item)
             res.status(400).json({message: localization[req.language].items.reference.failed});

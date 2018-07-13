@@ -30,7 +30,7 @@
     },
     "discount": "Discount",
     "total": "Total E.T.",
-    "advanced_payment": "Advanced payment",
+    "payed": "Total payed",
     "sum_to_pay": "Remaining to pay",
     "tva": "Translate | TVA non applicable, art. 293 B du CGI",
     "date_payment": "Payment due date : ",
@@ -90,6 +90,9 @@
     "delete": {
       "one": "Customer successfully deleted",
       "multiple": "Customers successfully deleted"
+    },
+    "assets": {
+      "failed": "Not enough assets"
     }
   },
   "providers": {

@@ -38,9 +38,9 @@ providerSchema.methods.fullFormat = function(include) {
         updatedAt: this.updatedAt
     };
 
-    if (include && include.logged) {
+    if (include && include.owner) {
         if (include.user)
-            result = load.user(result, include.logged);
+            result = load.user(result, include.owner);
     }
 
     return result;
