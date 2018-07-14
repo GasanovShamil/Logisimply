@@ -1,9 +1,11 @@
+import {Content} from "./content";
+
 export class Invoice {
   customer: string;
   code: string;
   dateInvoice: string;
   subject: string;
-  content: any[];
+  content: Content[];
   discount: string;
   totalPriceET: string;
   advancedPayment: string;

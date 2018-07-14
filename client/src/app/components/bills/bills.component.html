@@ -22,7 +22,7 @@
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? quoteToggle() : null"
                           [checked]="quoteSelection.hasValue() && isAllQuotesSelected()"
-                          [indeterminate]="quotesSelection.hasValue() && !isAllQuotesSelected()">
+                          [indeterminate]="quoteSelection.hasValue() && !isAllQuotesSelected()">
             </mat-checkbox>
           </mat-header-cell>
           <mat-cell *matCellDef="let row">
@@ -31,26 +31,27 @@
                           [checked]="quoteSelection.isSelected(row)">
             </mat-checkbox>
           </mat-cell>
+          'subject', 'customer', 'dateQuote', 'datePayment','totalPriceET', 'status', 'info'
         </ng-container>
         <ng-container matColumnDef="code">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.code' | translate }} </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="type">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.type' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{'bills.'+row.type | translate}} </mat-cell>
+        <ng-container matColumnDef="subject">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.subject' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.subject}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.name' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+        <ng-container matColumnDef="customer">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.customer_name' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.customer.name}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="email">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.email' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.email}} </mat-cell>
+        <ng-container matColumnDef="dateQuote">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.dateQuote' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.dateQuote}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="town">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.town' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
+        <ng-container matColumnDef="datePayment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.datePayment' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.datePayment}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="info">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
