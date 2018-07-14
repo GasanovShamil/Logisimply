@@ -73,6 +73,9 @@
       "method": "Moyen de paiement",
       "amount": "Montant",
       "date": "Date"
-    }
+    },
+    "paying": "Payer",
+    "not_allowed": " n'a pas activé le paiement en ligne.",
+    "invalid_amount": "Montant incorrect"
   }
 }

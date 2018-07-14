@@ -130,6 +130,9 @@
       "method": "Means of payment",
       "amount": "Amount",
       "date": "Date"
-    }
+    },
+    "paying": "Pay",
+    "not_allowed": " did not allow online payment.",
+    "invalid_amount": "Amount invalid"
   }
 }

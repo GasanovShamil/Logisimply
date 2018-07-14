@@ -137,3 +137,7 @@
 .number {
   text-align: right;
 }
+
+.error {
+  color: rgba(197, 36, 26, 1);
+}
