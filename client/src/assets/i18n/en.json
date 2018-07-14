@@ -104,32 +104,31 @@
     "details_edit": "Details/Edit"
   },
   "payment":{
-    "siret": "Translate | Siret :",
-    "date": "Date :",
-    "banner": "Invoice -",
-    "subject": "Subject :",
+    "siret": "Translate | Siret : ",
+    "date": "Date : ",
+    "banner": "Invoice - ",
+    "subject": "Subject : ",
     "immatriculation": "Translate | Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers (RM).",
     "content": {
       "reference": "Ref",
       "label": "Label",
-      "description": "Description",
       "unit_price_ET": "U.P. E.T.",
       "quantity": "Qty",
       "discount": "Discount (€)",
       "total_price_ET": "Total E.T."
     },
-    "date_payment": "Payment due date :",
-    "date_execution": "Sale/benefit date :",
+    "date_payment": "Payment due date : ",
+    "date_execution": "Sale/benefit date : ",
     "collection_cost": "Translate | En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
-    "discount": "Discount",
+    "discount": "Discount (€)",
     "total": "Total E.T.",
-    "comment": "Comment :",
+    "comment": "Comment : ",
     "payed": "Total payed",
-    "sum_to_pay": "Remaining to pay",
+    "sum_to_pay": "Remaining",
     "tva": "Translate | TVA non applicable, art. 293 B du CGI",
     "incomes": {
       "method": "Means of payment",
-      "amount": "Montant",
+      "amount": "Amount",
       "date": "Date"
     }
   }
