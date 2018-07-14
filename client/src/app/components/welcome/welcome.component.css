@@ -1,65 +1,422 @@
-/* HEADER */
-#header-image {
-  margin: 0;
-  background-image: url("/assets/images/background.jpg");
-  background-repeat: no-repeat;
-  height: 100vh;
-  left: -50px;
-  right: -50px;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+/*
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+  /* HEADER */
+  #header-image {
+    margin: 0;
+    background-image: url("/assets/images/background.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  #header-image h1 {
+    margin: 0;
+    padding-top: 20%;
+    color: #FFFFFF;
+    font-size: 4em;
+  }
+
+  #header-image p {
+    color: #FFFFFF;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .shadow {
+    text-shadow: 1px 1px #000000;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    height: 60vh;
+    background-color: #fafafa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #presentation-header {
+    padding-left: 20%;
+  }
+
+  #card-component {
+    width: 100%;
+    margin: auto;
+  }
+
+  .card-type {
+    max-width: 250px;
+    display: inline-block;
+    margin-top: 8%;
+    margin-left: 2%;
+  }
+
+  /* FOOTER */
+  footer {
+    background-color: #31acfc;
+  }
+
+  footer a {
+    color: #FFFFFF;
+  }
 }
 
-#header-image h1 {
-  margin: 0;
-  padding-top: 20%;
-  color: #FFFFFF;
-  font-size: 4em;
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* HEADER */
+  #header-image {
+    margin: 0;
+    background-image: url("/assets/images/background.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  #header-image h1 {
+    margin: 0;
+    padding-top: 20%;
+    color: #FFFFFF;
+    font-size: 3em;
+  }
+
+  #header-image p {
+    color: #FFFFFF;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .shadow {
+    text-shadow: 1px 1px #000000;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    height: 100vh;
+    background-color: #fafafa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #presentation-header {
+    padding-left: 20%;
+  }
+
+  #presentation-card {
+    width: 100%;
+    margin: auto;
+  }
+
+  .card-type {
+    max-width: 250px;
+    display: inline-block;
+    margin-top: 8%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 10%;
+    background-color: #31acfc;
+  }
+
+  footer a {
+    color: #FFFFFF;
+  }
 }
 
-#header-image p {
-  color: #FFFFFF;
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* HEADER */
+  #header-image {
+    margin: 0;
+    background-image: url("/assets/images/background.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  #header-image h1 {
+    margin: 0;
+    padding-top: 20%;
+    color: #FFFFFF;
+    font-size: 3em;
+  }
+
+  #header-image p {
+    color: #FFFFFF;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .shadow {
+    text-shadow: 1px 1px #000000;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    height: 100vh;
+    background-color: #fafafa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #presentation-header {
+    padding-left: 20%;
+  }
+
+  #presentation-card {
+    width: 100%;
+    margin: auto;
+  }
+
+  .card-type {
+    max-width: 250px;
+    display: inline-block;
+    margin-top: 8%;
+    margin-left: 1%;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 10%;
+    background-color: #31acfc;
+  }
+
+  footer a {
+    color: #FFFFFF;
+  }
 }
 
-.center {
-  text-align: center;
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* HEADER */
+  #header-image {
+    margin: 0;
+    background-image: url("/assets/images/background.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  #header-image h1 {
+    margin: 0;
+    padding-top: 20%;
+    color: #FFFFFF;
+    font-size: 3em;
+  }
+
+  #header-image p {
+    color: #FFFFFF;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .shadow {
+    text-shadow: 1px 1px #000000;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    height: 100vh;
+    background-color: #fafafa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #presentation-header {
+    padding-left: 20%;
+  }
+
+  #presentation-card {
+    width: 100%;
+    margin: auto;
+  }
+
+  .card-type {
+    max-width: 250px;
+    display: inline-block;
+    margin-top: 8%;
+    margin-left: 1%;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 10%;
+    background-color: #31acfc;
+  }
+
+  footer a {
+    color: #FFFFFF;
+  }
 }
 
-.shadow {
-  text-shadow: 1px 1px #000000;
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+  /* HEADER */
+  #header-image {
+    margin: 0;
+    background-image: url("/assets/images/background.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  #header-image h1 {
+    margin: 0;
+    padding-top: 20%;
+    color: #FFFFFF;
+    font-size: 3em;
+  }
+
+  #header-image p {
+    color: #FFFFFF;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .shadow {
+    text-shadow: 1px 1px #000000;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    height: 100vh;
+    background-color: #fafafa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #presentation-header {
+    padding-left: 20%;
+  }
+
+  #presentation-card {
+    width: 100%;
+    margin: auto;
+  }
+
+  .card-type {
+    max-width: 250px;
+    display: inline-block;
+    margin-top: 8%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 10%;
+    background-color: #31acfc;
+  }
+
+  footer a {
+    color: #FFFFFF;
+  }
 }
 
-/* PRESENTATION */
-#presentation {
-  margin: 0;
-  height: 60vh;
-  background-color: #fafafa;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  color: #212121;
-}
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
 
-#presentation-header {
-  padding-left: 20%;
-}
+@media (min-width: 320px) and (max-width: 480px) {
+  /* HEADER */
+  #header-image {
+    margin: 0;
+    background-image: url("/assets/images/background.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
 
-#presentation-card {
-  width: 100%;
-  margin: auto;
-}
+  #header-image h1 {
+    margin: 0;
+    padding-top: 20%;
+    color: #FFFFFF;
+    font-size: 3em;
+  }
 
-.card-type {
-  max-width: 250px;
-  display: inline-block;
-  margin-top: 8%;
-  margin-left: 2%;
-  margin-right: 2%;
-}
+  #header-image p {
+    color: #FFFFFF;
+  }
 
-/* FOOTER */
-footer {
-  background-color: #31acfc;
-}
+  .center {
+    text-align: center;
+  }
 
-footer a {
-  color: #FFFFFF;
+  .shadow {
+    text-shadow: 1px 1px #000000;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    min-height: 150vh;
+    background-color: #fafafa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #presentation-header {
+    padding-left: 20%;
+  }
+
+  #presentation-card {
+    width: 100%;
+    margin: auto;
+  }
+
+  .card-type {
+    max-width: 250px;
+    display: inline-block;
+    margin-top: 8%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 10%;
+    background-color: #31acfc;
+  }
+
+  footer a {
+    color: #FFFFFF;
+  }
 }
 
