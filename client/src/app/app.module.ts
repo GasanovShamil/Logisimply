@@ -30,6 +30,7 @@ import { ItemDialogComponent } from './components/dialogs/item-dialog/item-dialo
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { ActivateComponent } from './components/activate/activate.component';
+import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -51,7 +52,8 @@ export function tokenGetter() {
     ItemsComponent,
     ItemDialogComponent,
     PaymentComponent,
-    ActivateComponent
+    ActivateComponent,
+    LegalNoticeComponent
 
   ],
   entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent],

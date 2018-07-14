@@ -70,6 +70,10 @@
     margin: auto;
   }
 
+  #card-component img {
+    max-width: 180px;
+  }
+
   .card-type {
     min-height: 296px;
     max-width: 250px;
