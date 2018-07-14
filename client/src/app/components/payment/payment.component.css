@@ -1,0 +1,26 @@
+.full-width {
+  width: 100%;
+}
+div#invoice-container {
+  min-width: 100px;
+  max-width: 750px;
+  width: 100%;
+  margin: 2em auto;
+  padding: 2em 2em 2em 2em;
+  background: #fafafa;
+  border: 1px solid #ebebeb;
+  box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+}
+div#payment-container, div#incomes-container {
+  min-width: 100px;
+  max-width: 500px;
+  width: 100%;
+  margin: 2em auto;
+  padding: 2em 2em 2em 2em;
+  background: #fafafa;
+  border: 1px solid #ebebeb;
+  box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+}
+/*mat-grid-tile {*/
+  /*background: lightblue;*/
+/*}*/

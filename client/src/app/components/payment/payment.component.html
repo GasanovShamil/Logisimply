@@ -1,3 +1,154 @@
-<p>
-  payment works!
-</p>
+<div id="invoice-container" class="form-group">
+  <div class="loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <mat-grid-list cols="12" rowHeight="1:1">
+    <mat-grid-tile [colspan]="9" [rowspan]="2">
+      invoice.user.activityEntitled<br />
+      {{ 'payment.siret' | translate }} invoice.user.siret<br />
+      invoice.user.firstname  invoice.user.lastname - invoice.user.email<br />
+      invoice.user.address<br />
+      invoice.user.zipCode invoice.user.town<br />
+      invoice.user.country
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="2">
+      {{ 'payment.date' | translate }} invoice.dateInvoice
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="6" [rowspan]="2">
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="6" [rowspan]="2">
+      invoice.customer.civility invoice.customer.name<br />
+      invoice.customer.address<br />
+      invoice.customer.zipCode invoice.customer.town<br />
+      invoice.customer.country
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="12" [rowspan]="1">
+      {{ 'payment.banner' | translate }} invoice.code
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="12" [rowspan]="1">
+      {{ 'payment.subject' | translate }} invoice.subject
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="12" [rowspan]="1">
+      {{ 'payment.immatriculation' | translate }}
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <mat-table #table [dataSource]="content">
+    <ng-container matColumnDef="reference">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.reference' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.reference}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="label">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.label' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.label}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.description' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="unitPriceET">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.unit_price_ET' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.unitPriceET}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.quantity' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.quantity}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="discount">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.discount' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.discount}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalPriceET">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.content.total_price_ET' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.totalPriceET}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayContent"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayContent;"></mat-row>
+  </mat-table>
+
+  <mat-grid-list cols="12" rowHeight="1:1">
+    <mat-grid-tile [colspan]="9" [rowspan]="2">
+      {{ 'payment.date_payment' | translate }} invoice.datePayment<br />
+      {{ 'payment.date_execution' | translate }} invoice.dateExecution<br />
+      (if invoice.collectionCost) {{ 'payment.collectionCost' | translate }}
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+      {{ 'payment.discount' | translate }}<br />
+      invoice.discount
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+      {{ 'payment.total' | translate }}<br />
+      invoice.totalPriceET
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="9" [rowspan]="3">
+      {{ 'payment.comment' | translate }}<br />
+      invoice.comment
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+      {{ 'payment.payed' | translate }}<br />
+      invoice.payed
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+      {{ 'payment.sum_to_pay' | translate }}<br />
+      invoice.sumToPay
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+      {{ 'payment.tva' | translate }}
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+<div id="payment-container" class="form-group">
+  <table class="full-width" cellspacing="0">
+    <tr>
+      <td width="50%">
+        Input amount
+      </td>
+
+      <td width="50%">
+        Button paypal
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div id="incomes-container" class="form-group">
+  <mat-table #table [dataSource]="incomes">
+    <ng-container matColumnDef="method">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.method' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.method}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.amount' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.amount}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="dateIncome">
+      <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.date' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.dateIncome}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayIncomes"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayIncomes;"></mat-row>
+  </mat-table>
+</div>

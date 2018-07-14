@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'activate', component: ActivateComponent },
-  { path: 'payment', component: PaymentComponent },
+  { path: 'payment/:user/:invoice', component: PaymentComponent },
   {
     path: '', canActivate: [AuthGuard], component: NavigationComponent,
     children: [
