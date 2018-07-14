@@ -32,17 +32,37 @@
     text-shadow: 1px 1px #000000;
   }
 
-  /* PRESENTATION */
-  #presentation {
+  /* ICONS PRESENTATION */
+  #presentation-activity {
     margin: 0;
-    height: 60vh;
-    background-color: #fafafa;
+    height: 50vh;
     font-family: Roboto, "Helvetica Neue", sans-serif;
     color: #212121;
   }
 
   #presentation-header {
     padding-left: 20%;
+  }
+
+  .icons-presentation {
+    display: inline-block;
+    max-width: 250px;
+    margin: 50px;
+    margin-top: 5%;
+  }
+
+  /* PRESENTATION */
+  #presentation {
+    margin: 0;
+    height: 60vh;
+    background-color: #eff2fa;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: #212121;
+  }
+
+  #team-header {
+    padding-left: 20%;
+    padding-top: 1px;
   }
 
   #card-component {
