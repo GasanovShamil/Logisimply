@@ -161,6 +161,7 @@ export class ContactsComponent implements OnInit {
           })
           this.customerDataSource._updateChangeSubscription();
           this.customerSelection.clear();
+          this.alertService.success(data.message);
         },
         error => {
           this.alertService.error(error.error.message);
@@ -184,6 +185,7 @@ export class ContactsComponent implements OnInit {
           })
           this.providerDataSource._updateChangeSubscription();
           this.providerSelection.clear();
+          this.alertService.success(data.message);
         },
         error => {
           this.alertService.error(error.error.message);
@@ -193,12 +195,9 @@ export class ContactsComponent implements OnInit {
   }
 
   openCustomerDialog(customer?: Customer): void {
-    let dialogRef = this.dialog.open(CustomerDialogComponent, {
-      maxWidth: '500px',
-      minWidth: '100px',
-      maxHeight: '95vh',
-      data: (customer)?customer:null
-    });
+    let mobileDevice: boolean = this.mobileQuery.matches;
+    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', data: (customer)?customer:null }:{width: '600px',  data: (customer)?customer:null };
+    let dialogRef = this.dialog.open(CustomerDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);
@@ -216,12 +215,9 @@ export class ContactsComponent implements OnInit {
   }
 
   openProviderDialog(provider?: Provider): void {
-    let dialogRef = this.dialog.open(ProviderDialogComponent, {
-      maxWidth: '500px',
-      minWidth: '100px',
-      maxHeight: '95vh',
-      data: (provider)?provider:null
-    });
+    let mobileDevice: boolean = this.mobileQuery.matches;
+    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', data: (provider)?provider:null }:{width: '600px',  data: (provider)?provider:null };
+    let dialogRef = this.dialog.open(ProviderDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);

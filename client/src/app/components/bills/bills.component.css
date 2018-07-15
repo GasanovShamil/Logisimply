@@ -11,7 +11,18 @@
 }
 
 .mat-column-select {
+   overflow: visible;
+   max-width: 40px;
+ }
+
+.mat-column-info {
   overflow: visible;
+  max-width: 70px;
+}
+
+.mat-column-status {
+  overflow: visible;
+  max-width: 70px;
 }
 
 .myrow {
@@ -23,7 +34,27 @@
   width: 100%;
 }
 
-.mat-table {
+.draft {
+  color: #46e7ff;
+}
+.sent {
+  color: #08ff0f;
+}
+
+.lock {
+  color: #ff051a;
+}
+
+.payed {
+  color: #ffd106;
+}
+
+.table-mobile {
+  overflow: auto;
+  max-height: 50vh;
+}
+
+.table-desktop {
   overflow: auto;
   max-height: 60vh;
 }

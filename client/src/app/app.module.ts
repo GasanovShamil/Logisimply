@@ -33,6 +33,7 @@ import { ActivateComponent } from './components/activate/activate.component';
 import { BillsComponent } from './components/bills/bills.component';
 import { QuoteDialogComponent } from './components/dialogs/quote-dialog/quote-dialog.component';
 import { InvoiceDialogComponent } from './components/dialogs/invoice-dialog/invoice-dialog.component';
+import { IconPipe } from './pipes/icon.pipe';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -57,7 +58,8 @@ export function tokenGetter() {
     ActivateComponent,
     BillsComponent,
     QuoteDialogComponent,
-    InvoiceDialogComponent
+    InvoiceDialogComponent,
+    IconPipe
 
   ],
   entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent],

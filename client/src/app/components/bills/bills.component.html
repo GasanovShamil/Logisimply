@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="example-container mat-elevation-z8">
-      <mat-table #quoteSort="matSort" [dataSource]="quoteDataSource" matSort>
+      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #quoteSort="matSort" [dataSource]="quoteDataSource" matSort>
         <ng-container matColumnDef="select">
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? quoteToggle() : null"
@@ -31,7 +31,6 @@
                           [checked]="quoteSelection.isSelected(row)">
             </mat-checkbox>
           </mat-cell>
-          'subject', 'customer', 'dateQuote', 'datePayment','totalPriceET', 'status', 'info'
         </ng-container>
         <ng-container matColumnDef="code">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.code' | translate }} </mat-header-cell>
@@ -42,7 +41,7 @@
           <mat-cell *matCellDef="let row"> {{row.subject}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="customer">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.customer_name' | translate }} </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.customer' | translate }} </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.customer.name}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="dateQuote">
@@ -53,11 +52,19 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.datePayment' | translate }} </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.datePayment}} </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="totalPriceET">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.totalPriceET' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.totalPriceET}} &euro;</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.status' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> <mat-icon [ngClass]="row.status" matTooltip="{{ 'bills.'+row.status | translate }}">{{row.status | icon}}</mat-icon> </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="info">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'bills.details_edit' | translate }}" (click)="openQuoteDialog(row)">
-              <mat-icon color="primary">info</mat-icon>
+              <mat-icon color="primary">control_point</mat-icon>
             </button>
           </mat-cell>
         </ng-container>
@@ -83,7 +90,7 @@
       </div>
     </div>
     <div class="example-container mat-elevation-z8">
-      <mat-table #invoiceSort="matSort" [dataSource]="invoiceDataSource" matSort>
+      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #invoiceSort="matSort" [dataSource]="invoiceDataSource" matSort>
         <ng-container matColumnDef="select">
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? invoiceToggle() : null"
@@ -102,27 +109,35 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.code' | translate }} </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="companyName">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.company_name' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.companyName}} </mat-cell>
+        <ng-container matColumnDef="subject">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.subject' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.subject}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="legalForm">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.legal_form' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.legalForm}} </mat-cell>
+        <ng-container matColumnDef="customer">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.customer' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.customer.name}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="email">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.email' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.email}}</mat-cell>
+        <ng-container matColumnDef="dateInvoice">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.dateInvoice' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.dateInvoice}} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="town">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'bills.town' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.town}} </mat-cell>
+        <ng-container matColumnDef="datePayment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.datePayment' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.datePayment}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="totalPriceET">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.totalPriceET' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.totalPriceET}} &euro; </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.status' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> <mat-icon [ngClass]="row.status" matTooltip="{{ 'bills.'+row.status | translate }}">{{row.status | icon}}</mat-icon>  </mat-cell>
         </ng-container>
         <ng-container matColumnDef="info">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'bills.details_edit' | translate }}" (click)="openInvoiceDialog(row)">
-              <mat-icon color="primary">info</mat-icon>
+              <mat-icon color="primary">control_point</mat-icon>
             </button>
           </mat-cell>
         </ng-container>

@@ -96,6 +96,7 @@ export class ItemsComponent implements OnInit {
           })
           this.itemDataSource._updateChangeSubscription();
           this.itemSelection.clear();
+          this.alertService.success(data.message);
         },
         error => {
           this.alertService.error(error.error.message);
@@ -105,12 +106,9 @@ export class ItemsComponent implements OnInit {
   }
 
   openItemDialog(item?: Item): void {
-    let dialogRef = this.dialog.open(ItemDialogComponent, {
-      maxWidth: '500px',
-      minWidth: '100px',
-      maxHeight: '95vh',
-      data: (item)?item:null
-    });
+    let mobileDevice: boolean = this.mobileQuery.matches;
+    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', maxHeight: '85vh', data: (item)?item:null }:{width: '600px', maxHeight: '85vh', data: (item)?item:null };
+    let dialogRef = this.dialog.open(ItemDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);

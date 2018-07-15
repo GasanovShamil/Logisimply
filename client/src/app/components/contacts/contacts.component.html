@@ -17,7 +17,7 @@
       </div>
   </div>
     <div class="example-container mat-elevation-z8">
-      <mat-table #customerSort="matSort" [dataSource]="customerDataSource" matSort>
+      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #customerSort="matSort" [dataSource]="customerDataSource" matSort>
         <ng-container matColumnDef="select">
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? customerToggle() : null"
@@ -56,7 +56,7 @@
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="openCustomerDialog(row)">
-              <mat-icon color="primary">info</mat-icon>
+              <mat-icon color="primary">control_point</mat-icon>
             </button>
           </mat-cell>
         </ng-container>
@@ -82,7 +82,7 @@
       </div>
     </div>
     <div class="example-container mat-elevation-z8">
-      <mat-table #providerSort="matSort" [dataSource]="providerDataSource" matSort>
+      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #providerSort="matSort" [dataSource]="providerDataSource" matSort>
         <ng-container matColumnDef="select">
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? providerToggle() : null"
@@ -121,7 +121,7 @@
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'contacts.details_edit' | translate }}" (click)="openProviderDialog(row)">
-              <mat-icon color="primary">info</mat-icon>
+              <mat-icon color="primary">control_point</mat-icon>
             </button>
           </mat-cell>
         </ng-container>

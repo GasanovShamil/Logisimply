@@ -2,16 +2,12 @@
   width: 100%;
 }
 
-mat-form-field {
-  width: 100%;
+.half-width {
+  width: 49%;
 }
 
-.fill-remaining-space{
-  flex: 1 1 auto;
-}
-
-.right {
-  text-align: right;
+.third {
+  width: 32%;
 }
 
 .close-button{

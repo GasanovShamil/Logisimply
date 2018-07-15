@@ -8,6 +8,9 @@ import {Provider} from "../models/provider";
 import {Item} from "../models/item";
 import {Quote} from "../models/quote";
 import {Invoice} from "../models/invoice";
+import "rxjs/add/operator/share";
+import "rxjs/add/operator/shareReplay";
+import "rxjs/add/operator/publish";
 
 @Injectable()
 export class DataService {

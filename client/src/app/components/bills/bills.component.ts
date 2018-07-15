@@ -161,6 +161,7 @@ export class BillsComponent implements OnInit {
           })
           this.quoteDataSource._updateChangeSubscription();
           this.quoteSelection.clear();
+          this.alertService.success(data.message);
         },
         error => {
           this.alertService.error(error.error.message);
@@ -184,6 +185,7 @@ export class BillsComponent implements OnInit {
           })
           this.invoiceDataSource._updateChangeSubscription();
           this.invoiceSelection.clear();
+          this.alertService.success(data.message);
         },
         error => {
           this.alertService.error(error.error.message);
@@ -215,6 +217,8 @@ export class BillsComponent implements OnInit {
   }
 
   openInvoiceDialog(invoice?: Invoice): void {
+    let mobileDevice: boolean = this.mobileQuery.matches;
+    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', maxHeight: '85vh', data: (invoice)?invoice:null }:{width: '600px', maxHeight: '85vh', data: (invoice)?invoice:null };
     let dialogRef = this.dialog.open(InvoiceDialogComponent, {
       maxWidth: '500px',
       minWidth: '100px',

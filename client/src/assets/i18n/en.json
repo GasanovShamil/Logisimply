@@ -54,7 +54,8 @@
     "select_at_least_one": "You need to select at least one element !"
   },
   "contactsDialog": {
-    "title": "Customer",
+    "customer": "Customer",
+    "provider": "Provider",
     "type": "Type",
     "comment": "Comment",
     "lastname": "Lastname",
@@ -102,13 +103,16 @@
     "label":	"Label",
     "priceET":	"Price H.T.",
     "description":	"Description",
-    "details_edit": "Details/Edit"
+    "details_edit": "Details/Edit",
+    "product": "Product",
+    "service": "Service"
   },
   "bills": {
     "quotes": "Quotes",
     "code": "Code",
-    "customer_name": "Customer",
+    "customer": "Customer",
     "dateQuote": "Quote date",
+    "dateInvoice": "Invoice date",
     "datePayment": "Payment date",
     "subject": "Subject",
     "invoices": "Invoices",
@@ -116,7 +120,13 @@
     "add_new_quote":	"Add new quote",
     "add_new_invoice":	"Add new invoice",
     "delete_selected": "Delete selected",
-    "select_at_least_one": "You need to select at least one element !"
-
+    "select_at_least_one": "You need to select at least one element !",
+    "totalPriceET": "Total price",
+    "status": "Status",
+    "draft": "Draft",
+    "sent": "Sent",
+    "lock": "Lock",
+    "payed": "Payed",
+    "details_edit": "Details/Edit"
   }
 }

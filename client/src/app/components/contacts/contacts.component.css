@@ -12,6 +12,12 @@
 
 .mat-column-select {
   overflow: visible;
+  max-width: 40px;
+}
+
+.mat-column-info {
+  overflow: visible;
+  max-width: 70px;
 }
 
 .myrow {
@@ -22,8 +28,12 @@
   font-size: 14px;
   width: 100%;
 }
+.table-mobile {
+  overflow: auto;
+  max-height: 50vh;
+}
 
-.mat-table {
+.table-desktop {
   overflow: auto;
   max-height: 60vh;
 }
