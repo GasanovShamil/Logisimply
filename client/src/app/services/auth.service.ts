@@ -14,8 +14,8 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   isLogedIn(): boolean {
-    let user = localStorage.getItem('current_user');
-    return (user)?true:false;
+    let token = localStorage.getItem('access_token');
+    return (token)?true:false;
   }
 
   getCurrentUser(): User {

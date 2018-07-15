@@ -11,10 +11,11 @@
     "email_placeholder": "Email",
     "password_placeholder": "Enter your password",
     "login_button": "Login",
-    "create_button": "Create",
+    "login_account": "Login",
     "forgot_password": "Forgot password ?",
     "resend_activation_mail": "Resend activation email",
-    "enter_email_error": "Enter your email please"
+    "enter_email_error": "Enter your email please",
+    "login_form_error_message": "Please fill in all required form fields"
   },
   "signup" :{
     "email_placeholder": "Email",
@@ -31,7 +32,9 @@
     "activity_started": "Activity started",
     "siret": "Siret",
     "signup_button": "Signup",
-    "login_button": "Login"
+    "create_form_error_message": "Please fill in all required form fields",
+    "create_account": "Create account",
+    "min_password_length": "Min length: 8"
   },
   "contacts": {
     "customers": "Customers",
@@ -160,7 +163,7 @@
     "paying": "Pay",
     "not_allowed": " did not allow online payment.",
     "invalid_amount": "Amount invalid"
-  }
+  },
   "welcome": {
     "header_presentation": "LogiSimply is a web application that allows you to create your invoices and quotes very simply",
     "create": "Create",

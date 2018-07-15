@@ -40,7 +40,6 @@ export class ItemDialogComponent implements OnInit {
 
 
   saveData(){
-    console.log('SAVE CLICK');
     if(!this.close) {
       if (this.itemForm.valid) {
         if (this.editMode) {

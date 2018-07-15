@@ -8,14 +8,12 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './components/home/home.component';
 import { UserService } from "./services/user.service";
-import { LoginComponent } from './components/login/login.component';
 import {AuthGuard} from './components/guards/auth-guard.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { AuthService } from './services/auth.service';
-import { SignupComponent } from './components/signup/signup.component';
 import { AlertService } from './services/alert.service';
 import { AlertComponent } from './components/alert/alert.component';
 import { DataService } from './services/data.service';
@@ -36,6 +34,8 @@ import { InvoiceDialogComponent } from './components/dialogs/invoice-dialog/invo
 import { IconPipe } from './pipes/icon.pipe';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { GrpdComponent } from './components/grpd/grpd.component';
+import { SignupDialogComponent } from './components/dialogs/signup-dialog/signup-dialog.component';
+import { LoginDialogComponent } from './components/dialogs/login-dialog/login-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -45,12 +45,10 @@ export function tokenGetter() {
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent,
     WelcomeComponent,
     DashboardComponent,
     ContactsComponent,
     NavigationComponent,
-    SignupComponent,
     AlertComponent,
     CustomerDialogComponent,
     ProviderDialogComponent,
@@ -63,9 +61,11 @@ export function tokenGetter() {
     InvoiceDialogComponent,
     IconPipe,
     LegalNoticeComponent,
-    GrpdComponent
+    GrpdComponent,
+    SignupDialogComponent,
+    LoginDialogComponent
   ],
-  entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent],
+  entryComponents: [LoginDialogComponent, SignupDialogComponent, CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

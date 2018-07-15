@@ -1,0 +1,18 @@
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 49%;
+}
+
+.third {
+  width: 32%;
+}
+
+.close-button{
+  float: right;
+}
+
+
+

@@ -29,7 +29,7 @@ export class NavigationComponent implements OnInit {
   logout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('access_token');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/welcome']);
   }
 
   onLanguageChange(lang){

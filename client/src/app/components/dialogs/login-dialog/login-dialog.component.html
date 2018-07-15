@@ -1,0 +1,23 @@
+<form [formGroup]="loginForm" (submit)="login()">
+  <div class="dialog-title" mat-dialog-title>
+    <div>
+      {{'login.login_account' | translate}}
+      <mat-icon class="close-button" (click)="onCloseClick()" color="warn">clear</mat-icon>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="{{ 'login.email_placeholder' | translate }}" formControlName="email" required>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="{{ 'login.password_placeholder' | translate }}" [type]="hide ? 'password' : 'text'"
+             formControlName="password" required>
+      <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button color="primary" type="submit" name="action">{{ 'login.login_button' | translate }}
+    </button>
+  </div>
+</form>
+

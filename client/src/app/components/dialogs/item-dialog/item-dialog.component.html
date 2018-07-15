@@ -11,7 +11,7 @@
       'contactsDialog.edit_mode' | translate }}
     </mat-slide-toggle>
   </div>
-  <div mat-dialog-content [formGroup]="itemForm">
+  <div mat-dialog-content>
     <mat-form-field class="third">
       <mat-select placeholder="{{ 'itemsDialog.type' | translate }}" #typeSelect formControlName="type"
                   (change)="onSelectChange(typeSelect.value)" required cdkFocusInitial>
@@ -25,7 +25,7 @@
       <input matInput placeholder="{{ 'itemsDialog.label' | translate }}" formControlName="label" required>
     </mat-form-field>
     <mat-form-field class="half-width">
-      <input matInput #siretHint placeholder="{{ 'itemsDialog.priceET' | translate }}" formControlName="priceET"
+      <input matInput  placeholder="{{ 'itemsDialog.priceET' | translate }}" formControlName="priceET"
              required>
     </mat-form-field>
     <mat-form-field class="full-width">

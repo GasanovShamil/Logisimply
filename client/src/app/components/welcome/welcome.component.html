@@ -2,8 +2,8 @@
   <h1 class="center shadow">LogiSimply</h1>
   <p class="center shadow">{{ 'welcome.header_presentation' | translate }}</p>
   <div id="access-webapp">
-    <a mat-raised-button color="primary" type="button" routerLink="/signup">{{ 'welcome.create' | translate }}</a>
-    <a mat-raised-button color="primary" type="button" routerLink="/login">{{'welcome.login' | translate }}</a>
+    <button mat-raised-button color="primary"  (click)="openSignupDialog()">{{ 'welcome.create' | translate }}</button>
+    <button mat-raised-button color="primary" (click)="openLoginDialog()">{{'welcome.login' | translate }}</button>
   </div>
 </div>
 <div id="presentation-activity">
