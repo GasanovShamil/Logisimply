@@ -4,9 +4,8 @@
     <h1 class="app-name">Logisimply</h1>
     <span class="fill-remaining-space"></span>
     <mat-form-field>
-      <mat-select #langSelect [(value)]="language" (change)="onLanguageChange(langSelect.value)">
-        <mat-option value="en">En</mat-option>
-        <mat-option value="fr">Fr</mat-option>
+      <mat-select #langSelect [(ngModel)]="language" (change)="onLanguageChange(langSelect.value)">
+        <mat-option *ngFor="let lang of languages" value="{{lang}}">{{lang}}</mat-option>
       </mat-select>
     </mat-form-field>
     <button mat-icon-button color="warn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></button>

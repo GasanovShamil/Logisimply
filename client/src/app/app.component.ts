@@ -9,9 +9,11 @@ import {TranslateService} from '@ngx-translate/core';
 export class AppComponent {
 
   constructor(private translate: TranslateService) {
+    let browserLang = translate.getBrowserLang();
     translate.addLangs(['en', 'fr']);
     translate.setDefaultLang('en');
-    localStorage.setItem('Localize',localStorage.getItem('Localize') || 'en');
+    translate.use(browserLang);
+    localStorage.setItem('Localize',browserLang || 'en');
   }
 
 

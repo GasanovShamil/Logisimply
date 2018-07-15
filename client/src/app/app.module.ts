@@ -18,7 +18,7 @@ import { AlertService } from './services/alert.service';
 import { AlertComponent } from './components/alert/alert.component';
 import { DataService } from './services/data.service';
 import {JwtInterceptor} from "./helpers/jwt.interceptor";
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateModule, TranslateLoader, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { CustomerDialogComponent } from './components/dialogs/customer-dialog/customer-dialog.component';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
@@ -92,7 +92,8 @@ export function tokenGetter() {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
-      multi: true
+      multi: true,
+      deps: [TranslateService]
     }
   ],
   bootstrap: [AppComponent]
@@ -103,4 +104,3 @@ export class AppModule { }
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
-platformBrowserDynamic().bootstrapModule(AppModule);
