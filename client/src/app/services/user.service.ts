@@ -15,6 +15,11 @@ export class UserService {
       );
   }
 
+  activate(activateToken) {
+    return this.http.get<any>('/api/activate/'+activateToken).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse) {
     // if (error.error instanceof ErrorEvent) {

@@ -1,3 +1,15 @@
-<p>
-  activate works!
-</p>
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+
+<div id="activate-message" *ngIf="isUserValid">
+  <h1>LogiSimply</h1>
+  <h2>Félicitations</h2>
+  <p>Bonjour {{ data.firstname }}, votre compte a bien été activé.</p>
+</div>
+
+<div id="error-message" *ngIf="!isLoadingResults && !isUserValid">
+  <h1>LogiSimply</h1>
+  <h2>Aïe ! Un problème est survenu.</h2>
+  <p>Le compte n'a pas pu etre activé, potentiellement car ce compte est déjà actif, ou bien n'existe pas.</p>
+</div>
