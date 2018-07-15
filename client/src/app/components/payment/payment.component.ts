@@ -1,31 +1,58 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {DataService} from "../../services/data.service";
-import {MediaMatcher} from "@angular/cdk/layout";
-import {TranslateService} from "@ngx-translate/core";
-import {ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs/Observable";
-import {AlertService} from "../../services/alert.service";
+import {AfterViewChecked, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {DataService} from '../../services/data.service';
+import {MediaMatcher} from '@angular/cdk/layout';
+import {TranslateService} from '@ngx-translate/core';
+import {ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {AlertService} from '../../services/alert.service';
+
+declare let paypal: any;
 
 @Component({
   selector: 'app-payment',
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements OnInit, AfterViewChecked {
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
   isLoadingResults = true;
   isInvoiceReady = false;
   isPaypalAllowed = false;
-  errorMessage = '';
+  canAuthorizePayment = false;
+  addScript: boolean = true;
   paramUser: string;
   paramInvoice: string;
   data = new Observable();
+  credentials = 'default';
   payingAmount = 0;
-  canAuthorizePayment = false;
-  error = '';
+  errorMessage = '';
   displayContent = ['reference', 'label', 'unitPriceET', 'quantity', 'discount', 'totalPriceET'];
   displayIncomes = ['method', 'amount', 'dateIncome'];
+  paypalConfig = {
+    env: 'sandbox',
+    client: {
+      sandbox: this.credentials
+    },
+    commit: true,
+    payment: function(data, actions) {
+      return actions.payment.create({
+        payment: {
+          transactions: [{
+            amount: {
+              total: this.payingAmount,
+              currency: 'EUR'
+            }
+          }]
+        }
+      });
+    },
+    onAuthorize: function(data, actions) {
+      return actions.payment.execute().then((payment) => {
+        this.alertService.success("YEAH");
+      })
+    }
+  };
 
   constructor(private route: ActivatedRoute, public translate: TranslateService, private alertService : AlertService, private dataService : DataService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -41,6 +68,13 @@ export class PaymentComponent implements OnInit {
     this.getInvoicePayment();
   }
 
+  ngAfterViewChecked(): void {
+    if (this.addScript)
+      this.addPaypalScript().then(() => {
+        paypal.Button.render(this.paypalConfig, '#paypal-checkout-button');
+      })
+  }
+
   getInvoicePayment() {
     this.dataService.getInvoicePayment(this.paramUser, this.paramInvoice).subscribe(
       data => {
@@ -50,19 +84,26 @@ export class PaymentComponent implements OnInit {
         this.data = data;
         this.payingAmount = data.sumToPay;
         this.canAuthorizePayment = true;
+        this.credentials = data.user.credentials;
       },
       error => {
         this.isLoadingResults = false;
-        this.error =  error.error.message;
+        this.errorMessage =  error.error.message;
       }
     );
   }
 
-  checkPayingAmount() {
-    this.canAuthorizePayment = !isNaN(this.payingAmount);
+  addPaypalScript() {
+    this.addScript = false;
+    return new Promise((resolve, reject) => {
+      let scriptTagElement = document.createElement('script');
+      scriptTagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
+      scriptTagElement.onload = resolve;
+      document.body.appendChild(scriptTagElement);
+    })
   }
 
-  paymentSuccess() {
-    this.alertService.success("YEAH");
+  checkPayingAmount() {
+    this.canAuthorizePayment = !isNaN(this.payingAmount);
   }
 }

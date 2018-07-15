@@ -4,7 +4,7 @@
 
 <div id="error" *ngIf="!isLoadingResults && !isInvoiceReady">
   <div id="error-container" class="form-group">
-    {{ error }}
+    {{ errorMessage }}
   </div>
 </div>
 
@@ -136,7 +136,7 @@
       <mat-grid-list cols="2" rowHeight="4:1">
         <mat-grid-tile [colspan]="1" [rowspan]="1">
           <mat-form-field class="example-full-width">
-            <input matInput id="paying-amount" placeholder="{{ 'payment.paying' | translate }}" [(ngModel)]="payingAmount" (focusout)="checkPayingAmount()" />
+            <input matInput type="number" id="paying-amount" placeholder="{{ 'payment.paying' | translate }}" [(ngModel)]="payingAmount" (focusout)="checkPayingAmount()" />
             <span matPrefix><mat-icon aria-hidden="true">payment</mat-icon></span>
           </mat-form-field>
         </mat-grid-tile>
@@ -146,32 +146,9 @@
             {{ 'payment.invalid_amount' | translate }}
           </div>
 
-          <div id="paypal-button" *ngIf="canAuthorizePayment"></div>
-          <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-          <script>
-            paypal.Button.render({
-              env: "sandbox",
-              client: {
-                sandbox: data.user.credentials
-              },
-              payment: function (data, actions) {
-                return actions.payment.create({
-                  transactions: [{
-                    amount: {
-                      total: payingAmount,
-                      currency: "EUR"
-                    }
-                  }]
-                });
-              },
-              onAuthorize: function (data, actions) {
-                return actions.payment.execute()
-                  .then(function () {
-                    paymentSuccess();
-                  });
-              }
-            }, '#paypal-button');
-          </script>
+          <div *ngIf="canAuthorizePayment">
+            <div id="paypal-checkout-button"></div>
+          </div>
         </mat-grid-tile>
       </mat-grid-list>
     </div>
