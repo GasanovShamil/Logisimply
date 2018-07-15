@@ -13,6 +13,7 @@ export class NavigationComponent implements OnInit {
 
   mobileQuery: MediaQueryList;
   language: string;
+  languages:string[]=[];
 
   private _mobileQueryListener: () => void;
 
@@ -20,6 +21,8 @@ export class NavigationComponent implements OnInit {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.languages = this.translate.getLangs();
+    this.language = this.translate.currentLang;
   }
 
   ngOnDestroy(): void {
@@ -34,10 +37,9 @@ export class NavigationComponent implements OnInit {
 
   onLanguageChange(lang){
     this.translate.use(lang);
-    localStorage.setItem('Localize', lang);
+    localStorage.setItem('Localize',lang);
   }
   ngOnInit() {
-    this.language = localStorage.getItem('Localize') || 'en';
   }
 
 
