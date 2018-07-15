@@ -37,7 +37,7 @@
     "validity": "Durée de validité (jours) : ",
     "date_execution": "Date de la vente/prestation : ",
     "collection_cost": "En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
-    "comment": "Commentaire : ",
+    "comment": "Commentaires : ",
     "accord": "Bon pour accord le : ",
     "signature": "Signature : ",
     "generated": {

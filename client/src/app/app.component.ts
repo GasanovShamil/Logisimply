@@ -11,7 +11,7 @@ export class AppComponent {
   constructor(private translate: TranslateService) {
     translate.addLangs(['en', 'fr']);
     translate.setDefaultLang('en');
-    localStorage.setItem('Localize','en');
+    localStorage.setItem('Localize',localStorage.getItem('Localize') || 'en');
   }
 
 

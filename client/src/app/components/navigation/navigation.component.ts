@@ -1,7 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MediaMatcher} from "@angular/cdk/layout";
 import {Router} from "@angular/router";
-import {MatSelectChange} from "@angular/material";
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -12,7 +11,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class NavigationComponent implements OnInit {
 
   mobileQuery: MediaQueryList;
-  language: string = 'en';
+  language: string;
 
   private _mobileQueryListener: () => void;
 
@@ -32,11 +31,12 @@ export class NavigationComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  onLanguageChange(event: MatSelectChange){
-    this.translate.use(this.language);
-    localStorage.setItem('Localize', this.language);
+  onLanguageChange(lang){
+    this.translate.use(lang);
+    localStorage.setItem('Localize', lang);
   }
   ngOnInit() {
+    this.language = localStorage.getItem('Localize') || 'en';
   }
 
 

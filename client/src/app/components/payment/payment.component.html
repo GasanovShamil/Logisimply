@@ -1,3 +1,178 @@
-<p>
-  payment works!
-</p>
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+
+<div id="error" *ngIf="!isLoadingResults && !isInvoiceReady">
+  <div id="error-container" class="form-group">
+    {{ errorMessage }}
+  </div>
+</div>
+
+<div id="invoice" *ngIf="isInvoiceReady">
+  <div id="invoice-container" class="form-group">
+    <mat-grid-list cols="10" rowHeight="2:1">
+      <mat-grid-tile [colspan]="8" [rowspan]="4" id="user-infos">
+        <div id="user">{{ data.user.activityEntitled }}</div>
+        <div>{{ 'payment.siret' | translate }}{{ data.user.siret }}</div>
+        <div>{{ data.user.firstname }} {{ data.user.lastname }} - {{ data.user.email }}</div>
+        <div>{{ data.user.address }}</div>
+        <div>{{ data.user.zipCode }} {{ data.user.town }}</div>
+        <div>{{ data.user.country }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" [rowspan]="1" id="date">
+        <div><span class="bold">{{ 'payment.date' | translate }}</span>{{ data.dateInvoice }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="7" [rowspan]="1">
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="3" [rowspan]="2" id="customer-infos">
+        <div>{{ data.customer.civility }} {{ data.customer.name }}</div>
+        <div>{{ data.customer.address }}</div>
+        <div>{{ data.customer.zipCode }} {{ data.customer.town }}, {{ data.customer.country }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="10" [rowspan]="1" id="banner">
+        <div>{{ 'payment.banner' | translate }}{{ data.code }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="10" [rowspan]="1" id="subject">
+        <div><span class="bold">{{ 'payment.subject' | translate }}</span>{{ data.subject }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="10" [rowspan]="1" id="immatriculation">
+        <div>{{ 'payment.immatriculation' | translate }}</div>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-table #table [dataSource]="data.content" id="content">
+      <ng-container matColumnDef="reference">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.content.reference' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.reference }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="label">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.content.label' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.label }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="unitPriceET">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.content.unit_price_ET' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.unitPriceET }} €</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.content.quantity' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.quantity }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="discount">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.content.discount' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.discount }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="totalPriceET">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.content.total_price_ET' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.totalPriceET }} €</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayContent"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayContent;"></mat-row>
+    </mat-table>
+
+    <mat-grid-list cols="10" rowHeight="2:1">
+      <mat-grid-tile [colspan]="8" [rowspan]="3" id="invoice-infos">
+        <div>{{ 'payment.date_payment' | translate }}{{ data.datePayment }}</div>
+        <div>{{ 'payment.date_execution' | translate }}{{ data.dateExecution }}</div>
+        <div *ngIf="data.collectionCost">{{ 'payment.collection_cost' | translate }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" [rowspan]="1" id="discount">
+        <table>
+          <tr><td class="bold border">{{ 'payment.discount' | translate }}</td></tr>
+          <tr><td class="number">{{ data.discount }}</td></tr>
+        </table>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" [rowspan]="1" id="total">
+        <table>
+          <tr><td class="bold border">{{ 'payment.total' | translate }}</td></tr>
+          <tr><td class="number">{{ data.totalPriceET }} €</td></tr>
+        </table>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" [rowspan]="1" id="payed">
+        <table>
+          <tr><td class="bold border">{{ 'payment.payed' | translate }}</td></tr>
+          <tr><td class="number">{{ data.payed }} €</td></tr>
+        </table>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="8" [rowspan]="2" id="comment">
+        <div>{{ 'payment.comment' | translate }}</div>
+        <div>{{ data.comment }}</div>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" [rowspan]="1" id="sum-to-paypay">
+        <table>
+          <tr><td class="bold border">{{ 'payment.sum_to_pay' | translate }}</td></tr>
+          <tr><td class="number">{{ data.sumToPay }} €</td></tr>
+        </table>
+      </mat-grid-tile>
+
+      <mat-grid-tile [colspan]="10" [rowspan]="1" id="tva">
+        <div>{{ 'payment.tva' | translate }}</div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <div id="payment-container" class="form-group">
+    <div *ngIf="!isPaypalAllowed">
+      {{ data.user.activityEntitled }}{{ 'payment.not_allowed' | translate }}
+    </div>
+
+    <div *ngIf="isPaypalAllowed">
+      <mat-grid-list cols="2" rowHeight="4:1">
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <mat-form-field class="example-full-width">
+            <input matInput type="number" id="paying-amount" placeholder="{{ 'payment.paying' | translate }}" [(ngModel)]="payingAmount" (focusout)="checkPayingAmount()" />
+            <span matPrefix><mat-icon aria-hidden="true">payment</mat-icon></span>
+          </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <div *ngIf="!canAuthorizePayment" class="error">
+            {{ 'payment.invalid_amount' | translate }}
+          </div>
+
+          <div *ngIf="canAuthorizePayment">
+            <div id="paypal-checkout-button"></div>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+
+  <div id="incomes-container" class="form-group">
+    <mat-table #table [dataSource]="data.incomes">
+      <ng-container matColumnDef="method">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.method' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.method }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.amount' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.amount }} €</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="dateIncome">
+        <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.date' | translate }}</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.dateIncome }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayIncomes"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayIncomes;"></mat-row>
+    </mat-table>
+  </div>
+</div>

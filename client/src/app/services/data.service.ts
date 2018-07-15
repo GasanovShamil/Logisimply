@@ -123,6 +123,14 @@ export class DataService {
   }
 
 
+///////////////////////////// INVOICE SECTION /////////////////////////////
+
+
+  getInvoicePayment(userId, invoiceCode) {
+    return this.http.get<any>('/api/invoices/' + userId + '/' + invoiceCode + '/payment').pipe(
+      catchError(this.handleError)
+    );
+  }
 
 
 

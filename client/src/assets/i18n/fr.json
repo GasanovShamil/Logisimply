@@ -45,5 +45,37 @@
     "legal_form": "Legal form",
     "details_edit": "Details/Edit",
     "select_at_least_one": "Vous devez selectionner au moin un element !"
+  },
+  "payment":{
+    "siret": "Siret : ",
+    "date": "Date : ",
+    "banner": "Facture - ",
+    "subject": "Objet : ",
+    "immatriculation": "Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers (RM).",
+    "content": {
+      "reference": "Ref",
+      "label": "Libellé",
+      "unit_price_ET": "P.U. H.T.",
+      "quantity": "Qté",
+      "discount": "Remise (€)",
+      "total_price_ET": "Total H.T."
+    },
+    "date_payment": "Date d'échéance de paiement : ",
+    "date_execution": "Date de la vente/prestation : ",
+    "collection_cost": "En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
+    "discount": "Remise (€)",
+    "total": "Total H.T.",
+    "comment": "Commentaires : ",
+    "payed": "Total réglé",
+    "sum_to_pay": "Restant dû",
+    "tva": "TVA non applicable, art. 293 B du CGI",
+    "incomes": {
+      "method": "Moyen de paiement",
+      "amount": "Montant",
+      "date": "Date"
+    },
+    "paying": "Payer",
+    "not_allowed": " n'a pas activé le paiement en ligne.",
+    "invalid_amount": "Montant incorrect"
   }
 }
