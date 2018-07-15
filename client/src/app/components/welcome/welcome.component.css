@@ -13,6 +13,11 @@
     font-family: Roboto, "Helvetica Neue", sans-serif;
   }
 
+  #access-webapp {
+    margin: 45%;
+    margin-top: 5%;
+  }
+
   #header-image h1 {
     margin: 0;
     padding-top: 20%;

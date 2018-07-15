@@ -1,15 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {TranslateService} from "@ngx-translate/core";
+import {MediaMatcher} from "@angular/cdk/layout";
+import {Observable} from "rxjs/Observable";
+import {ActivatedRoute} from "@angular/router";
+import {UserService} from "../../services/user.service";
 
 @Component({
-  selector: 'app-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.css']
+  selector: 'app-activate',
+  templateUrl: './activate.component.html',
+  styleUrls: ['./activate.component.css']
 })
-export class WelcomeComponent implements OnInit {
+export class ActivateComponent implements OnInit {
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
+  isLoadingResults = true;
+  isUserValid = false;
+  paramToken: string;
+  data = new Observable();
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, public translate: TranslateService, private userService: UserService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+    this.paramToken = this.route.snapshot.params.token;
+  }
 
   ngOnInit() {
+    this.activateUser();
+  }
+
+  activateUser() {
+    this.userService.activate(this.paramToken).subscribe(
+      data => {
+        this.data = data;
+        this.isUserValid = true;
+        this.isLoadingResults = false;
+      },
+      error => {
+        this.isLoadingResults = false;
+      }
+    );
   }
 
 }
