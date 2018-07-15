@@ -27,6 +27,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   paramInvoice: string;
   data = new Observable();
   payingAmount: number = 0;
+  maxAmount: number = 0;
   errorMessage = '';
   paypalConfig = {};
 
@@ -53,36 +54,29 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
 
   getInvoicePayment() {
     this.dataService.getInvoicePayment(this.paramUser, this.paramInvoice).subscribe(
-      data => {
+      result => {
         this.isLoadingResults = false;
         this.isInvoiceReady = true;
-        this.isPaypalAllowed = data.user.credentials && data.user.credentials != '';
-        this.data = data;
-        this.payingAmount = data.sumToPay;
+        this.isPaypalAllowed = result.user.credentials && result.user.credentials != '';
+        this.data = result;
+        this.payingAmount = result.sumToPay;
+        this.maxAmount = result.sumToPay;
         this.canAuthorizePayment = true;
         if (this.isPaypalAllowed) {
-          let items = [{
-            name: 'hat',
-            description: 'Brown hat.',
-            quantity: '5',
-            price: '3',
-            tax: '0.01',
-            sku: '1',
-            currency: 'USD'
-          }, {
-            name: 'handbag',
-            description: 'Black handbag.',
-            quantity: '1',
-            price: '15',
-            tax: '0.02',
-            sku: 'product34',
-            currency: 'USD'
-          }];
+          let items = [];
+          for (let i = 0; i < result.content.length; i++)
+            items.push({name: result.content[i].label, description: result.content[i].description, quantity: result.content[i].quantity, price: result.content[i].unitPriceET, tax: '0.00', sku: result.content[i].reference, currency: 'EUR'});
 
           this.paypalConfig = {
             env: 'sandbox',
+            style: {
+              label: 'pay',
+              size:  'medium',
+              shape: 'rect',
+              color: 'blue'
+            },
             client: {
-              sandbox: data.user.credentials
+              sandbox: result.user.credentials
             },
             commit: true,
             payment: function (data, actions) {
@@ -109,23 +103,22 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
                       }
                     },
                     description: 'The payment transaction description.',
-                    custom: data.code,
+                    custom: result.code,
                     payment_options: {
                       allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
                     },
-                    soft_descriptor: 'ECHI5786786',
                     item_list: {
                       items: items,
                       shipping_address: {
-                        recipient_name: data.user.name,
-                        line1: data.user.address,
-                        city: data.user.town,
-                        postal_code: data.user.zipCode,
-                        phone: data.user.phone
+                        recipient_name: result.customer.name,
+                        line1: result.customer.address,
+                        city: result.customer.town,
+                        postal_code: result.customer.zipCode,
+                        phone: result.customer.phone
                       }
                     }
                   }],
-                  note_to_payer: data.comment
+                  note_to_payer: result.comment
                 }
               }).catch(error => {
                 alert('ERROR AUTHORIZE');
@@ -160,5 +153,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
 
   checkPayingAmount() {
     this.canAuthorizePayment = !isNaN(this.payingAmount);
+    if (this.canAuthorizePayment)
+      this.canAuthorizePayment = this.payingAmount <= this.maxAmount;
   }
 }
