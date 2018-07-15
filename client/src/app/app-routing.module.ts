@@ -12,12 +12,16 @@ import {ItemsComponent} from "./components/items/items.component";
 import {WelcomeComponent} from "./components/welcome/welcome.component";
 import {ActivateComponent} from "./components/activate/activate.component";
 import {PaymentComponent} from "./components/payment/payment.component";
+import {LegalNoticeComponent} from "./components/legal-notice/legal-notice.component";
+import {GrpdComponent} from "./components/grpd/grpd.component";
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'activate', component: ActivateComponent },
   { path: 'payment/:user/:invoice', component: PaymentComponent },
+  { path: 'notice', component: LegalNoticeComponent },
+  { path: 'grpd', component: GrpdComponent },
   {
     path: '', canActivate: [AuthGuard], component: NavigationComponent,
     children: [

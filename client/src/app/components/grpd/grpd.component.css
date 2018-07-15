@@ -1,0 +1,11 @@
+#grpd-container {
+  width: 100%;
+  max-width: 85%;
+  min-width: 20%;
+  margin: auto;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.justify {
+  text-align: justify;
+}
