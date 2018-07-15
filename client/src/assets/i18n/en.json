@@ -105,6 +105,8 @@
   },
   "welcome": {
     "header_presentation": "LogiSimply is a web application that allows you to create your invoices and quotes very simply",
+    "create": "Create",
+    "login": "Login",
     "title_activity": "Our activity",
     "content_activity": "With LogiSimply, you can enter essential information for creating your invoices for your customers. With an easy-to-use interface and logical thinking for you, creating invoices has never been easier.",
     "presentation_shamil":"The veteran of the team, whose passion is computer science and specialized in development and web architecture with a lot of professional experience. Development is my hobby",
