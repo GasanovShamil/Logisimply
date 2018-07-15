@@ -1,6 +1,7 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MediaMatcher} from "@angular/cdk/layout";
 import {Router} from "@angular/router";
+import {MatSelectChange, MatSidenav, MatSort} from "@angular/material";
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({

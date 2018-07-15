@@ -30,6 +30,10 @@ import { ItemDialogComponent } from './components/dialogs/item-dialog/item-dialo
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { ActivateComponent } from './components/activate/activate.component';
+import { BillsComponent } from './components/bills/bills.component';
+import { QuoteDialogComponent } from './components/dialogs/quote-dialog/quote-dialog.component';
+import { InvoiceDialogComponent } from './components/dialogs/invoice-dialog/invoice-dialog.component';
+import { IconPipe } from './pipes/icon.pipe';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { GrpdComponent } from './components/grpd/grpd.component';
 export function tokenGetter() {
@@ -54,11 +58,14 @@ export function tokenGetter() {
     ItemDialogComponent,
     PaymentComponent,
     ActivateComponent,
+    BillsComponent,
+    QuoteDialogComponent,
+    InvoiceDialogComponent,
+    IconPipe,
     LegalNoticeComponent,
     GrpdComponent
-
   ],
-  entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent],
+  entryComponents: [CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

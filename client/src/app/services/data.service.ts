@@ -6,6 +6,11 @@ import {Customer} from "../models/customer";
 import {User} from "../models/user";
 import {Provider} from "../models/provider";
 import {Item} from "../models/item";
+import {Quote} from "../models/quote";
+import {Invoice} from "../models/invoice";
+import "rxjs/add/operator/share";
+import "rxjs/add/operator/shareReplay";
+import "rxjs/add/operator/publish";
 
 @Injectable()
 export class DataService {
@@ -123,15 +128,43 @@ export class DataService {
   }
 
 
-///////////////////////////// INVOICE SECTION /////////////////////////////
 
+///////////////////////////// QUOTE SECTION /////////////////////////////
+
+  getMyQuotes() {
+    return this.http.get<any>('/api/quotes/me').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteQuotes(quotes: Quote[]){
+    return this.http.post<any>('/api/quotes/delete', quotes).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
+
+
+  ///////////////////////////// INVOICE SECTION /////////////////////////////
+
+  getMyInvoices() {
+    return this.http.get<any>('/api/invoices/me').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteInvoices(invoices: Invoice[]){
+    return this.http.post<any>('/api/invoices/delete', invoices).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   getInvoicePayment(userId, invoiceCode) {
     return this.http.get<any>('/api/invoices/' + userId + '/' + invoiceCode + '/payment').pipe(
       catchError(this.handleError)
     );
   }
-
 
 
   private handleError(error: HttpErrorResponse) {
