@@ -1,3 +1,79 @@
+<div id="header-image">
+  <h1 class="center shadow">LogiSimply</h1>
+  <p class="center shadow">{{ 'welcome.header_presentation' | translate }}</p>
+  <div id="access-webapp">
+    <a mat-raised-button color="primary" type="button" routerLink="/signup">{{ 'welcome.create' | translate }}</a>
+    <a mat-raised-button color="primary" type="button" routerLink="/login">{{'welcome.login' | translate }}</a>
+  </div>
+</div>
+<div id="presentation-activity">
+  <div id="presentation-header">
+    <h2>{{ 'welcome.title_activity' | translate }}</h2>
+    <p>{{ 'welcome.content_activity' | translate }}</p>
+  </div>
+  <div id="activity-icons" class="center">
+    <div class="icons-presentation">
+      <img src="../../assets/images/check-mark.png" alt="{{ 'welcome.built_invoice' | translate }}" />
+      <p>{{ 'welcome.built_invoice' | translate }}</p>
+    </div>
 
-<a mat-raised-button color="primary" type="button" routerLink="/signup">Create</a>
-<a mat-raised-button color="primary" type="button" routerLink="/login">Login</a>
+    <div class="icons-presentation">
+      <img src="../../assets/images/dollar-symbol.png" alt="{{ 'welcome.money_info' | translate }}" />
+      <p>{{ 'welcome.money_info' | translate }}</p>
+    </div>
+
+    <div class="icons-presentation">
+      <img src="../../assets/images/wait.png" alt="{{ 'welcome.save_time' | translate }}" />
+      <p>{{ 'welcome.save_time' | translate }}</p>
+    </div>
+
+    <div class="icons-presentation">
+      <img src="../../assets/images/maps-and-flags.png" alt="{{ 'welcome.done' | translate }}" />
+      <p>{{ 'welcome.done' | translate }}</p>
+    </div>
+  </div>
+</div>
+<div id="presentation">
+  <div id="team-header">
+    <h2>Team presentation</h2>
+  </div>
+  <div id="presentation-card">
+    <div id="card-component" class="center">
+      <mat-card class="card-type">
+        <img mat-card-image src="../../assets/images/shamil.png" alt="Photo of contacts">
+        <mat-card-content>
+          <h4>Shamil</h4>
+          <p>{{ 'welcome.presentation_shamil' | translate }}</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="card-type">
+        <img mat-card-image src="../../assets/images/yoann.png" alt="Photo of contacts">
+        <mat-card-content>
+          <h4>Yoann</h4>
+          <p>{{ 'welcome.presentation_yoann' | translate }}</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="card-type">
+        <img mat-card-image src="../../assets/images/leo.png" alt="Photo of contacts">
+        <mat-card-content>
+          <h4>Léo</h4>
+          <p>{{ 'welcome.presentation_leo' | translate }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-list-link">
+    <mat-list>
+      <mat-nav-list>
+        <a mat-list-item href="/notice">{{ 'welcome.legal_notice' | translate }}</a>
+      </mat-nav-list>
+      <mat-nav-list>
+        <a mat-list-item href="/grpd">{{ 'welcome.grpd' | translate }}</a>
+      </mat-nav-list>
+    </mat-list>
+  </div>
+</footer>

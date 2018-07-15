@@ -15,6 +15,7 @@ export class User {
   town:	string;
   country: string;
   status:	string;
+  credentials: string;
   createdAt: string;
   updatedAt:string;
 }

@@ -47,9 +47,15 @@ module.exports = {
         }
     },
     format: {
+        getSiret: function(siret) {
+            if (siret.length !== 14)
+                return siret;
+            else
+                return siret.substring(0, 3) + " " + siret.substring(3, 6) + " " + siret.substring(6, 9) + " " + siret.substring(9, 14);
+        },
         getCode: function(number) {
             let nextCode = "00000" + number;
-            return nextCode.substring(nextCode.length - 5, nextCode.length);
+            return nextCode.substring(nextCode.length - 5);
         },
         getDateCode: function() {
             let now = new Date();

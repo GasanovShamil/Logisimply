@@ -128,6 +128,7 @@ export class DataService {
   }
 
 
+
 ///////////////////////////// QUOTE SECTION /////////////////////////////
 
   getMyQuotes() {
@@ -155,6 +156,12 @@ export class DataService {
 
   deleteInvoices(invoices: Invoice[]){
     return this.http.post<any>('/api/invoices/delete', invoices).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getInvoicePayment(userId, invoiceCode) {
+    return this.http.get<any>('/api/invoices/' + userId + '/' + invoiceCode + '/payment').pipe(
       catchError(this.handleError)
     );
   }

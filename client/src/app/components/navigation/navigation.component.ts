@@ -12,8 +12,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class NavigationComponent implements OnInit {
 
   mobileQuery: MediaQueryList;
-  language: string = 'en';
-  @ViewChild('snav') snav: MatSidenav;
+  language: string;
 
   private _mobileQueryListener: () => void;
 
@@ -33,11 +32,12 @@ export class NavigationComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  onLanguageChange(event: MatSelectChange){
-    this.translate.use(this.language);
-    localStorage.setItem('Localize', this.language);
+  onLanguageChange(lang){
+    this.translate.use(lang);
+    localStorage.setItem('Localize', lang);
   }
   ngOnInit() {
+    this.language = localStorage.getItem('Localize') || 'en';
   }
 
 

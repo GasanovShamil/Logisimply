@@ -4,7 +4,7 @@
     <h1 class="app-name">Logisimply</h1>
     <span class="fill-remaining-space"></span>
     <mat-form-field>
-      <mat-select #langSelect [(value)]="language" (change)="translate.use(langSelect.value)">
+      <mat-select #langSelect [(value)]="language" (change)="onLanguageChange(langSelect.value)">
         <mat-option value="en">En</mat-option>
         <mat-option value="fr">Fr</mat-option>
       </mat-select>
