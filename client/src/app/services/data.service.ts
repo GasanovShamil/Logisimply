@@ -143,9 +143,6 @@ export class DataService {
     );
   }
 
-
-
-
   ///////////////////////////// INVOICE SECTION /////////////////////////////
 
   getMyInvoices() {
@@ -161,7 +158,7 @@ export class DataService {
   }
 
   getInvoicePayment(userId, invoiceCode) {
-    return this.http.get<any>('/api/invoices/' + userId + '/' + invoiceCode + '/payment').pipe(
+    return this.http.get<any>('/api/payment/' + userId + '/' + invoiceCode + '/display').pipe(
       catchError(this.handleError)
     );
   }

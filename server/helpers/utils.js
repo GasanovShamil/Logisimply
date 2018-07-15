@@ -118,5 +118,13 @@ module.exports = {
             result.push(['']);
             return result;
         },
+    },
+    forward: {
+        getHeaders: function(req) {
+            return {
+                "Authorization": "Bearer " + req.loggedBearer,
+                "Localize": req.language
+            };
+        }
     }
 };

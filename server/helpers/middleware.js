@@ -14,6 +14,7 @@ module.exports = {
                 else if (decoded.status !== "active")
                     res.status(403).json({message: localization[req.language].users.inactive});
                 else {
+                    req.loggedBearer = bearerToken;
                     req.loggedUser = decoded;
                     next();
                 }

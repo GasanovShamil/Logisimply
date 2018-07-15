@@ -1,3 +1,4 @@
+let config = require("../config");
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
@@ -7,6 +8,7 @@ let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let quoteModel = require("../models/Quote");
 let invoiceModel = require("../models/Invoice");
+let request = require("request");
 let express = require("express");
 let router = express.Router();
 
@@ -333,35 +335,28 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
  */
 router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
-    let generatedInvoice = {
-        customer: paramQuote.customer,
-        dateInvoice: paramQuote.dateQuote,
-        subject: paramQuote.subject,
-        content: paramQuote.content,
-        datePayment: paramQuote.datePayment,
-        dateExecution: paramQuote.dateQuote,
-        collectionCost: paramQuote.collectionCost,
-        comment: paramQuote.comment
-    };
-    if (!utils.fields.isInvoiceComplete(generatedInvoice))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countCustomer = await customerModel.countDocuments({code: generatedInvoice.customer, user: req.loggedUser._id});
-        if (countCustomer === 0)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.quotes += 1;
-            user.save();
-            generatedInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.quotes);
-            generatedInvoice.advandedPayment = {value: 0, status: "none"};
-            generatedInvoice.status = "draft";
-            generatedInvoice.user = req.loggedUser._id;
-            generatedInvoice.createdAt = new Date();
-            let invoice = await invoiceModel.create(generatedInvoice);
-            res.status(200).json({message: localization[req.language].quotes.add, data: invoice});
+    console.log("URL = " + config.url + "/api/invoices/add");
+
+    request({
+        url: config.url + "/api/invoices/add",
+        method: 'post',
+        headers: utils.forward.getHeaders(req),
+        json: {
+            customer: paramQuote.customer,
+            dateInvoice: paramQuote.dateQuote,
+            subject: paramQuote.subject,
+            content: paramQuote.content,
+            datePayment: paramQuote.datePayment,
+            dateExecution: paramQuote.dateQuote,
+            collectionCost: paramQuote.collectionCost,
+            comment: paramQuote.comment
         }
-    }
+    }, function(err, response, body) {
+        if (err)
+            res.status(response.statusCode).json({message: localization[req.language].customers.code.failed});
+        else
+            res.status(200).json({message: body.message, data: body.data});
+    });
 }));
 
 /**

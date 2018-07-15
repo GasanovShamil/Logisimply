@@ -57,7 +57,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
       result => {
         this.isLoadingResults = false;
         this.isInvoiceReady = true;
-        this.isPaypalAllowed = result.user.credentials && result.user.credentials != '';
+        this.isPaypalAllowed = result.user.credentials;
         this.data = result;
         this.payingAmount = result.sumToPay;
         this.maxAmount = result.sumToPay;
