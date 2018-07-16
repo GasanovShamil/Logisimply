@@ -83,25 +83,24 @@ router.use(middleware.isLogged);
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramProvider = req.body;
     if (!utils.fields.isProviderComplete(paramProvider))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramProvider.email))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        let countProvider = await providerModel.countDocuments({email: paramProvider.email, siret: paramProvider.siret, user: req.loggedUser._id});
-        if (countProvider !== 0)
-            res.status(400).json({message: localization[req.language].providers.code.used});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.providers += 1;
-            user.save();
-            paramProvider.code = "P" + utils.format.getCode(user.parameters.providers);
-            paramProvider.user = req.loggedUser._id;
-            paramProvider.createdAt = new Date();
-            let provider = await providerModel.create(paramProvider);
-            let result = await provider.fullFormat();
-            res.status(200).json({message: localization[req.language].providers.add, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    if (!utils.fields.isEmailValid(paramProvider.email))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    let countProvider = await providerModel.countDocuments({email: paramProvider.email, siret: paramProvider.siret, user: req.loggedUser._id});
+    if (countProvider !== 0)
+        return res.status(400).json({message: localization[req.language].providers.code.used});
+
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user.parameters.providers += 1;
+    user.save();
+    paramProvider.code = "P" + utils.format.getCode(user.parameters.providers);
+    paramProvider.user = req.loggedUser._id;
+    paramProvider.createdAt = new Date();
+    let provider = await providerModel.create(paramProvider);
+    let result = await provider.fullFormat();
+    res.status(200).json({message: localization[req.language].providers.add, data: result});
 }));
 
 /**
@@ -158,11 +157,10 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let provider = await providerModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!provider)
-        res.status(400).json({message: localization[req.language].providers.code.failed});
-    else {
-        let result = await provider.fullFormat();
-        res.status(200).json(result);
-    }
+        return res.status(400).json({message: localization[req.language].providers.code.failed});
+
+    let result = await provider.fullFormat();
+    res.status(200).json(result);
 }));
 
 /**
@@ -194,20 +192,18 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramProvider = req.body;
     if (!utils.fields.isProviderComplete(paramProvider))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramProvider.email))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        paramProvider.updatedAt = new Date();
-        await providerModel.findOneAndUpdate({code: paramProvider.code, user: req.loggedUser._id}, {$set: paramProvider}, null);
-        let provider = await providerModel.findOne({code: paramProvider.code, user: req.loggedUser._id});
-        if (!provider)
-            res.status(400).json({message: localization[req.language].providers.code.failed});
-        else {
-            let result = await provider.fullFormat();
-            res.status(200).json({message: localization[req.language].providers.update, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+    if (!utils.fields.isEmailValid(paramProvider.email))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    paramProvider.updatedAt = new Date();
+    await providerModel.findOneAndUpdate({code: paramProvider.code, user: req.loggedUser._id}, {$set: paramProvider}, null);
+    let provider = await providerModel.findOne({code: paramProvider.code, user: req.loggedUser._id});
+    if (!provider)
+        return res.status(400).json({message: localization[req.language].providers.code.failed});
+
+    let result = await provider.fullFormat();
+    res.status(200).json({message: localization[req.language].providers.update, data: result});
 }));
 
 /**
@@ -238,11 +234,10 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let provider = await providerModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
     if (!provider)
-        res.status(400).json({message: localization[req.language].providers.code.failed});
-    else {
-        let result = await provider.fullFormat();
-        res.status(200).json({message: localization[req.language].providers.delete.one, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].providers.code.failed});
+
+    let result = await provider.fullFormat();
+    res.status(200).json({message: localization[req.language].providers.delete.one, data: result});
 }));
 
 /**

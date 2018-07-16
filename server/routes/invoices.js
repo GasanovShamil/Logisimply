@@ -108,26 +108,24 @@ router.use(middleware.isLogged);
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
     if (!utils.fields.isInvoiceComplete(paramInvoice))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
-        if (countCustomer === 0)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.invoices += 1;
-            user.save();
-            paramInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.invoices);
-            if (!paramInvoice.advancedPayment)
-                paramInvoice.advancedPayment = 0;
-            paramInvoice.status = "draft";
-            paramInvoice.user = req.loggedUser._id;
-            paramInvoice.createdAt = new Date();
-            let invoice = await invoiceModel.create(paramInvoice);
-            let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
-            res.status(200).json({message: localization[req.language].invoices.add, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
+    if (countCustomer === 0)
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user.parameters.invoices += 1;
+    user.save();
+    paramInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.invoices);
+    if (!paramInvoice.advancedPayment)
+        paramInvoice.advancedPayment = 0;
+    paramInvoice.status = "draft";
+    paramInvoice.user = req.loggedUser._id;
+    paramInvoice.createdAt = new Date();
+    let invoice = await invoiceModel.create(paramInvoice);
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json({message: localization[req.language].invoices.add, data: result});
 }));
 
 /**
@@ -184,11 +182,10 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.code.failed});
-    else {
-        let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
-        res.status(200).json(result);
-    }
+        return res.status(400).json({message: localization[req.language].invoices.code.failed});
+
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json(result);
 }));
 
 /**
@@ -220,32 +217,29 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
     if (!utils.fields.isInvoiceStatusValid(paramInvoice.status))
-        res.status(400).json({message: localization[req.language].fields.prohibited});
-    else if (!utils.fields.isInvoiceComplete(paramInvoice))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
-        if (countCustomer === 0)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            let countInvoice = await invoiceModel.countDocuments({code: paramInvoice.code, status: "draft", user: req.loggedUser._id});
-            if (countInvoice === 0)
-                res.status(400).json({message: localization[req.language].invoices.update.impossible});
-            else {
-                if (!paramInvoice.advancedPayment)
-                    paramInvoice.advancedPayment = 0;
-                paramInvoice.updatedAt = new Date();
-                await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, {$set: paramInvoice}, null);
-                let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
-                if (!invoice)
-                    res.status(400).json({message: localization[req.language].invoices.code.failed});
-                else {
-                    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
-                    res.status(200).json({message: localization[req.language].invoices.update.success, data: result});
-                }
-            }
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.prohibited});
+
+    if (!utils.fields.isInvoiceComplete(paramInvoice))
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
+    if (countCustomer === 0)
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    let countInvoice = await invoiceModel.countDocuments({code: paramInvoice.code, status: "draft", user: req.loggedUser._id});
+    if (countInvoice === 0)
+        return res.status(400).json({message: localization[req.language].invoices.update.impossible});
+
+    if (!paramInvoice.advancedPayment)
+        paramInvoice.advancedPayment = 0;
+    paramInvoice.updatedAt = new Date();
+    await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, {$set: paramInvoice}, null);
+    let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
+    if (!invoice)
+        return res.status(400).json({message: localization[req.language].invoices.code.failed});
+
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json({message: localization[req.language].invoices.update.success, data: result});
 }));
 
 /**
@@ -276,12 +270,11 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let countInvoice = await invoiceModel.countDocuments({code: paramCode, status: {$ne: "lock"}, user: req.loggedUser._id});
     if (countInvoice === 0)
-        res.status(400).json({message: localization[req.language].invoices.delete.impossible});
-    else {
-        let invoice = await invoiceModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
-        let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
-        res.status(200).json({message: localization[req.language].invoices.delete.one, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].invoices.delete.impossible});
+
+    let invoice = await invoiceModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json({message: localization[req.language].invoices.delete.one, data: result});
 }));
 
 /**
@@ -348,14 +341,13 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.code.failed});
-    else {
-        invoice.status = "lock";
-        invoice.save();
-        let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
-        pdf.getInvoice(result, req.language, mailer.sendInvoice);
-        res.status(200).json({message: localization[req.language].invoices.send, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].invoices.code.failed});
+
+    invoice.status = "lock";
+    invoice.save();
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
+    pdf.getInvoice(result, req.language, mailer.sendInvoice);
+    res.status(200).json({message: localization[req.language].invoices.send, data: result});
 }));
 
 /**
@@ -386,19 +378,17 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let invoice = await invoiceModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.code.failed});
-    else {
-        let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
-        pdf.getInvoice(result, req.language);
-        res.download(utils.pdf.getPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err){
-            if (err)
-                res.status(500).json({message: localization[req.language].invoices.download.error});
-            else {
-                utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
-                res.status(200).json({message: localization[req.language].invoices.download.success, data: result});
-            }
-        });
-    }
+        return res.status(400).json({message: localization[req.language].invoices.code.failed});
+
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
+    pdf.getInvoice(result, req.language);
+    res.download(utils.pdf.getPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err) {
+        if (err)
+            return res.status(500).json({message: localization[req.language].invoices.download.error});
+
+        utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
+        res.status(200).json({message: localization[req.language].invoices.download.success, data: result});
+    });
 }));
 
 /**

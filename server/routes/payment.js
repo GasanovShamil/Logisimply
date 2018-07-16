@@ -74,11 +74,10 @@ router.get("/:user/:code/display", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
     if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.income.impossible});
-    else {
-        let result = await invoice.fullFormat({owner: paramUser, infos: true});
-        res.status(200).json(result);
-    }
+        return res.status(400).json({message: localization[req.language].invoices.income.impossible});
+
+    let result = await invoice.fullFormat({owner: paramUser, infos: true});
+    res.status(200).json(result);
 }));
 
 
@@ -115,28 +114,27 @@ router.post("/create", middleware.wrapper(async (req, res) => {
     let paramAmount = req.body.amount;
     let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
     if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.income.impossible});
-    else {
-        let user = await userModel.findOne({_id: paramUser}).exec();
-        let result = await invoice.fullFormat({owner: paramUser, customer: true});
-        request({
-            url: config.paypal_endpoint + "/v1/payments/payment",
-            method: 'post',
-            auth: utils.paypal.getAuth(user),
-            json: {
-                intent: "sale",
-                payer: {payment_method: "paypal"},
-                transactions: utils.paypal.getTransactions(result, paramAmount),
-                redirect_urls: utils.paypal.getRedirect(paramUser, paramCode),
-                note_to_payer: result.comment
-            }
-        }, function(err, response, body) {
-            if (err)
-                res.sendStatus(500);
-            else
-                res.status(200).json({id: body.id});
-        });
-    }
+        return res.status(400).json({message: localization[req.language].invoices.income.impossible});
+
+    let user = await userModel.findOne({_id: paramUser}).exec();
+    let result = await invoice.fullFormat({owner: paramUser, customer: true});
+    request({
+        url: config.paypal_endpoint + "/v1/payments/payment",
+        method: 'post',
+        auth: utils.paypal.getAuth(user),
+        json: {
+            intent: "sale",
+            payer: {payment_method: "paypal"},
+            transactions: utils.paypal.getTransactions(result, paramAmount),
+            redirect_urls: {return_url: config.url + '/payment/' + paramUser + '/' + paramCode, cancel_url: config.url + '/payment/' + paramUser + '/' + paramCode},
+            note_to_payer: result.comment
+        }
+    }, function(err, response, body) {
+        if (err)
+            return res.sendStatus(500);
+
+        res.status(200).json({id: body.id});
+    });
 }));
 
 /**
@@ -178,43 +176,43 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
     let paramPayer = req.body.payer;
     let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
     if (!invoice)
-        res.status(400).json({message: localization[req.language].invoices.income.impossible});
-    else {
-        let user = await userModel.findOne({_id: paramUser}).exec();
-        let result = await invoice.fullFormat({owner: paramUser, infos: true});
+        return res.status(400).json({message: localization[req.language].invoices.income.impossible});
 
+    let user = await userModel.findOne({_id: paramUser}).exec();
+    let result = await invoice.fullFormat({owner: paramUser, infos: true});
+
+    request({
+        url: config.paypal_endpoint + "/v1/payments/payment/" + paramPayment + "/execute",
+        method: "post",
+        auth: utils.paypal.getAuth(user),
+        json: {
+            payer_id: paramPayer,
+            transactions: utils.paypal.getTransactions(result, paramAmount)
+        }
+    }, function(err, response) {
+        if (err)
+            return res.sendStatus(500);
+
+        let executeStatus = response.statusCode;
         request({
-            url: config.paypal_endpoint + "/v1/payments/payment/" + paramPayment + "/execute",
+            url: config.url + "/api/payment/add/",
             method: "post",
-            auth: utils.paypal.getAuth(user),
+            headers: utils.forward.getHeaders(req, false),
             json: {
-                payer_id: paramPayer,
-                transactions: utils.paypal.getTransactions(result, paramAmount)
+                type: "paypal",
+                amount: paramAmount,
+                invoice: invoice.code,
+                user: invoice.user,
+                customer: invoice.customer,
+                dateIncome: new Date()
             }
-        }, function(err, response) {
+        }, function(err, response, body) {
             if (err)
-                res.sendStatus(500);
-            else {
-                let executeStatus = response.statusCode;
+                return res.sendStatus(500);
 
-                request({
-                    url: config.url + "/api/payment/add/",
-                    method: "post",
-                    headers: utils.forward.getHeaders(req, false),
-                    json: {
-                        payer_id: paramPayer,
-                        transactions: utils.paypal.getTransactions(result, paramAmount)
-                    }
-                }, function(err, response) {
-                    if (err)
-                        res.sendStatus(500);
-                    else {
-                        res.json({status: response.statusCode});
-                    }
-                });
-            }
+            res.json({executeStatus: executeStatus, incomeStatus: response.statusCode, message: body.message, data: body.data});
         });
-    }
+    });
 }));
 
 /**
@@ -244,39 +242,37 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramIncome = req.body;
     if (!utils.fields.isIncomeMethodValid(paramIncome.method))
-        res.status(400).json({message: localization[req.language].fields.prohibited});
-    else if (!utils.fields.isIncomeComplete(paramIncome))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
-        if (countInvoice === 0)
-            res.status(400).json({message: localization[req.language].invoices.income.impossible});
-        else {
-            paramIncome.createdAt = new Date();
-            if (paramIncome.method === "asset") {
-                let customer = await customerModel.findOne({code: paramIncome.customer, user: paramIncome.user});
-                if (!customer) {
-                    return res.status(400).json({message: localization[req.language].customers.code.failed});
-                } else {
-                    if (paramIncome.amount > customer.assets) {
-                        return res.status(403).json({message: localization[req.language].customers.assets.failed});
-                    } else {
-                        customer.assets -= paramIncome.amount;
-                        customer.save();
-                    }
-                }
-            }
-            let income = await incomeModel.create(paramIncome);
-            let invoice = await invoiceModel.findOne({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
-            let check = await invoice.fullFormat({owner: income.user, incomes: true});
-            if (check.sumToPay === 0) {
-                invoice.status = "payed";
-                invoice.save();
-            }
-            let result = await income.fullFormat();
-            res.status(200).json({message: localization[req.language].invoices.income.success, data: result});
-        }
+        return res.status(400).json({message: localization[req.language].fields.prohibited});
+
+    if (!utils.fields.isIncomeComplete(paramIncome))
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
+    if (countInvoice === 0)
+        return res.status(400).json({message: localization[req.language].invoices.income.impossible});
+
+    paramIncome.createdAt = new Date();
+    if (paramIncome.method === "asset") {
+        let customer = await customerModel.findOne({code: paramIncome.customer, user: paramIncome.user});
+        if (!customer)
+            return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+        if (paramIncome.amount > customer.assets)
+            return res.status(403).json({message: localization[req.language].customers.assets.failed});
+
+        customer.assets -= paramIncome.amount;
+        customer.save();
     }
+
+    let income = await incomeModel.create(paramIncome);
+    let invoice = await invoiceModel.findOne({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
+    let check = await invoice.fullFormat({owner: income.user, incomes: true});
+    if (check.sumToPay === 0) {
+        invoice.status = "payed";
+        invoice.save();
+    }
+    let result = await income.fullFormat();
+    res.status(200).json({message: localization[req.language].invoices.income.success, data: result});
 }));
 
 module.exports = router;

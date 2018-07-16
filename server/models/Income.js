@@ -11,8 +11,7 @@ let incomeSchema = mongoose.Schema ({
     user: String,
     customer: String,
     dateIncome: Date,
-    createdAt: Date,
-    updatedAt: Date
+    createdAt: Date
 });
 
 incomeSchema.methods.fullFormat = function(include) {

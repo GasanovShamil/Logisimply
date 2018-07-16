@@ -92,7 +92,6 @@ router.use(middleware.localize);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
-
     if (!utils.fields.isUserComplete(paramUser))
         return res.status(400).json({message: localization[req.language].fields.required});
 
@@ -137,7 +136,6 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  */
 router.get("/activate/:token", middleware.wrapper(async (req, res) => {
     let paramToken = req.params.token;
-
     let user = await userModel.findOne({status: "inactive", activationToken: paramToken});
     if (!user)
         return res.status(400).json({message: localization[req.language].users.token.failed});
@@ -212,18 +210,17 @@ router.post("/forgetPassword", middleware.wrapper(async (req, res) => {
 router.post("/resendActivationUrl", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramEmail))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        let user = await userModel.findOne({status: "inactive", email: paramEmail});
-        if (!user)
-            res.status(400).json({message: localization[req.language].users.email.failed});
-        else {
-            mailer.sendActivationUrl(user, req.language);
-            res.status(200).json({message: localization[req.language].users.link});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    if (!utils.fields.isEmailValid(paramEmail))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    let user = await userModel.findOne({status: "inactive", email: paramEmail});
+    if (!user)
+        return res.status(400).json({message: localization[req.language].users.email.failed});
+
+    mailer.sendActivationUrl(user, req.language);
+    res.status(200).json({message: localization[req.language].users.link});
 }));
 
 /**
@@ -260,34 +257,34 @@ router.post("/login", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     let paramPassword = req.body.password;
     if (!(paramEmail && paramPassword))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramEmail))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        let user = await userModel.findOne({email: paramEmail});
-        if (!user)
-            res.status(400).json({message: localization[req.language].users.email.failed});
-        else
-            switch (user.status) {
-                case "banned":
-                    res.status(403).json({message: localization[req.language].users.banned});
-                    break;
+        return res.status(400).json({message: localization[req.language].fields.required});
 
-                case "inactive":
-                    res.status(403).json({message: localization[req.language].users.inactive});
-                    break;
+    if (!utils.fields.isEmailValid(paramEmail))
+        return res.status(400).json({message: localization[req.language].email.invalid});
 
-                case "active":
-                    if (user.password === md5(paramPassword))
-                        jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function (err, token) {
-                            if (err)
-                                res.status(500).json({message: err});
-                            else
-                                res.status(200).json({token: token});
-                        });
-                    else res.status(403).json({message: localization[req.language].users.password.failed});
-                    break;
-            }
+    let user = await userModel.findOne({email: paramEmail});
+    if (!user)
+        return res.status(400).json({message: localization[req.language].users.email.failed});
+
+    switch (user.status) {
+        case "banned":
+            res.status(403).json({message: localization[req.language].users.banned});
+            break;
+
+        case "inactive":
+            res.status(403).json({message: localization[req.language].users.inactive});
+            break;
+
+        case "active":
+            if (user.password === md5(paramPassword))
+                jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function (err, token) {
+                    if (err)
+                        res.status(500).json({message: err});
+                    else
+                        res.status(200).json({token: token});
+                });
+            else res.status(403).json({message: localization[req.language].users.password.failed});
+            break;
     }
 }));
 
@@ -341,21 +338,21 @@ router.get("/me", middleware.wrapper(async (req, res) => {
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
     if (!utils.fields.isUserComplete(paramUser))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramUser.email))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        paramUser.password = md5(paramUser.password);
-        paramUser.updatedAt = new Date();
-        await userModel.findOneAndUpdate({_id: req.loggedUser._id}, {$set: paramUser}, null);
-        let user = await userModel.findOne({_id: req.loggedUser._id});
-        jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function(err, token) {
-            if (err)
-                res.status(500).json({message: err});
-            else
-                res.status(200).json({message: localization[req.language].users.update, token: token});
-        });
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    if (!utils.fields.isEmailValid(paramUser.email))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    paramUser.password = md5(paramUser.password);
+    paramUser.updatedAt = new Date();
+    await userModel.findOneAndUpdate({_id: req.loggedUser._id}, {$set: paramUser}, null);
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function(err, token) {
+        if (err)
+            return res.status(500).json({message: err});
+
+        res.status(200).json({message: localization[req.language].users.update, token: token});
+    });
 }));
 
 /**

@@ -137,9 +137,6 @@ module.exports = {
                 description: "The payment transaction description.",
                 custom: invoice.code
             }];
-         },
-        getRedirect: function(user, invoice) {
-            return {return_url: config.url + '/payment/' + user + '/' + invoice, cancel_url: config.url + '/payment/' + user + '/' + invoice};
-        }
+         }
     }
 };
