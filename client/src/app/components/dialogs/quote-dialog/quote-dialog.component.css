@@ -30,3 +30,12 @@
 .payed {
   color: #ffd106;
 }
+
+.input-button-row {
+  display: flex;
+}
+
+.myrow {
+  display: inline-flex;
+}
+

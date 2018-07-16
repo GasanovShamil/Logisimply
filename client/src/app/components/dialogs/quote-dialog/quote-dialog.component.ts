@@ -29,16 +29,22 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   editMode: boolean = false;
   close: boolean = false;
   myCustomers: Customer[] = [];
+  myItems: Item[] = [];
   filteredOptions: Observable<Customer[]>;
-  myCustomerTest: Customer;
+  filteredOptionsItem: Observable<Item[]>;
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
   customerSelectSubscription: Subscription;
-  displayedColumns = ['position', 'name'];
+  itemSelectSubscription: Subscription;
+  displayedColumns:string[] ;
   myContents: Content[] = [];
   contentDataSource = new MatTableDataSource(this.myContents);
 
-  @ViewChild(MatAutocompleteTrigger) trigger: MatAutocompleteTrigger;
+  @ViewChild('inputCustomer', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+  @ViewChild('inputItem', { read: MatAutocompleteTrigger }) triggerItem: MatAutocompleteTrigger;
+
+  // @ViewChild('autoCustomer') trigger: MatAutocompleteTrigger;
+  // @ViewChild('autoItem') triggerItem: MatAutocompleteTrigger;
 
   constructor(private alertService: AlertService,
               private dataService: DataService,
@@ -59,10 +65,19 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         this.alertService.error(error.error.message);
       }
     )
+    this.dataService.getMyItems().subscribe(
+      data => {
+        this.myItems = data;
+      },
+      error => {
+        this.alertService.error(error.error.message);
+      }
+    )
 
   }
 
   ngOnInit(): void {
+    this.displayedColumns = ['reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
     this.setFormGroup();
     this.filteredOptions = this.quoteForm.controls['customer'].valueChanges
       .pipe(
@@ -70,15 +85,26 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         map(value => typeof value === 'string' ? value : (value) ? value.name : null),
         map(name => name ? this.filter(name) : this.myCustomers.slice())
       );
+
+   this.filteredOptionsItem = this.quoteForm.controls['itemRow'].valueChanges
+      .pipe(
+        startWith<string | Item>(''),
+        map(value => typeof value === 'string' ? value : (value) ? value.label : null),
+        map(label => label ? this.filterItem(label) : this.myItems.slice())
+      );
   }
 
   ngAfterViewInit() {
     this._subscribeToClosingActions();
+    this._subscribeToClosingActionsItem();
   }
 
   ngOnDestroy() {
     if (this.customerSelectSubscription && !this.customerSelectSubscription.closed) {
       this.customerSelectSubscription.unsubscribe();
+    }
+    if (this.itemSelectSubscription && !this.itemSelectSubscription.closed) {
+      this.itemSelectSubscription.unsubscribe();
     }
   }
 
@@ -97,8 +123,27 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         () => this._subscribeToClosingActions());
   }
 
+  private _subscribeToClosingActionsItem(): void {
+    if (this.itemSelectSubscription && !this.itemSelectSubscription.closed) {
+      this.itemSelectSubscription.unsubscribe();
+    }
+
+    this.itemSelectSubscription = this.triggerItem.panelClosingActions
+      .subscribe(e => {
+          if (!e || !e.source) {
+            this.quoteForm.controls['itemRow'].setValue(null);
+          }
+        },
+        err => this._subscribeToClosingActionsItem(),
+        () => this._subscribeToClosingActionsItem());
+  }
+
   handler(event: MatAutocompleteSelectedEvent): void {
     this.quoteForm.controls['customer'].setValue(event.option.value);
+  }
+
+  handlerItem(event: MatAutocompleteSelectedEvent): void {
+    this.quoteForm.controls['itemRow'].setValue(event.option.value);
   }
 
   filter(name: string): Customer[] {
@@ -106,8 +151,17 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
       option.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
+  filterItem(label: string): Item[] {
+    return this.myItems.filter(option =>
+      option.label.toLowerCase().indexOf(label.toLowerCase()) === 0);
+  }
+
   displayFn(customer?: Customer): string | undefined {
     return customer ? customer.code + ' - ' + customer.name : undefined;
+  }
+
+  displayFnItem(item?: Item): string | undefined {
+    return item ? item.reference + ' - ' + item.label : undefined;
   }
 
   editSliderChange(event: MatSlideToggleChange) {
@@ -124,17 +178,20 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
 
-  addItemRow(item?: Item) {
+  addItemRow() {
     let content = new Content();
-    if (item) {
-      content.description = item.description;
-      content.label = item.label;
+    let itemRow: Item = this.quoteForm.controls['itemRow'].value;
+    if (itemRow) {
+      content.reference = itemRow.reference;
+      content.unitPriceET = itemRow.priceET;
+      content.type = itemRow.type;
+      content.description = itemRow.description;
+      content.label = itemRow.label;
       content.quantity = 1;
       this.contentDataSource.data.push(content);
     } else {
       this.contentDataSource.data.push(content);
     }
-
     this.contentDataSource._updateChangeSubscription();
   }
 
@@ -172,13 +229,11 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         subject: new FormControl({value: this.data.subject, disabled: true}, []),
         content: new FormControl({value: this.data.content, disabled: true}, []),
         datePayment: new FormControl({value: this.data.datePayment, disabled: true}, [Validators.required]),
-        validity: new FormControl({
-          value: this.data.validity,
-          disabled: true
-        }, [Validators.pattern('^\\d+$'), Validators.required]),
+        validity: new FormControl({value: this.data.validity, disabled: true }, [Validators.pattern('^\\d+$'), Validators.required]),
         collectionCost: new FormControl({value: this.data.collectionCost, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
-        status: new FormControl({value: this.data.status, disabled: true}, [])
+        status: new FormControl({value: this.data.status, disabled: true}, []),
+        itemRow: new FormControl({value: '', disabled: true}, [])
       });
     } else {
       this.quoteForm = new FormGroup({
@@ -191,7 +246,8 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         validity: new FormControl('', [Validators.pattern('^\\d+$'), Validators.required]),
         collectionCost: new FormControl('', [Validators.required]),
         comment: new FormControl('', []),
-        status: new FormControl('', [])
+        status: new FormControl('', []),
+        itemRow: new FormControl('', [])
       });
     }
   }

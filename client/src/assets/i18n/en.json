@@ -147,7 +147,14 @@
     "lock": "Lock",
     "payed": "Payed",
     "comment": "Comment",
-    "add_new_customer": "Add new customer"
+    "add_new_customer": "Add new customer",
+    "find_add_item": "Find/add item",
+    "add_new_item": "Add new item",
+    "reference": "Ref.",
+    "label": "Label",
+    "unitPriceET": "Unite price",
+    "quantity": "Quantity",
+    "discount": "Discount"
   },
   "payment":{
     "siret": "Translate | Siret : ",
