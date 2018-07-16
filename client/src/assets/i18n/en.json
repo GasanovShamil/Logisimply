@@ -208,6 +208,8 @@
     "grpd": "Why are we collecting your data ?"
   },
   "home" :{
+    "activity_entitled": "Activity entitled",
+    "activity_started": "Activity started",
     "lastname": "Lastname",
     "firstname": "Firstname",
     "address": "Address",
@@ -216,8 +218,6 @@
     "zipcode": "ZipCode",
     "activity_type": "Activity type",
     "category_type": "Category type",
-    "activity_entitled": "Activity entitled",
-    "activity_started": "Activity started",
     "siret": "Siret"
   }
 }
