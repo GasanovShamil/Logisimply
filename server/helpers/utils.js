@@ -25,7 +25,7 @@ module.exports = {
             });
         },
         isQuoteComplete: function(quote) {
-            return quote.customer && quote.dateQuote && this.isContentComplete(quote.content) && quote.datePayment && quote.validity && quote.collectionCost;
+            return quote.customer && quote.dateQuote && this.isContentComplete(quote.content) && quote.datePayment && quote.validity && (typeof(quote.collectionCost) === "boolean");
         },
         isInvoiceComplete: function(invoice) {
             return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && (typeof(invoice.collectionCost) === "boolean");
