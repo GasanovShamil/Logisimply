@@ -15,8 +15,8 @@ let providers = require("./routes/providers");
 let items = require("./routes/items");
 let quotes = require("./routes/quotes");
 let invoices = require("./routes/invoices");
-let activate = require("./routes/activate");
 let payment = require("./routes/payment");
+let contact = require("./routes/contact");
 
 let app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -64,8 +64,8 @@ app.use("/api/providers", providers);
 app.use("/api/items", items);
 app.use("/api/quotes", quotes);
 app.use("/api/invoices", invoices);
-app.use("/activate", activate);
 app.use("/api/payment", payment);
+app.use("/api/contact", contact);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

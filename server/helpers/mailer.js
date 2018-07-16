@@ -86,5 +86,21 @@ module.exports = {
                 utils.pdf.remove(path);
             }
         });
+    },
+    sendContact: function(name, email, message) {
+        let mailOptions = {
+            from: config.email.user,
+            to: config.email.admin,
+            subject: 'SALUT',
+            text: "Demande de contact Logisimply\nNom: " + name + "\nEmail: " + email + "\nMessage: " + message,
+            html: "<p>Demande de contact Logisimply</p><p>Nom: " + name + "</p><p>Email: " + email + "</p><p>Message: " + message + "</p>"
+        };
+
+        transporter.sendMail(mailOptions, function(err) {
+            if (err)
+                console.log("Mail contact failed - email : " + email);
+            else
+                console.log("Mail contact succeeded - email : " + email);
+        });
     }
 };

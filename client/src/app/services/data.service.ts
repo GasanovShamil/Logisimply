@@ -163,6 +163,13 @@ export class DataService {
     );
   }
 
+  ///////////////////////////// CONTACT SECTION /////////////////////////////
+
+  contact(infos) {
+    return this.http.post<any>('/api/contact', infos).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

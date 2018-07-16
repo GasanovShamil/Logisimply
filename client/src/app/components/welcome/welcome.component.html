@@ -1,79 +1,305 @@
-<div id="header-image">
-  <h1 class="center shadow">LogiSimply</h1>
-  <p class="center shadow">{{ 'welcome.header_presentation' | translate }}</p>
-  <div id="access-webapp">
-    <button mat-raised-button color="primary"  (click)="openSignupDialog()">{{ 'welcome.create' | translate }}</button>
-    <button mat-raised-button color="primary" (click)="openLoginDialog()">{{'welcome.login' | translate }}</button>
-  </div>
-</div>
-<div id="presentation-activity">
-  <div id="presentation-header">
-    <h2>{{ 'welcome.title_activity' | translate }}</h2>
-    <p>{{ 'welcome.content_activity' | translate }}</p>
-  </div>
-  <div id="activity-icons" class="center">
-    <div class="icons-presentation">
-      <img src="../../assets/images/check-mark.png" alt="{{ 'welcome.built_invoice' | translate }}" />
-      <p>{{ 'welcome.built_invoice' | translate }}</p>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
 
-    <div class="icons-presentation">
-      <img src="../../assets/images/dollar-symbol.png" alt="{{ 'welcome.money_info' | translate }}" />
-      <p>{{ 'welcome.money_info' | translate }}</p>
-    </div>
+<head>
 
-    <div class="icons-presentation">
-      <img src="../../assets/images/wait.png" alt="{{ 'welcome.save_time' | translate }}" />
-      <p>{{ 'welcome.save_time' | translate }}</p>
-    </div>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <div class="icons-presentation">
-      <img src="../../assets/images/maps-and-flags.png" alt="{{ 'welcome.done' | translate }}" />
-      <p>{{ 'welcome.done' | translate }}</p>
-    </div>
-  </div>
-</div>
-<div id="presentation">
-  <div id="team-header">
-    <h2>Team presentation</h2>
-  </div>
-  <div id="presentation-card">
-    <div id="card-component" class="center">
-      <mat-card class="card-type">
-        <img mat-card-image src="../../assets/images/shamil.png" alt="Photo of contacts">
-        <mat-card-content>
-          <h4>Shamil</h4>
-          <p>{{ 'welcome.presentation_shamil' | translate }}</p>
-        </mat-card-content>
-      </mat-card>
+  <!-- Bootstrap core CSS -->
+  <link href="../../../assets/css/bootstrap.min.css" rel="stylesheet">
 
-      <mat-card class="card-type">
-        <img mat-card-image src="../../assets/images/yoann.png" alt="Photo of contacts">
-        <mat-card-content>
-          <h4>Yoann</h4>
-          <p>{{ 'welcome.presentation_yoann' | translate }}</p>
-        </mat-card-content>
-      </mat-card>
+  <!-- Custom fonts for this template -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+        integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet'
+        type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
 
-      <mat-card class="card-type">
-        <img mat-card-image src="../../assets/images/leo.png" alt="Photo of contacts">
-        <mat-card-content>
-          <h4>Léo</h4>
-          <p>{{ 'welcome.presentation_leo' | translate }}</p>
-        </mat-card-content>
-      </mat-card>
+  <!-- Custom styles for this template -->
+  <link href="../../../assets/css/agency.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger" href="#page-top">LogiSimply</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+            aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav text-uppercase ml-auto">
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="/welcome#features">{{'welcome.menu.features' | translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="/welcome#about">{{'welcome.menu.about' | translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="/welcome#team">{{'welcome.menu.team' | translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="/welcome#contact">{{'welcome.menu.contact' | translate}}</a>
+        </li>
+      </ul>
     </div>
   </div>
-</div>
+</nav>
+
+<!-- Header -->
+<header class="masthead">
+  <div class="container">
+    <div class="intro-text">
+      <div class="intro-heading text-uppercase">LogiSimply</div>
+      <button type="button" class="btn btn-primary" mat-raised-button (click)="openSignupDialog()">{{ 'welcome.create' |
+        translate }}
+      </button>
+      <button type="button" class="btn btn-primary" mat-raised-button (click)="openLoginDialog()">{{'welcome.login' |
+        translate }}
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Services -->
+<section id="features">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">{{'welcome.menu.features' | translate}}</h2>
+        <h3 class="section-subheading text-muted"></h3>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-file-invoice fa-stack-1x fa-inverse"></i>
+            </span>
+        <h4 class="service-heading">{{'welcome.feature1' | translate}}</h4>
+      </div>
+      <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-address-book fa-stack-1x fa-inverse"></i>
+            </span>
+        <h4 class="service-heading">{{'welcome.feature2' | translate}}</h4>
+      </div>
+      <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+            </span>
+        <h4 class="service-heading">{{'welcome.feature3' | translate}}</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">{{'welcome.menu.about' | translate}}</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="timeline">
+          <li>
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="../../../assets/images/about/1.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>09/2017</h4>
+                <h4 class="subheading">{{'welcome.date1' | translate}}</h4>
+              </div>
+            </div>
+          </li>
+          <li class="timeline-inverted">
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="../../../assets/images/about/2.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>12/2017</h4>
+                <h4 class="subheading">{{'welcome.date2' | translate}}</h4>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="../../../assets/images/about/3.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>02/2018</h4>
+                <h4 class="subheading">{{'welcome.date3' | translate}}</h4>
+              </div>
+            </div>
+          </li>
+          <li class="timeline-inverted">
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="../../../assets/images/about/4.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>07/2018</h4>
+                <h4 class="subheading">{{'welcome.date4' | translate}}</h4>
+              </div>
+            </div>
+          </li>
+          <li class="timeline-inverted">
+            <div class="timeline-image">
+              <h4>{{'welcome.be_history' | translate}}</h4>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="bg-light" id="team">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">{{'welcome.team' | translate}}</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="../../assets/images/shamil.png" alt="">
+          <h4>Shamil Gasanov</h4>
+          <p class="text-muted">{{'welcome.job' | translate}}</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a href="https://www.linkedin.com/in/shamil-gasanov-389493108/" target="_blank">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="../../assets/images/yoann.png" alt="">
+          <h4>Yoann Flégeau</h4>
+          <p class="text-muted">{{'welcome.job' | translate}}</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a href="https://www.linkedin.com/in/yoann-fl%C3%A9geau-644a0689/" target="_blank">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="../../assets/images/leo.png" alt="">
+          <h4>Léo Foltz</h4>
+          <p class="text-muted">{{'welcome.job' | translate}}</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a href="https://www.linkedin.com/in/l%C3%A9o-foltz-91611513b/" target="_blank">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <p class="large text-muted">{{'welcome.team_message' | translate}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">{{'welcome.contact' | translate}}</h2>
+        <h3 class="section-subheading text-muted">{{'welcome.sub_message' | translate}}</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <form id="contactForm" name="sentMessage">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input class="form-control" id="name" type="text" placeholder="{{'welcome.placeholder.name' | translate}} *" [(ngModel)]="contactName" [ngModelOptions]="{standalone: true}" required />
+                <p class="help-block text-danger"></p>
+              </div>
+              <div class="form-group">
+                <input class="form-control" id="email" type="email" placeholder="{{'welcome.placeholder.email' | translate}} *" [(ngModel)]="contactEmail" [ngModelOptions]="{standalone: true}" required />
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <textarea class="form-control" id="message" placeholder="{{'welcome.placeholder.message' | translate}} *" [(ngModel)]="contactMessage" [ngModelOptions]="{standalone: true}" required></textarea>
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-lg-12 text-center">
+              <div id="success"></div>
+              <button id="sendMessageButton" class="btn btn-primary btn-xl text-uppercase" (click)="contact()">
+                {{'welcome.button_message' | translate}}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
 <footer>
-  <div class="footer-list-link">
-    <mat-list>
-      <mat-nav-list>
-        <a mat-list-item href="/notice">{{ 'welcome.legal_notice' | translate }}</a>
-      </mat-nav-list>
-      <mat-nav-list>
-        <a mat-list-item href="/grpd">{{ 'welcome.grpd' | translate }}</a>
-      </mat-nav-list>
-    </mat-list>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <span class="copyright">Copyright &copy; LogiSimply 2018</span>
+      </div>
+      <div class="col-md-4 offset-md-4">
+        <ul class="list-inline quicklinks">
+          <li class="list-inline-item">
+            <a href="/notice">{{'welcome.legal_notice' | translate}}</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="/grpd">{{'welcome.grpd' | translate}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </footer>
+
+<!-- Contact form JavaScript -->
+<script src="js/jqBootstrapValidation.js"></script>
+<script src="js/contact_me.js"></script>
+
+</body>
+
+</html>

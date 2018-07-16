@@ -79,5 +79,39 @@
     "paypal_success": "Votre paiement a bien été effectué",
     "paypal_error": "Un problème est survenu lors de la relation avec PayPal",
     "income_error": "Un problème est survenu lors de l'ajout de la recette"
+  },
+  "welcome": {
+    "menu": {
+      "features": "Fonctionnalités",
+      "about": "À propos de nous",
+      "team": "L'Équipe",
+      "contact": "Contact"
+    },
+    "feature1": "Construisez vos factures",
+    "feature2": "Créer votre portefeuille client",
+    "feature3": "Envoyez vos factures par email",
+    "create": "S'inscrire",
+    "date1": "Naissance de l'idée",
+    "date2": "Conception du business modèle",
+    "date3": "Début du développement",
+    "date4": "Produit commercialisé",
+    "be_history": "Rejoignez notre histoire !",
+    "login": "Se connecter",
+    "team": "Notre équipe incroyable ",
+    "job": "Développeur",
+    "team_message":"Nous sommes très fiers de vous offrir la possibilité de créer vos factures !",
+    "contact": "Contactez Nous",
+    "sub_message": "À propos de tout ce que vous désirez !",
+    "button_message": "Envoyer votre message",
+    "message_name": "Veuillez saisir votre nom.",
+    "message_email": "Veuillez saisir votre adresse email.",
+    "message_content": "Veuillez entrer votre message.",
+    "grpd": "Pourquoi collectons-nous vos données ?",
+    "legal_notice": "Comment fonctionne LogiSimply ?",
+    "placeholder": {
+      "name": "Votre Nom",
+      "email": "Votre Email",
+      "message": "Votre Message"
+    }
   }
 }
