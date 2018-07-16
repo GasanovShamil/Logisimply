@@ -66,6 +66,9 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramItem = req.body;
+    if (!utils.fields.isItemTypeValid(paramItem.type))
+        return res.status(400).json({message: localization[req.language].fields.prohibited});
+
     if (!utils.fields.isItemComplete(paramItem))
         return res.status(400).json({message: localization[req.language].fields.required});
 
@@ -172,6 +175,9 @@ router.get("/:reference", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramItem = req.body;
+    if (!utils.fields.isItemTypeValid(paramItem.type))
+        return res.status(400).json({message: localization[req.language].fields.prohibited});
+
     if (!utils.fields.isItemComplete(paramItem))
         return res.status(400).json({message: localization[req.language].fields.required});
 

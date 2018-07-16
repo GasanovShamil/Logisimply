@@ -21,7 +21,7 @@ incomeSchema.methods.fullFormat = function(include) {
         amount: this.amount,
         user: this.user,
         customer: this.customer,
-        dateIncome: utils.format.formatDate(this.dateIncome)
+        dateIncome: this.dateIncome
     };
 
     if (include && include.owner) {

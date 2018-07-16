@@ -36,6 +36,9 @@ module.exports = {
         isCustomerTypeValid: function (type) {
             return ["private", "professional"].includes(type);
         },
+        isItemTypeValid: function (type) {
+            return ["product", "service"].includes(type);
+        },
         isQuoteStatusValid: function (status) {
             return ["draft", "sent"].includes(status);
         },

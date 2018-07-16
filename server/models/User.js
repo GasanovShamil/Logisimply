@@ -44,7 +44,7 @@ userSchema.methods.fullFormat = function(include) {
         activityField: this.activityField || "",
         categoryType: this.categoryType || "",
         activityEntitled: this.activityEntitled,
-        activityStarted: utils.format.formatDate(this.activityStarted),
+        activityStarted: this.activityStarted,
         siret: this.siret,
         address: this.address,
         zipCode: this.zipCode,

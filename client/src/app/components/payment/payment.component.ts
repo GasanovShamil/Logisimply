@@ -5,6 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {AlertService} from '../../services/alert.service';
 import {MatTableDataSource} from '@angular/material';
+import {DatePipe} from "@angular/common";
 
 declare let paypal: any;
 
@@ -17,7 +18,6 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   displayContent = ['reference', 'label', 'unitPriceET', 'quantity', 'discount', 'totalPriceET'];
   displayIncomes = ['method', 'amount', 'dateIncome'];
   mobileQuery: MediaQueryList;
-
   private _mobileQueryListener: () => void;
   isLoadingResults: boolean = true;
   isInvoiceReady: boolean = false;
