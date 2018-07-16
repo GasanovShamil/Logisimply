@@ -3,9 +3,8 @@ import {DataService} from '../../services/data.service';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
 import {AlertService} from '../../services/alert.service';
-import {InvoiceFullFormat} from "../../models/invoice";
+import {MatTableDataSource} from '@angular/material';
 
 declare let paypal: any;
 
@@ -18,6 +17,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   displayContent = ['reference', 'label', 'unitPriceET', 'quantity', 'discount', 'totalPriceET'];
   displayIncomes = ['method', 'amount', 'dateIncome'];
   mobileQuery: MediaQueryList;
+
   private _mobileQueryListener: () => void;
   isLoadingResults: boolean = true;
   isInvoiceReady: boolean = false;
@@ -25,8 +25,8 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   addScript: boolean = true;
   paramUser: string;
   paramInvoice: string;
-  data = new Observable<InvoiceFullFormat>();
-  //data = new Observable();
+  data: any;
+  invoiceDataSource: MatTableDataSource<any>;
   payingAmount: number = 0;
   maxAmount: number = 0;
   errorMessage = '';
@@ -47,14 +47,14 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
         return res.id;
       });
     },
-    onAuthorize: (data, actions) => {
+    onAuthorize: (result, actions) => {
       return actions.request.post('/api/payment/execute', {
         user: this.paramUser,
         code: this.paramInvoice,
         amount: this.payingAmount,
-        payment: data.paymentID,
-        payer: data.payerID,
-        data: data
+        payment: result.paymentID,
+        payer: result.payerID,
+        data: result
       }).then((res) => {
         if (res.executeStatus !== 200)
           this.translate.get(['payment']).subscribe(translation => {
@@ -69,7 +69,8 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
             this.alertService.error(translation.payment.paypal_success);
           });
 
-          //this.data.incomes.push(res.data);
+          this.invoiceDataSource.data.push(res.data);
+          this.invoiceDataSource._updateChangeSubscription();
         }
       });
     }
@@ -105,6 +106,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
         this.data = data;
         this.payingAmount = data.sumToPay;
         this.maxAmount = data.sumToPay;
+        this.invoiceDataSource = new MatTableDataSource(this.data.incomes);
       },
       error => {
         this.isLoadingResults = false;

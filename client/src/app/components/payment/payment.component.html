@@ -149,7 +149,7 @@
   </div>
 
   <div id="incomes-container" class="form-group">
-    <mat-table #table [dataSource]="data.incomes">
+    <mat-table #table [dataSource]="invoiceDataSource">
       <ng-container matColumnDef="method">
         <mat-header-cell *matHeaderCellDef>{{ 'payment.incomes.method' | translate }}</mat-header-cell>
         <mat-cell *matCellDef="let element">{{ element.method }}</mat-cell>
