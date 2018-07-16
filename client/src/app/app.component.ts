@@ -10,10 +10,11 @@ export class AppComponent {
 
   constructor(private translate: TranslateService) {
     let browserLang = translate.getBrowserLang();
+    let selectedLang = localStorage.getItem('Localize');
     translate.addLangs(['en', 'fr']);
     translate.setDefaultLang('en');
     translate.use(browserLang);
-    localStorage.setItem('Localize',browserLang || 'en');
+    if(!selectedLang) localStorage.setItem('Localize',browserLang || 'en');
   }
 
 

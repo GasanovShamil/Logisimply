@@ -195,11 +195,8 @@ export class BillsComponent implements OnInit {
   }
 
   openQuoteDialog(quote?: Quote): void {
-    let dialogRef = this.dialog.open(QuoteDialogComponent, {
-      maxWidth: '500px',
-      minWidth: '100px',
-      data: (quote)?quote:null
-    });
+    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (quote)?quote:null }:{width: '600px',  data: (quote)?quote:null };
+    let dialogRef = this.dialog.open(QuoteDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);
@@ -217,13 +214,8 @@ export class BillsComponent implements OnInit {
   }
 
   openInvoiceDialog(invoice?: Invoice): void {
-    let mobileDevice: boolean = this.mobileQuery.matches;
-    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', maxHeight: '85vh', data: (invoice)?invoice:null }:{width: '600px', maxHeight: '85vh', data: (invoice)?invoice:null };
-    let dialogRef = this.dialog.open(InvoiceDialogComponent, {
-      maxWidth: '500px',
-      minWidth: '100px',
-      data: (invoice)?invoice:null
-    });
+    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (invoice)?invoice:null }:{width: '600px',  data: (invoice)?invoice:null };
+    let dialogRef = this.dialog.open(InvoiceDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.alertService.success(result.message);

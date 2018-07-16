@@ -19,7 +19,7 @@ export class SignupDialogComponent implements OnInit {
 
   constructor(private alertService: AlertService,
               public translate: TranslateService,
-              public dialogRef: MatDialogRef<CustomerDialogComponent>,
+              public dialogRef: MatDialogRef<SignupDialogComponent>,
               private userService : UserService,
               @Inject(MAT_DIALOG_DATA) public data: any) {
   }

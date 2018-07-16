@@ -3,7 +3,7 @@
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
     <h1 class="app-name">Logisimply</h1>
     <span class="fill-remaining-space"></span>
-    <mat-form-field>
+    <mat-form-field style="width: 50px">
       <mat-select #langSelect [(ngModel)]="language" (change)="onLanguageChange(langSelect.value)">
         <mat-option *ngFor="let lang of languages" value="{{lang}}">{{lang}}</mat-option>
       </mat-select>

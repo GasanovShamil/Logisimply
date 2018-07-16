@@ -1,3 +1,99 @@
-<p>
-  quote-dialog works!
-</p>
+<div class="dialog-title" mat-dialog-title>
+  <div>
+    <mat-icon *ngIf="data && data.status" [ngClass]="data.status"
+              matTooltip="{{ 'billsDialog.'+data.status | translate }}">{{data.status | icon}}
+    </mat-icon>
+    {{ 'billsDialog.quote' | translate }}
+    <mat-hint align="end" class="close-button">
+      <mat-icon (click)="onCloseClick()" color="warn">clear</mat-icon>
+    </mat-hint>
+    <mat-hint *ngIf="data && data.code" align="start">{{data.code}}</mat-hint>
+  </div>
+  <mat-slide-toggle *ngIf="data" [labelPosition]="editLablePosition" (change)="editSliderChange($event)">{{
+    'billsDialog.edit_mode' | translate }}
+  </mat-slide-toggle>
+</div>
+<div mat-dialog-content>
+
+  <form [formGroup]="quoteForm" (submit)="saveData()">
+    <mat-form-field class="full-width">
+      <input type="text" placeholder="{{ 'billsDialog.customer' | translate }}" matInput formControlName="customer"
+             [matAutocomplete]="auto" required>
+      <mat-icon matSuffix (click)="openCustomerDialog()" color="primary" matTooltip="{{ 'billsDialog.add_new_customer' | translate }}">add</mat-icon>
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="handler($event)">
+        <mat-option *ngFor="let customer of filteredOptions | async" [value]="customer">
+          {{ customer.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="half-width">
+      <input matInput [matDatepicker]="pickerDateQuote" placeholder="{{ 'billsDialog.dateQuote' | translate }}"
+             formControlName="dateQuote" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerDateQuote"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateQuote></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput [matDatepicker]="pickerDatePayment" placeholder="{{ 'billsDialog.datePayment' | translate }}"
+             formControlName="datePayment" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerDatePayment"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDatePayment></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="third">
+      <input matInput placeholder="{{ 'billsDialog.subject' | translate }}" formControlName="subject">
+    </mat-form-field>
+    <mat-form-field class="third">
+      <input matInput placeholder="{{ 'billsDialog.validity' | translate }}" formControlName="validity" required>
+    </mat-form-field>
+    <mat-slide-toggle [labelPosition]="editLablePosition" formControlName="collectionCost">{{
+    'billsDialog.collectionCost' | translate }}
+    </mat-slide-toggle>
+
+    <mat-form-field class="full-width">
+      <textarea matInput placeholder="{{ 'billsDialog.comment' | translate }}" formControlName="comment"></textarea>
+    </mat-form-field>
+    <div class="half-width">
+
+    </div>
+  </form>
+  <mat-form-field class="full-width">
+  <input type="text" #selectedElement placeholder="{{ 'billsDialog.customer' | translate }}" matInput formControlName="customer"
+         [matAutocomplete]="auto" required>
+  <mat-icon matSuffix (click)="addItemRow(selectedElement.value)" color="primary" matTooltip="{{ 'billsDialog.add_new_customer' | translate }}">add</mat-icon>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="handler($event)">
+    <mat-option *ngFor="let customer of filteredOptions | async" [value]="customer">
+      {{ customer.name }}
+    </mat-option>
+  </mat-autocomplete>
+  </mat-form-field>
+  <mat-table #table [dataSource]="contentDataSource">
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <mat-header-cell *matHeaderCellDef> No.</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.position}}</mat-cell>
+    </ng-container>
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+
+        <input matInput placeholder="Name" [value]="element.name" [(ngModel)]="element.name">
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" type="submit" [disabled]="!saveButton">
+    <mat-icon>save</mat-icon>
+  </button>
+</div>
+
+
+<!--content: new FormControl({value: this.data.content, disabled: true}, []),-->
+
+
+

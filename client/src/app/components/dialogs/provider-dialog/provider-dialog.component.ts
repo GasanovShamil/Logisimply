@@ -23,7 +23,7 @@ export class ProviderDialogComponent implements OnInit {
   constructor(private alertService: AlertService,
               private dataService: DataService,
               public translate: TranslateService,
-              public dialogRef: MatDialogRef<CustomerDialogComponent>,
+              public dialogRef: MatDialogRef<ProviderDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onCloseClick(): void {

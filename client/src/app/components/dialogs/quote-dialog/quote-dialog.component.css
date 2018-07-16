@@ -10,6 +10,23 @@
   width: 32%;
 }
 
+
 .close-button{
   float: right;
+}
+
+
+.draft {
+  color: #46e7ff;
+}
+.sent {
+  color: #08ff0f;
+}
+
+.lock {
+  color: #ff051a;
+}
+
+.payed {
+  color: #ffd106;
 }

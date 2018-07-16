@@ -3,8 +3,8 @@ export class Content {
   label: string;
   description: string;
   type: string;
-  unitPriceET: string;
-  quantity: string;
-  discount: string;
-  totalPriceET: string;
+  unitPriceET: number;
+  quantity: number;
+  discount: number;
+  totalPriceET: number;
 }

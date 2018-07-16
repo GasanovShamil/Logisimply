@@ -132,6 +132,23 @@
     "payed": "Payed",
     "details_edit": "Details/Edit"
   },
+  "billsDialog": {
+    "quote": "Quote",
+    "edit_mode": "Edit",
+    "customer": "Customer",
+    "subject": "Subject",
+    "dateQuote": "Quote date",
+    "datePayment": "Payment date",
+    "validity": "Validity",
+    "collectionCost": "Collection cost",
+    "status": "Status",
+    "draft": "Draft",
+    "sent": "Sent",
+    "lock": "Lock",
+    "payed": "Payed",
+    "comment": "Comment",
+    "add_new_customer": "Add new customer"
+  },
   "payment":{
     "siret": "Translate | Siret : ",
     "date": "Date : ",

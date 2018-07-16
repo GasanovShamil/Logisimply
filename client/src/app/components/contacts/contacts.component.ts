@@ -195,8 +195,7 @@ export class ContactsComponent implements OnInit {
   }
 
   openCustomerDialog(customer?: Customer): void {
-    let mobileDevice: boolean = this.mobileQuery.matches;
-    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', data: (customer)?customer:null }:{width: '600px',  data: (customer)?customer:null };
+    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (customer)?customer:null }:{width: '600px',  data: (customer)?customer:null };
     let dialogRef = this.dialog.open(CustomerDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){
@@ -215,8 +214,7 @@ export class ContactsComponent implements OnInit {
   }
 
   openProviderDialog(provider?: Provider): void {
-    let mobileDevice: boolean = this.mobileQuery.matches;
-    let config = mobileDevice? {maxWidth: '100%', minWidth: '100px', data: (provider)?provider:null }:{width: '600px',  data: (provider)?provider:null };
+    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (provider)?provider:null }:{width: '600px',  data: (provider)?provider:null };
     let dialogRef = this.dialog.open(ProviderDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){

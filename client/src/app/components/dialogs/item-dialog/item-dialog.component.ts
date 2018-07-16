@@ -30,7 +30,7 @@ export class ItemDialogComponent implements OnInit {
   constructor(private alertService: AlertService,
               private dataService: DataService,
               public translate: TranslateService,
-              public dialogRef: MatDialogRef<CustomerDialogComponent>,
+              public dialogRef: MatDialogRef<ItemDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onCloseClick(): void {
