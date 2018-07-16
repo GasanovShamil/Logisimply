@@ -154,7 +154,10 @@
     "label": "Label",
     "unitPriceET": "Unite price",
     "quantity": "Quantity",
-    "discount": "Discount"
+    "discount": "Discount",
+    "type": "Type",
+    "product": "Product",
+    "service": "Service"
   },
   "payment":{
     "siret": "Translate | Siret : ",
