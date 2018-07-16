@@ -15,7 +15,7 @@
 </div>
 <div mat-dialog-content>
 
-  <form [formGroup]="quoteForm" (submit)="saveData()">
+  <form [formGroup]="quoteForm">
     <div class="input-button-row">
       <mat-form-field class="full-width">
         <input type="text" #inputCustomer placeholder="{{ 'billsDialog.customer' | translate }}" matInput formControlName="customer"  [matAutocomplete]="autoCustomer" required>
@@ -24,7 +24,7 @@
         </mat-autocomplete>
       </mat-form-field>
       <div class="button-row myrow">
-        <button mat-button mat-icon-button type="reset" matSuffix (click)="openCustomerDialog()" color="primary"
+        <button mat-button mat-icon-button type="button" matSuffix (click)="openCustomerDialog()" color="primary"
                 matTooltip="{{ 'billsDialog.add_new_customer' | translate }}">
           <mat-icon>add</mat-icon>
         </button>
@@ -62,8 +62,8 @@
       </mat-autocomplete>
     </mat-form-field>
     <div class="button-row myrow">
-      <button mat-button mat-icon-button type="reset" matSuffix (click)="addItemRow()" color="primary"
-              matTooltip="{{ 'billsDialog.add_new_item' | translate }}">
+      <button mat-button mat-icon-button type="button" matSuffix (click)="addItemRow()" color="primary"
+              matTooltip="{{ 'billsDialog.add_new_item' | translate }}" [disabled]="!editMode">
         <mat-icon>add</mat-icon>
       </button>
     </div>
@@ -74,35 +74,39 @@
     <ng-container matColumnDef="reference">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.reference' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.reference' | translate }}" [value]="element.reference" [(ngModel)]="element.reference">
+        <input matInput placeholder="{{ 'billsDialog.reference' | translate }}" [value]="element.reference" [(ngModel)]="element.reference" [disabled]="!editMode">
       </mat-cell>
     </ng-container>
     <!-- Type Column -->
     <ng-container matColumnDef="type">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.type' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.type' | translate }}" [value]="element.type" [(ngModel)]="element.type">
+        <mat-select placeholder="{{ 'billsDialog.type' | translate }}" #typeSelect [value]="element.type" [(ngModel)]="element.type" [disabled]="!editMode">
+          <mat-option *ngFor="let item of types" [value]="item.value">
+            {{ item.name | translate }}
+          </mat-option>
+        </mat-select>
       </mat-cell>
     </ng-container>
     <!-- Label Column -->
     <ng-container matColumnDef="label">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.label' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.label' | translate }}" [value]="element.label" [(ngModel)]="element.label">
+        <input matInput placeholder="{{ 'billsDialog.label' | translate }}" [value]="element.label" [(ngModel)]="element.label" [disabled]="!editMode">
       </mat-cell>
     </ng-container>
     <!-- unitPriceET Column -->
     <ng-container matColumnDef="unitPriceET">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.unitPriceET' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET">
+        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="!editMode">
       </mat-cell>
     </ng-container>
     <!-- quantity Column -->
     <ng-container matColumnDef="quantity">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.quantity' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.quantity' | translate }}" [value]="element.quantity" [(ngModel)]="element.quantity">
+        <input type="number" matInput placeholder="{{ 'billsDialog.quantity' | translate }}" [value]="element.quantity" [(ngModel)]="element.quantity" [disabled]="!editMode">
       </mat-cell>
     </ng-container>
 
@@ -110,7 +114,7 @@
     <ng-container matColumnDef="discount">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.discount' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount">
+        <input  matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="!editMode">
       </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -118,8 +122,11 @@
   </mat-table>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary" type="submit" [disabled]="!saveButton">
+  <button mat-raised-button color="primary" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" (click)="sendQuote()" [disabled]="editMode">
+    <mat-icon>send</mat-icon>
   </button>
 </div>
 

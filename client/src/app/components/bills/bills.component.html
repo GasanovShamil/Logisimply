@@ -46,11 +46,11 @@
         </ng-container>
         <ng-container matColumnDef="dateQuote">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.dateQuote' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.dateQuote}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.dateQuote | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="datePayment">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.datePayment' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.datePayment}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.datePayment | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="totalPriceET">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.totalPriceET' | translate }} </mat-header-cell>
@@ -119,11 +119,11 @@
         </ng-container>
         <ng-container matColumnDef="dateInvoice">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.dateInvoice' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.dateInvoice}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.dateInvoice | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="datePayment">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.datePayment' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.datePayment}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.datePayment | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="totalPriceET">
           <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'bills.totalPriceET' | translate }} </mat-header-cell>
