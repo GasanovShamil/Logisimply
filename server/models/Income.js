@@ -20,6 +20,7 @@ incomeSchema.methods.fullFormat = function(include) {
         method: this.method,
         amount: this.amount,
         user: this.user,
+        customer: this.customer,
         dateIncome: utils.format.formatDate(this.dateIncome)
     };
 

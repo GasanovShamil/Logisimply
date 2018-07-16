@@ -7,7 +7,6 @@ let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let quoteModel = require("../models/Quote");
-let invoiceModel = require("../models/Invoice");
 let request = require("request");
 let express = require("express");
 let router = express.Router();

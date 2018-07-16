@@ -5,8 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {AlertService} from '../../services/alert.service';
-import {FormControl, Validators} from "@angular/forms";
-import { map } from 'rxjs/operators';
+import {InvoiceFullFormat} from "../../models/invoice";
 
 declare let paypal: any;
 
@@ -26,7 +25,8 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   addScript: boolean = true;
   paramUser: string;
   paramInvoice: string;
-  data = new Observable();
+  data = new Observable<InvoiceFullFormat>();
+  //data = new Observable();
   payingAmount: number = 0;
   maxAmount: number = 0;
   errorMessage = '';
@@ -56,15 +56,20 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
         payer: data.payerID,
         data: data
       }).then((res) => {
-        if (res.status !== 200)
+        if (res.executeStatus !== 200)
           this.translate.get(['payment']).subscribe(translation => {
             this.alertService.error(translation.payment.paypal_error);
+          });
+        else if (res.incomeStatus !== 200)
+          this.translate.get(['payment']).subscribe(translation => {
+            this.alertService.error(translation.payment.income_error);
           });
         else {
           this.translate.get(['payment']).subscribe(translation => {
             this.alertService.error(translation.payment.paypal_success);
           });
-          console.log("SEND INCOME");
+
+          //this.data.incomes.push(res.data);
         }
       });
     }

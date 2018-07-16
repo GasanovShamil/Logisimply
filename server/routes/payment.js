@@ -199,7 +199,7 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
             method: "post",
             headers: utils.forward.getHeaders(req, false),
             json: {
-                type: "paypal",
+                method: "paypal",
                 amount: paramAmount,
                 invoice: invoice.code,
                 user: invoice.user,
@@ -271,6 +271,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         invoice.status = "payed";
         invoice.save();
     }
+
     let result = await income.fullFormat();
     res.status(200).json({message: localization[req.language].invoices.income.success, data: result});
 }));

@@ -15,8 +15,9 @@ module.exports = {
         }
         if (object.incomes && object.sumToPay && object.payed) {
             let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
-            object.incomes = incomes;
+            object.incomes = [];
             for (let i = 0; i < incomes.length; i++) {
+                object.incomes.push(incomes[i].fullFormat());
                 object.sumToPay -= incomes[i].amount;
                 object.payed += incomes[i].amount;
             }

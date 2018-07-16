@@ -163,7 +163,8 @@
     "paying": "Pay",
     "not_allowed": " did not allow online payment.",
     "paypal_success": "Payment successfully made",
-    "paypal_error": "PayPal Internal Server Error"
+    "paypal_error": "PayPal Internal Server Error",
+    "income_error": "Income Internal Server Error"
   },
   "welcome": {
     "header_presentation": "LogiSimply is a web application that allows you to create your invoices and quotes very simply",

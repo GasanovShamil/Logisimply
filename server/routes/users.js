@@ -3,6 +3,9 @@ let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let mailer = require("../helpers/mailer");
+let customerModel = require("../models/Customer");
+let invoiceModel = require("../models/Invoice");
+let incomeModel = require("../models/Income");
 let userModel = require("../models/User");
 let jwt = require("jsonwebtoken");
 let md5 = require("md5");
@@ -308,7 +311,30 @@ router.use(middleware.isLogged);
  *           $ref: '#/definitions/User'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    res.status(200).json(req.loggedUser);
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user = user.fullFormat();
+    let customersData = [];
+    let incomesPerCustomerData = [];
+
+    let customers = await customerModel.find({user: req.loggedUser._id});
+    for (let i = 0; i < customers.length; i++) {
+        let total = 0;
+        let invoices = await invoiceModel.find({customer: customers[i].code, user: req.loggedUser._id});
+        for (let j = 0; j < invoices.length; j++)
+            total += invoices[j].advancedPayment;
+        let incomes = await incomeModel.find({customer: customers[i].code, user: req.loggedUser._id});
+        for (let j = 0; j < incomes.length; j++)
+            total += incomes[j].amount;
+        customersData.push(customers[i].code + " - " + customers[i].name);
+        incomesPerCustomerData.push(total);
+    }
+
+    user.stats = {
+        customers: customersData,
+        incomesPerCustomer: incomesPerCustomerData
+    };
+
+    res.status(200).json(user);
 }));
 
 /**
