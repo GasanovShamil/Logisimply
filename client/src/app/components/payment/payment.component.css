@@ -97,10 +97,11 @@
 }
 
 #content {
+  margin-bottom: 10px !important;
 }
 
 #invoice-infos {
-  margin-top: 20px !important;
+  margin-top: 10px !important;
 }
 
 #discount {

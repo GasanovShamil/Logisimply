@@ -55,8 +55,6 @@ invoiceSchema.methods.fullFormat = function(include) {
         updatedAt: this.updatedAt
     };
 
-    //TODO: check why only the first call in loaded
-
     if (include && include.owner) {
         if (include.infos)
             result = load.infos(result, include.owner);

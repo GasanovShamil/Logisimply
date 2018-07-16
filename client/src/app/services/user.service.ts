@@ -8,15 +8,20 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-
   addUser(userData) {
     return this.http.post<any>('/api/users/add', userData).pipe(
-        catchError(this.handleError)
-      );
+      catchError(this.handleError)
+    );
   }
 
   activate(activateToken) {
-    return this.http.get<any>('/api/activate/'+activateToken).pipe(
+    return this.http.get<any>('/api/users/activate/' + activateToken).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  stats() {
+    return this.http.get<any>('/api/users/me').pipe(
       catchError(this.handleError)
     );
   }

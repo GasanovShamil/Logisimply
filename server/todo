@@ -3,3 +3,10 @@ Design page error.ejs
 XLSX
 Readme
 mailer.js > sendQuote + sendInvoice (DO TEMPLATE)
+
+Custom mail in front
+
+
+best practice (return res)
+
+REMOVE CREDENTIALS ADD USER !!!!!!!!!!!

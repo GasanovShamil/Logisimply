@@ -20,7 +20,10 @@ let userSchema = mongoose.Schema ({
     status: String,
     activationToken: String,
     parameters: {
-        credentials: String,
+        paypal: {
+            client: String,
+            secret: String
+        },
         customers: Number,
         providers: Number,
         quotes: Number,
@@ -54,7 +57,7 @@ userSchema.methods.fullFormat = function(include) {
 
     if (include) {
         if (include.credentials)
-            result.credentials = this.parameters.credentials;
+            result.credentials = this.parameters.paypal.client && this.parameters.paypal.secret;
     }
 
     return result;

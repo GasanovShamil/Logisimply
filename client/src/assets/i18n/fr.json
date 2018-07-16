@@ -76,6 +76,8 @@
     },
     "paying": "Payer",
     "not_allowed": " n'a pas activé le paiement en ligne.",
-    "invalid_amount": "Montant incorrect"
+    "paypal_success": "Votre paiement a bien été effectué",
+    "paypal_error": "Un problème est survenu lors de la relation avec PayPal",
+    "income_error": "Un problème est survenu lors de l'ajout de la recette"
   }
 }

@@ -66,7 +66,8 @@
     "link": "Un lien d'activation vous a été renvoyé à votre adresse email",
     "banned": "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr",
     "inactive": "Vous devez activer votre compte, un email vous a été envoyé",
-    "update": "Compte modifié avec succès"
+    "update": "Compte modifié avec succès",
+    "failed": "Aucun utilisateur"
   },
   "items": {
     "add": "Produit/Service créé avec succès",

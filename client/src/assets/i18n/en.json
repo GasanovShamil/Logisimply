@@ -162,7 +162,9 @@
     },
     "paying": "Pay",
     "not_allowed": " did not allow online payment.",
-    "invalid_amount": "Amount invalid"
+    "paypal_success": "Payment successfully made",
+    "paypal_error": "PayPal Internal Server Error",
+    "income_error": "Income Internal Server Error"
   },
   "welcome": {
     "header_presentation": "LogiSimply is a web application that allows you to create your invoices and quotes very simply",
@@ -177,7 +179,7 @@
     "money_info": "Field the money informations",
     "save_time": "Don't waist time anymore",
     "done": "Aaaaand ... it's done !",
-    "cgu": "The General Conditions of Use",
+    "cgu": "General Conditions of Use",
     "legal_notice": "Legal Notice",
     "grpd": "Why are we collecting your data ?"
   }

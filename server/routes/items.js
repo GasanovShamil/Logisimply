@@ -67,23 +67,21 @@ router.use(middleware.isLogged);
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramItem = req.body;
     if (!utils.fields.isItemComplete(paramItem))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countItem = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
-        if (countItem !== 0)
-            res.status(400).json({message: localization[req.language].items.reference.used});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.items += 1;
-            user.save();
-            paramItem.reference = "" + utils.format.getCode(user.parameters.items);
-            paramItem.user = req.loggedUser._id;
-            paramItem.createdAt = new Date();
-            let item = await itemModel.create(paramItem);
-            let result = await item.fullFormat();
-            res.status(200).json({message: localization[req.language].items.add, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    let countItem = await itemModel.countDocuments({reference: paramItem.reference, user: req.loggedUser._id});
+    if (countItem !== 0)
+        return res.status(400).json({message: localization[req.language].items.reference.used});
+
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user.parameters.items += 1;
+    user.save();
+    paramItem.reference = "" + utils.format.getCode(user.parameters.items);
+    paramItem.user = req.loggedUser._id;
+    paramItem.createdAt = new Date();
+    let item = await itemModel.create(paramItem);
+    let result = await item.fullFormat();
+    res.status(200).json({message: localization[req.language].items.add, data: result});
 }));
 
 /**
@@ -140,11 +138,10 @@ router.get("/:reference", middleware.wrapper(async (req, res) => {
     let paramRef = req.params.reference;
     let item = await itemModel.findOne({reference: paramRef, user: req.loggedUser._id});
     if (!item)
-        res.status(400).json({message: localization[req.language].items.reference.failed});
-    else {
-        let result = await item.fullFormat();
-        res.status(200).json(result);
-    }
+        return res.status(400).json({message: localization[req.language].items.reference.failed});
+
+    let result = await item.fullFormat();
+    res.status(200).json(result);
 }));
 
 /**
@@ -176,18 +173,16 @@ router.get("/:reference", middleware.wrapper(async (req, res) => {
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramItem = req.body;
     if (!utils.fields.isItemComplete(paramItem))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        paramItem.updatedAt = new Date();
-        await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, {$set: paramItem}, null);
-        let item = await itemModel.findOne({reference: paramItem.reference, user: req.loggedUser._id});
-        if (!item)
-            res.status(400).json({message: localization[req.language].items.reference.failed});
-        else {
-            let result = await item.fullFormat();
-            res.status(200).json({message: localization[req.language].items.update, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    paramItem.updatedAt = new Date();
+    await itemModel.findOneAndUpdate({reference: paramItem.reference, user: req.loggedUser._id}, {$set: paramItem}, null);
+    let item = await itemModel.findOne({reference: paramItem.reference, user: req.loggedUser._id});
+    if (!item)
+        return res.status(400).json({message: localization[req.language].items.reference.failed});
+
+    let result = await item.fullFormat();
+    res.status(200).json({message: localization[req.language].items.update, data: result});
 }));
 
 /**
@@ -218,11 +213,10 @@ router.delete("/delete/:reference", middleware.wrapper(async (req, res) => {
     let paramRef = req.params.reference;
     let item = await itemModel.findOneAndRemove({reference: paramRef, user: req.loggedUser._id});
     if (!item)
-        res.status(400).json({message: localization[req.language].items.reference.failed});
-    else {
-        let result = await item.fullFormat();
-        res.status(200).json({message: localization[req.language].items.delete.one, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].items.reference.failed});
+
+    let result = await item.fullFormat();
+    res.status(200).json({message: localization[req.language].items.delete.one, data: result});
 }));
 
 /**

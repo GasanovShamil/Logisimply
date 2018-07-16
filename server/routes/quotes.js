@@ -1,3 +1,4 @@
+let config = require("../config");
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
@@ -6,7 +7,7 @@ let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let quoteModel = require("../models/Quote");
-let invoiceModel = require("../models/Invoice");
+let request = require("request");
 let express = require("express");
 let router = express.Router();
 
@@ -106,24 +107,22 @@ router.use(middleware.isLogged);
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
     if (!utils.fields.isQuoteComplete(paramQuote))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
-        if (countCustomer === 0)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.quotes += 1;
-            user.save();
-            paramQuote.code = "DE" + utils.format.getDateCode() + utils.format.getCode(user.parameters.quotes);
-            paramQuote.status = "draft";
-            paramQuote.user = req.loggedUser._id;
-            paramQuote.createdAt = new Date();
-            let quote = await quoteModel.create(paramQuote);
-            let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
-            res.status(200).json({message: localization[req.language].quotes.add, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
+    if (countCustomer === 0)
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user.parameters.quotes += 1;
+    user.save();
+    paramQuote.code = "DE" + utils.format.getDateCode() + utils.format.getCode(user.parameters.quotes);
+    paramQuote.status = "draft";
+    paramQuote.user = req.loggedUser._id;
+    paramQuote.createdAt = new Date();
+    let quote = await quoteModel.create(paramQuote);
+    let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json({message: localization[req.language].quotes.add, data: result});
 }));
 
 /**
@@ -180,11 +179,10 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!quote)
-        res.status(400).json({message: localization[req.language].quotes.code.failed});
-    else {
-        let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
-        res.status(200).json(result);
-    }
+        return res.status(400).json({message: localization[req.language].quotes.code.failed});
+
+    let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json(result);
 }));
 
 /**
@@ -216,25 +214,23 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
     if (!utils.fields.isQuoteStatusValid(paramQuote.status))
-        res.status(400).json({message: localization[req.language].fields.prohibited});
-    else if (!utils.fields.isQuoteComplete(paramQuote))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
-        if (countCustomer === 0)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            paramQuote.updatedAt = new Date();
-            await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, {$set: paramQuote}, null);
-            let quote = await quoteModel.findOne({code: paramQuote.code, user: req.loggedUser._id});
-            if (!quote)
-                res.status(400).json({message: localization[req.language].quotes.code.failed});
-            else {
-                let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
-                res.status(200).json({message: localization[req.language].quotes.update, data: result});
-            }
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.prohibited});
+
+    if (!utils.fields.isQuoteComplete(paramQuote))
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    let countCustomer = await customerModel.countDocuments({code: paramQuote.customer, user: req.loggedUser._id});
+    if (countCustomer === 0)
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    paramQuote.updatedAt = new Date();
+    await quoteModel.findOneAndUpdate({code: paramQuote.code, user: req.loggedUser._id}, {$set: paramQuote}, null);
+    let quote = await quoteModel.findOne({code: paramQuote.code, user: req.loggedUser._id});
+    if (!quote)
+        return res.status(400).json({message: localization[req.language].quotes.code.failed});
+
+    let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json({message: localization[req.language].quotes.update, data: result});
 }));
 
 /**
@@ -265,11 +261,10 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
     if (!quote)
-        res.status(400).json({message: localization[req.language].quotes.code.failed});
-    else {
-        let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
-        res.status(200).json({message: localization[req.language].quotes.delete.one, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].quotes.code.failed});
+
+    let result = await quote.fullFormat({owner: req.loggedUser._id, customer: true});
+    res.status(200).json({message: localization[req.language].quotes.delete.one, data: result});
 }));
 
 /**
@@ -333,35 +328,26 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
  */
 router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
-    let generatedInvoice = {
-        customer: paramQuote.customer,
-        dateInvoice: paramQuote.dateQuote,
-        subject: paramQuote.subject,
-        content: paramQuote.content,
-        datePayment: paramQuote.datePayment,
-        dateExecution: paramQuote.dateQuote,
-        collectionCost: paramQuote.collectionCost,
-        comment: paramQuote.comment
-    };
-    if (!utils.fields.isInvoiceComplete(generatedInvoice))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else {
-        let countCustomer = await customerModel.countDocuments({code: generatedInvoice.customer, user: req.loggedUser._id});
-        if (countCustomer === 0)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.quotes += 1;
-            user.save();
-            generatedInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.quotes);
-            generatedInvoice.advandedPayment = {value: 0, status: "none"};
-            generatedInvoice.status = "draft";
-            generatedInvoice.user = req.loggedUser._id;
-            generatedInvoice.createdAt = new Date();
-            let invoice = await invoiceModel.create(generatedInvoice);
-            res.status(200).json({message: localization[req.language].quotes.add, data: invoice});
+    request({
+        url: config.url + "/api/invoices/add",
+        method: 'post',
+        headers: utils.forward.getHeaders(req, true),
+        json: {
+            customer: paramQuote.customer,
+            dateInvoice: paramQuote.dateQuote,
+            subject: paramQuote.subject,
+            content: paramQuote.content,
+            datePayment: paramQuote.datePayment,
+            dateExecution: paramQuote.dateQuote,
+            collectionCost: paramQuote.collectionCost,
+            comment: paramQuote.comment
         }
-    }
+    }, function(err, response, body) {
+        if (err)
+            return res.status(response.statusCode).json({message: localization[req.language].customers.code.failed});
+
+        res.status(200).json({message: body.message, data: body.data});
+    });
 }));
 
 /**
@@ -390,14 +376,13 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!quote)
-        res.status(400).json({message: localization[req.language].quotes.code.failed});
-    else {
-        quote.status = "sent";
-        quote.save();
-        let result = await quote.fullFormat({owner: req.loggedUser._id, infos: true});
-        pdf.getQuote(result, req.language, mailer.sendQuote);
-        res.status(200).json({message: localization[req.language].quotes.send, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].quotes.code.failed});
+
+    quote.status = "sent";
+    quote.save();
+    let result = await quote.fullFormat({owner: req.loggedUser._id, infos: true});
+    pdf.getQuote(result, req.language, mailer.sendQuote);
+    res.status(200).json({message: localization[req.language].quotes.send, data: result});
 }));
 
 /**
@@ -428,19 +413,17 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let quote = await quoteModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!quote)
-        res.status(400).json({message: localization[req.language].quotes.code.failed});
-    else {
-        let result = await quote.fullFormat({owner: req.loggedUser._id, infos: true});
-        pdf.getQuote(result, req.language);
-        res.download(utils.pdf.getPath(result.user._id, result.code), "Devis - " + quote.code + ".pdf", function(err){
-            if (err)
-                res.status(500).json({message: localization[req.language].quotes.download.error});
-            else {
-                utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
-                res.status(200).json({message: localization[req.language].quotes.download.success, data: result});
-            }
-        });
-    }
+        return res.status(400).json({message: localization[req.language].quotes.code.failed});
+
+    let result = await quote.fullFormat({owner: req.loggedUser._id, infos: true});
+    pdf.getQuote(result, req.language);
+    res.download(utils.pdf.getPath(result.user._id, result.code), "Devis - " + quote.code + ".pdf", function(err) {
+        if (err)
+            return res.status(500).json({message: localization[req.language].quotes.download.error});
+
+        utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
+        res.status(200).json({message: localization[req.language].quotes.download.success, data: result});
+    });
 }));
 
 module.exports = router;

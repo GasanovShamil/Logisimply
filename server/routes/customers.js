@@ -133,26 +133,25 @@ router.use(middleware.isLogged);
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
     if (!utils.fields.isCustomerTypeValid(paramCustomer.type))
-        res.status(400).json({message: localization[req.language].fields.prohibited});
-    else {
-        if (paramCustomer.type === "private")
-            paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
-        if (!utils.fields.isCustomerComplete(paramCustomer))
-            res.status(400).json({message: localization[req.language].fields.required});
-        else if (!utils.fields.isEmailValid(paramCustomer.email))
-            res.status(400).json({message: localization[req.language].email.invalid});
-        else {
-            let user = await userModel.findOne({_id: req.loggedUser._id});
-            user.parameters.customers += 1;
-            user.save();
-            paramCustomer.code = "C" + utils.format.getCode(user.parameters.customers);
-            paramCustomer.user = req.loggedUser._id;
-            paramCustomer.createdAt = new Date();
-            let customer = await customerModel.create(paramCustomer);
-            let result = await customer.fullFormat();
-            res.status(200).json({message: localization[req.language].customers.add, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.prohibited});
+
+    if (paramCustomer.type === "private")
+        paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
+    if (!utils.fields.isCustomerComplete(paramCustomer))
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    if (!utils.fields.isEmailValid(paramCustomer.email))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user.parameters.customers += 1;
+    user.save();
+    paramCustomer.code = "C" + utils.format.getCode(user.parameters.customers);
+    paramCustomer.user = req.loggedUser._id;
+    paramCustomer.createdAt = new Date();
+    let customer = await customerModel.create(paramCustomer);
+    let result = await customer.fullFormat();
+    res.status(200).json({message: localization[req.language].customers.add, data: result});
 }));
 
 /**
@@ -213,11 +212,10 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let customer = await customerModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!customer)
-        res.status(400).json({message: localization[req.language].customers.code.failed});
-    else {
-        let result = await customer.fullFormat();
-        res.status(200).json(result);
-    }
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    let result = await customer.fullFormat();
+    res.status(200).json(result);
 }));
 
 /**
@@ -253,22 +251,20 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramCustomer = req.body;
     if (!utils.fields.isCustomerComplete(paramCustomer))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramCustomer.email))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        if (paramCustomer.type === "private")
-            paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
-        paramCustomer.updatedAt = new Date();
-        await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, {$set: paramCustomer}, null);
-        let customer = await customerModel.findOne({code: paramCustomer.code, user: req.loggedUser._id});
-        if (!customer)
-            res.status(400).json({message: localization[req.language].customers.code.failed});
-        else {
-            let result = await customer.fullFormat();
-            res.status(200).json({message: localization[req.language].customers.update, data: result});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+    if (!utils.fields.isEmailValid(paramCustomer.email))
+        return  res.status(400).json({message: localization[req.language].email.invalid});
+
+    if (paramCustomer.type === "private")
+        paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
+    paramCustomer.updatedAt = new Date();
+    await customerModel.findOneAndUpdate({code: paramCustomer.code, user: req.loggedUser._id}, {$set: paramCustomer}, null);
+    let customer = await customerModel.findOne({code: paramCustomer.code, user: req.loggedUser._id});
+    if (!customer)
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    let result = await customer.fullFormat();
+    res.status(200).json({message: localization[req.language].customers.update, data: result});
 }));
 
 /**
@@ -301,11 +297,10 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     let paramCode = req.params.code;
     let customer = await customerModel.findOneAndRemove({code: paramCode, user: req.loggedUser._id});
     if (!customer)
-        res.status(400).json({message: localization[req.language].customers.code.failed});
-    else {
-        let result = await customer.fullFormat();
-        res.status(200).json({message: localization[req.language].customers.delete.one, data: result});
-    }
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    let result = await customer.fullFormat();
+    res.status(200).json({message: localization[req.language].customers.delete.one, data: result});
 }));
 
 /**
@@ -384,12 +379,11 @@ router.post("/assets/add", middleware.wrapper(async (req, res) => {
     let paramAmount = req.body.amount;
     let customer = await customerModel.findOne({code: paramCode, user: req.loggedUser._id});
     if (!customer)
-        res.status(400).json({message: localization[req.language].customers.code.failed});
-    else {
-        customer.assets += paramAmount;
-        customer.save();
-        res.status(200).json({message: localization[req.language].customers.assets.add, data: customer});
-    }
+        return res.status(400).json({message: localization[req.language].customers.code.failed});
+
+    customer.assets += paramAmount;
+    customer.save();
+    res.status(200).json({message: localization[req.language].customers.assets.add, data: customer});
 
 }));
 
