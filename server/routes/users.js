@@ -92,25 +92,25 @@ router.use(middleware.localize);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
+
     if (!utils.fields.isUserComplete(paramUser))
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramUser.email))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        let countUser = await userModel.countDocuments({email: paramUser.email});
-        if (countUser !== 0)
-            res.status(400).json({message: localization[req.language].users.email.used});
-        else {
-            paramUser.status = "inactive";
-            paramUser.activationToken = md5(paramUser.email);
-            paramUser.password = md5(paramUser.password);
-            paramUser.createdAt = new Date();
-            paramUser.parameters = {credentials: "", customers: 0, providers: 0, quotes: 0, invoices: 0, items: 0};
-            let user = await userModel.create(paramUser);
-            mailer.sendActivationUrl(user, req.language);
-            res.status(200).json({message: localization[req.language].users.add});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    if (!utils.fields.isEmailValid(paramUser.email))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    let countUser = await userModel.countDocuments({email: paramUser.email});
+    if (countUser !== 0)
+        return res.status(400).json({message: localization[req.language].users.email.used});
+
+    paramUser.status = "inactive";
+    paramUser.activationToken = md5(paramUser.email);
+    paramUser.password = md5(paramUser.password);
+    paramUser.createdAt = new Date();
+    paramUser.parameters = {paypal: {client: "AQNwyj-IBaE5TlF6bYTbHbAsi1gXRvzi3B70SoyYQVhtEW-SHKCNXHNpvRW3qrouaJKBMcGAqzGA_jtA", secret: "EJxYO3mHJKf7YuUHssgNQZpq61ZasravxnkVCMeVtNCOJAjPuT1AMKBpMRps2kgvCpbInaRx6IvNcwyS"}, customers: 0, providers: 0, quotes: 0, invoices: 0, items: 0};
+    let user = await userModel.create(paramUser);
+    mailer.sendActivationUrl(user, req.language);
+    res.status(200).json({message: localization[req.language].users.add});
 }));
 
 /**
@@ -137,15 +137,15 @@ router.post("/add", middleware.wrapper(async (req, res) => {
  */
 router.get("/activate/:token", middleware.wrapper(async (req, res) => {
     let paramToken = req.params.token;
+
     let user = await userModel.findOne({status: "inactive", activationToken: paramToken});
     if (!user)
-        res.status(400).json({message: localization[req.language].users.token.failed});
-    else {
-        user.status = "active";
-        user.activationToken = "";
-        user.save();
-        res.status(200).json(user.fullFormat());
-    }
+        return res.status(400).json({message: localization[req.language].users.token.failed});
+
+    user.status = "active";
+    user.activationToken = "";
+    user.save();
+    res.status(200).json(user.fullFormat());
 }));
 
 /**
@@ -158,13 +158,11 @@ router.get("/activate/:token", middleware.wrapper(async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: A valid email
+ *       - name: email
+ *         description: A valid email
  *         in: body
  *         required: true
- *         type: object
- *         properties:
- *           email:
- *             type: string
+ *         type: string
  *     responses:
  *       400:
  *         description: Error - email invalid or user doesn't exist
@@ -174,21 +172,20 @@ router.get("/activate/:token", middleware.wrapper(async (req, res) => {
 router.post("/forgetPassword", middleware.wrapper(async (req, res) => {
     let paramEmail = req.body.email;
     if (!paramEmail)
-        res.status(400).json({message: localization[req.language].fields.required});
-    else if (!utils.fields.isEmailValid(paramEmail))
-        res.status(400).json({message: localization[req.language].email.invalid});
-    else {
-        let user = await userModel.findOne({status: "active", email: paramEmail});
-        if (!user)
-            res.status(400).json({message: localization[req.language].users.email.failed});
-        else {
-            let newPassword = Math.floor(Math.random() * 999999) + 100000;
-            user.password = md5("" + newPassword);
-            user.save();
-            mailer.sendPassword(user, req.language);
-            res.status(200).json({message: localization[req.language].users.password.new});
-        }
-    }
+        return res.status(400).json({message: localization[req.language].fields.required});
+
+    if (!utils.fields.isEmailValid(paramEmail))
+        return res.status(400).json({message: localization[req.language].email.invalid});
+
+    let user = await userModel.findOne({status: "active", email: paramEmail});
+    if (!user)
+        return res.status(400).json({message: localization[req.language].users.email.failed});
+
+    let newPassword = Math.floor(Math.random() * 999999) + 100000;
+    user.password = md5("" + newPassword);
+    user.save();
+    mailer.sendPassword(user, req.language);
+    res.status(200).json({message: localization[req.language].users.password.new});
 }));
 
 /**
@@ -201,13 +198,11 @@ router.post("/forgetPassword", middleware.wrapper(async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: A valid email
+ *       - name: email
+ *         description: A valid email
  *         in: body
  *         required: true
- *         type: object
- *         properties:
- *           email:
- *             type: string
+ *         type: string
  *     responses:
  *       400:
  *         description: Error - email invalid or user doesn't exist
@@ -241,16 +236,16 @@ router.post("/resendActivationUrl", middleware.wrapper(async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Login object
+ *       - name: email
+ *         description: A valid email
  *         in: body
  *         required: true
- *         type: object
- *         properties:
- *           email:
- *             type: string
- *           password:
- *             type: string
- *             format: password
+ *         type: string
+ *       - name: password
+ *         description: The right password
+ *         in: body
+ *         required: true
+ *         type: string
  *     responses:
  *       500:
  *         description: Error - token generation
@@ -373,13 +368,16 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - description: Paypay client id
+ *       - name: client
+ *         description: Paypay client id
  *         in: body
  *         required: true
- *         type: object
- *         properties:
- *           credentials:
- *             type: string
+ *         type: string
+ *       - name: secret
+ *         description: Paypay client secret
+ *         in: body
+ *         required: true
+ *         type: string
  *     responses:
  *       403:
  *         description: Error - user is logged out
@@ -387,9 +385,13 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  *         description: Credentials set
  */
 router.post("/users/credentials", middleware.wrapper(async (req, res) => {
-    let paramCredentials = req.body.credentials;
+    let paramClient = req.body.client;
+    let paramSecret = req.body.secret;
     let user = await userModel.findOne({_id: req.loggedUser._id});
-    user.parameters.credentials = paramCredentials;
+    if (!user)
+        return res.status(400).json({message: localization[req.language].users.failed});
+    user.parameters.paypal.client = paramClient;
+    user.parameters.paypal.secret = paramSecret;
     user.save();
     res.status(200).json(user.fullFormat());
 }));

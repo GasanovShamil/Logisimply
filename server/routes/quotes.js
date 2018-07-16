@@ -335,12 +335,10 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
  */
 router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
     let paramQuote = req.body;
-    console.log("URL = " + config.url + "/api/invoices/add");
-
     request({
         url: config.url + "/api/invoices/add",
         method: 'post',
-        headers: utils.forward.getHeaders(req),
+        headers: utils.forward.getHeaders(req, true),
         json: {
             customer: paramQuote.customer,
             dateInvoice: paramQuote.dateQuote,

@@ -57,7 +57,7 @@ userSchema.methods.fullFormat = function(include) {
 
     if (include) {
         if (include.credentials)
-            result.credentials = this.parameters.paypal.client && this.parameter.paypal.secret;
+            result.credentials = this.parameters.paypal.client && this.parameters.paypal.secret;
     }
 
     return result;

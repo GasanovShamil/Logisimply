@@ -2,65 +2,46 @@ let config = require("../config");
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
-let pdf = require("../helpers/pdf");
-let mailer = require("../helpers/mailer");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let incomeModel = require("../models/Income");
 let invoiceModel = require("../models/Invoice");
-var request = require("request");
+let request = require("request");
 let express = require("express");
 let router = express.Router();
 
+/**
+ * @swagger
+ * definition:
+ *   Income:
+ *     type: object
+ *     properties:
+ *       method:
+ *         type: string
+ *       amount:
+ *         type: number
+ *       invoice:
+ *         type: string
+ *       user:
+ *         type: string
+ *       customer:
+ *         type: string
+ *       dateIncome:
+ *         type: date
+ *       createdAt:
+ *         type: date
+ *       updatedAt:
+ *         type: date
+ *     required:
+ *       - type
+ *       - amount
+ *       - invoice
+ *       - user
+ *       - customer
+ *       - dateIncome
+ */
+
 router.use(middleware.localize);
-
-function getAuth(user) {
-    return {
-        user: user.parameters.paypal.client,
-        pass: user.parameters.paypal.secret
-    }
-}
-
-function getTransactions(invoice) {
-    let items = [];
-    for (let i = 0; i < invoice.content.length; i++)
-        items.push({
-            name: invoice.content[i].label,
-            description: invoice.content[i].description,
-            quantity: invoice.content[i].quantity,
-            price: invoice.content[i].unitPriceET,
-            tax: '0.00',
-            sku: invoice.content[i].reference,
-            currency: 'EUR'
-        });
-
-    return [{
-        amount: {
-            total: "1",
-            currency: "EUR",
-            details: {
-                subtotal: "1",
-                tax: "0.00",
-                shipping: "0.00",
-                handling_fee: "0.00",
-                shipping_discount: "0.00",
-                insurance: "0.00"
-            }
-        },
-        description: "The payment transaction description.",
-        custom: invoice.code,
-        item_list: {
-            items: items,
-            shipping_address: {
-                recipient_name: invoice.customer.name,
-                line1: invoice.customer.address,
-                city: invoice.customer.town,
-                postal_code: invoice.customer.zipCode,
-                phone: invoice.customer.phone
-            }
-        }
-    }];
-}
 
 /**
  * @swagger
@@ -100,25 +81,53 @@ router.get("/:user/:code/display", middleware.wrapper(async (req, res) => {
     }
 }));
 
-router.get("/:user/:code/create", middleware.wrapper(async (req, res) => {
-    let paramUser = req.params.user;
-    let paramCode = req.params.code;
+
+/**
+ * @swagger
+ * /payment/create:
+ *   post:
+ *     tags:
+ *       - Payment
+ *     description: Anonymous - Create the PayPal Payment
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Payment's information
+ *         in: body
+ *         required: true
+ *         type: object
+ *         properties:
+ *           user:
+ *             type: string
+ *           code:
+ *             type: string
+ *           amount:
+ *             type: number
+ *     responses:
+ *       400:
+ *         description: Error - no invoice for code and user
+ *       200:
+ *         description: The payment's id
+ */
+router.post("/create", middleware.wrapper(async (req, res) => {
+    let paramUser = req.body.user;
+    let paramCode = req.body.code;
+    let paramAmount = req.body.amount;
     let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.income.impossible});
     else {
         let user = await userModel.findOne({_id: paramUser}).exec();
-        let result = await invoice.fullFormat({owner: paramUser, infos: true});
-
+        let result = await invoice.fullFormat({owner: paramUser, customer: true});
         request({
             url: config.paypal_endpoint + "/v1/payments/payment",
             method: 'post',
-            auth: getAuth(user),
+            auth: utils.paypal.getAuth(user),
             json: {
                 intent: "sale",
                 payer: {payment_method: "paypal"},
-                redirect_urls: {return_url: "https://www.google.fr/search?q=salut&oq=salut&aqs=chrome..69i57j69i61j35i39l2j0l2.719j0j7&sourceid=chrome&ie=UTF-8"},
-                transactions: getTransactions(result),
+                transactions: utils.paypal.getTransactions(result, paramAmount),
+                redirect_urls: utils.paypal.getRedirect(paramUser, paramCode),
                 note_to_payer: result.comment
             }
         }, function(err, response, body) {
@@ -130,11 +139,43 @@ router.get("/:user/:code/create", middleware.wrapper(async (req, res) => {
     }
 }));
 
+/**
+ * @swagger
+ * /payment/execute:
+ *   post:
+ *     tags:
+ *       - Payment
+ *     description: Anonymous - Execute the PayPal Payment
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: Payment's information
+ *         in: body
+ *         required: true
+ *         type: object
+ *         properties:
+ *           user:
+ *             type: string
+ *           code:
+ *             type: string
+ *           amount:
+ *             type: number
+ *           payment:
+ *             type: string
+ *           payer:
+ *             type: string
+ *     responses:
+ *       400:
+ *         description: Error - no invoice for code and user
+ *       200:
+ *         description: Result of the execution
+ */
 router.post("/execute", middleware.wrapper(async (req, res) => {
     let paramUser = req.body.user;
-    let paramCode = req.body.invoice;
+    let paramCode = req.body.code;
+    let paramAmount = req.body.amount;
     let paramPayment = req.body.payment;
-    let paramPayer = req.params.paymer;
+    let paramPayer = req.body.payer;
     let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
     if (!invoice)
         res.status(400).json({message: localization[req.language].invoices.income.impossible});
@@ -144,18 +185,34 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
 
         request({
             url: config.paypal_endpoint + "/v1/payments/payment/" + paramPayment + "/execute",
-            method: 'post',
-            auth: getAuth(user),
+            method: "post",
+            auth: utils.paypal.getAuth(user),
             json: {
                 payer_id: paramPayer,
-                transactions: getTransactions(result),
-                note_to_payer: result.comment
+                transactions: utils.paypal.getTransactions(result, paramAmount)
             }
-        }, function(err, response, body) {
+        }, function(err, response) {
             if (err)
                 res.sendStatus(500);
-            else
-                res.json({status: "success"});
+            else {
+                let executeStatus = response.statusCode;
+
+                request({
+                    url: config.url + "/api/payment/add/",
+                    method: "post",
+                    headers: utils.forward.getHeaders(req, false),
+                    json: {
+                        payer_id: paramPayer,
+                        transactions: utils.paypal.getTransactions(result, paramAmount)
+                    }
+                }, function(err, response) {
+                    if (err)
+                        res.sendStatus(500);
+                    else {
+                        res.json({status: response.statusCode});
+                    }
+                });
+            }
         });
     }
 }));
@@ -165,8 +222,8 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
  * /payment/add:
  *   post:
  *     tags:
- *       - Invoices
- *     description: Logged - Add an income to an invoice
+ *       - Payment
+ *     description: Anonymous - Add an income to an invoice
  *     produces:
  *       - application/json
  *     parameters:

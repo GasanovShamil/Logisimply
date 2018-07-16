@@ -5,6 +5,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {AlertService} from '../../services/alert.service';
+import {FormControl, Validators} from "@angular/forms";
+import { map } from 'rxjs/operators';
 
 declare let paypal: any;
 
@@ -21,7 +23,6 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   isLoadingResults: boolean = true;
   isInvoiceReady: boolean = false;
   isPaypalAllowed: boolean = false;
-  canAuthorizePayment: boolean = false;
   addScript: boolean = true;
   paramUser: string;
   paramInvoice: string;
@@ -29,7 +30,45 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   payingAmount: number = 0;
   maxAmount: number = 0;
   errorMessage = '';
-  paypalConfig = {};
+  paypalConfig = {
+    env: 'sandbox',
+    style: {
+      label: 'pay',
+      size:  'medium',
+      shape: 'rect',
+      color: 'blue'
+    },
+    payment: (data, actions) => {
+      return actions.request.post('/api/payment/create', {
+        user: this.paramUser,
+        code: this.paramInvoice,
+        amount: this.payingAmount
+      }).then((res) => {
+        return res.id;
+      });
+    },
+    onAuthorize: (data, actions) => {
+      return actions.request.post('/api/payment/execute', {
+        user: this.paramUser,
+        code: this.paramInvoice,
+        amount: this.payingAmount,
+        payment: data.paymentID,
+        payer: data.payerID,
+        data: data
+      }).then((res) => {
+        if (res.status !== 200)
+          this.translate.get(['payment']).subscribe(translation => {
+            this.alertService.error(translation.payment.paypal_error);
+          });
+        else {
+          this.translate.get(['payment']).subscribe(translation => {
+            this.alertService.error(translation.payment.paypal_success);
+          });
+          console.log("SEND INCOME");
+        }
+      });
+    }
+  };
 
   constructor(private route: ActivatedRoute, public translate: TranslateService, private alertService : AlertService, private dataService : DataService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -54,85 +93,13 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
 
   getInvoicePayment() {
     this.dataService.getInvoicePayment(this.paramUser, this.paramInvoice).subscribe(
-      result => {
+      data => {
         this.isLoadingResults = false;
         this.isInvoiceReady = true;
-        this.isPaypalAllowed = result.user.credentials;
-        this.data = result;
-        this.payingAmount = result.sumToPay;
-        this.maxAmount = result.sumToPay;
-        this.canAuthorizePayment = true;
-        if (this.isPaypalAllowed) {
-          let items = [];
-          for (let i = 0; i < result.content.length; i++)
-            items.push({name: result.content[i].label, description: result.content[i].description, quantity: result.content[i].quantity, price: result.content[i].unitPriceET, tax: '0.00', sku: result.content[i].reference, currency: 'EUR'});
-
-          this.paypalConfig = {
-            env: 'sandbox',
-            style: {
-              label: 'pay',
-              size:  'medium',
-              shape: 'rect',
-              color: 'blue'
-            },
-            client: {
-              sandbox: result.user.credentials
-            },
-            commit: true,
-            payment: function (data, actions) {
-              return actions.payment.create({
-                payment: {
-                  intent: 'sale',
-                  payer: {
-                    payment_method: 'paypal'
-                  },
-                  redirect_urls: {
-                    return_url: 'https://www.google.fr/search?q=salut&oq=salut&aqs=chrome..69i57j69i61j35i39l2j0l2.719j0j7&sourceid=chrome&ie=UTF-8'
-                  },
-                  transactions: [{
-                    amount: {
-                      total: document.getElementById('paying-amount').value,
-                      currency: 'EUR',
-                      details: {
-                        subtotal: document.getElementById('paying-amount').value,
-                        tax: '0.00',
-                        shipping: '0.00',
-                        handling_fee: '0.00',
-                        shipping_discount: '0.00',
-                        insurance: '0.00'
-                      }
-                    },
-                    description: 'The payment transaction description.',
-                    custom: result.code,
-                    payment_options: {
-                      allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
-                    },
-                    item_list: {
-                      items: items,
-                      shipping_address: {
-                        recipient_name: result.customer.name,
-                        line1: result.customer.address,
-                        city: result.customer.town,
-                        postal_code: result.customer.zipCode,
-                        phone: result.customer.phone
-                      }
-                    }
-                  }],
-                  note_to_payer: result.comment
-                }
-              }).catch(error => {
-                alert('ERROR AUTHORIZE');
-              });
-            },
-            onAuthorize: function (data, actions) {
-              return actions.payment.execute().then(payment => {
-                alert('SUCCESS AUTHORIZE');
-              }).catch(error => {
-                alert('ERROR AUTHORIZE');
-              });
-            }
-          };
-        }
+        this.isPaypalAllowed = data.user.credentials;
+        this.data = data;
+        this.payingAmount = data.sumToPay;
+        this.maxAmount = data.sumToPay;
       },
       error => {
         this.isLoadingResults = false;
@@ -152,8 +119,9 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   }
 
   checkPayingAmount() {
-    this.canAuthorizePayment = !isNaN(this.payingAmount);
-    if (this.canAuthorizePayment)
-      this.canAuthorizePayment = this.payingAmount <= this.maxAmount;
+    if (this.payingAmount > this.maxAmount)
+      this.payingAmount = this.maxAmount;
+    if (this.payingAmount < 1)
+      this.payingAmount = 1;
   }
 }

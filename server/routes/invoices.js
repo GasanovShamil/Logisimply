@@ -74,32 +74,6 @@ let router = express.Router();
  *       - datePayment
  *       - dateExecution
  *       - collectionCost
- *   Income:
- *     type: object
- *     properties:
- *       method:
- *         type: string
- *       amount:
- *         type: number
- *       invoice:
- *         type: string
- *       user:
- *         type: string
- *       customer:
- *         type: string
- *       dateIncome:
- *         type: date
- *       createdAt:
- *         type: date
- *       updatedAt:
- *         type: date
- *     required:
- *       - type
- *       - amount
- *       - invoice
- *       - user
- *       - customer
- *       - dateIncome
  */
 
 router.use(middleware.localize);

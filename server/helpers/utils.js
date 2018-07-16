@@ -120,11 +120,26 @@ module.exports = {
         },
     },
     forward: {
-        getHeaders: function(req) {
-            return {
-                "Authorization": "Bearer " + req.loggedBearer,
-                "Localize": req.language
-            };
+        getHeaders: function(req, logged) {
+            return logged ? {"Authorization": "Bearer " + req.loggedBearer, "Localize": req.language} : {"Localize": req.language};
+        }
+    },
+    paypal: {
+        getAuth: function (user) {
+            return {user: user.parameters.paypal.client, pass: user.parameters.paypal.secret};
+         },
+        getTransactions: function(invoice, amount) {
+            return [{
+                amount: {
+                    total: amount,
+                    currency: "EUR"
+                },
+                description: "The payment transaction description.",
+                custom: invoice.code
+            }];
+         },
+        getRedirect: function(user, invoice) {
+            return {return_url: config.url + '/payment/' + user + '/' + invoice, cancel_url: config.url + '/payment/' + user + '/' + invoice};
         }
     }
 };

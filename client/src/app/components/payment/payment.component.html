@@ -14,9 +14,9 @@
       <mat-grid-tile [colspan]="8" [rowspan]="4" id="user-infos">
         <div id="user">{{ data.user.activityEntitled }}</div>
         <div>{{ 'payment.siret' | translate }}{{ data.user.siret }}</div>
-        <div>{{ data.user.firstname }} {{ data.user.lastname }} - {{ data.user.email }}</div>
+        <div>{{ data.user.firstname + ' ' + data.user.lastname + ' - ' + data.user.email }}</div>
         <div>{{ data.user.address }}</div>
-        <div>{{ data.user.zipCode }} {{ data.user.town }}</div>
+        <div>{{ data.user.zipCode + ' ' + data.user.town }}</div>
         <div>{{ data.user.country }}</div>
       </mat-grid-tile>
 
@@ -28,9 +28,9 @@
       </mat-grid-tile>
 
       <mat-grid-tile [colspan]="3" [rowspan]="2" id="customer-infos">
-        <div>{{ data.customer.civility }} {{ data.customer.name }}</div>
+        <div>{{ data.customer.civility + ' ' + data.customer.name }}</div>
         <div>{{ data.customer.address }}</div>
-        <div>{{ data.customer.zipCode }} {{ data.customer.town }}, {{ data.customer.country }}</div>
+        <div>{{ data.customer.zipCode + ' ' + data.customer.town + ', ' + data.customer.country }}</div>
       </mat-grid-tile>
 
       <mat-grid-tile [colspan]="10" [rowspan]="1" id="banner">
@@ -129,26 +129,20 @@
 
   <div id="payment-container" class="form-group">
     <div *ngIf="!isPaypalAllowed">
-      {{ data.user.activityEntitled }}{{ 'payment.not_allowed' | translate }}
+      {{ data.user.activityEntitled + 'payment.not_allowed' | translate }}
     </div>
 
     <div *ngIf="isPaypalAllowed">
       <mat-grid-list cols="2" rowHeight="4:1">
         <mat-grid-tile [colspan]="1" [rowspan]="1">
           <mat-form-field class="example-full-width">
-            <input matInput type="number" id="paying-amount" placeholder="{{ 'payment.paying' | translate }}" [(ngModel)]="payingAmount" (focusout)="checkPayingAmount()" />
+            <input matInput type="number" min="1" max="{{ data.sumToPay }}" id="paying-amount" placeholder="{{ 'payment.paying' | translate }}" [(ngModel)]="payingAmount" (focusout)="checkPayingAmount()" />
             <span matPrefix><mat-icon aria-hidden="true">payment</mat-icon></span>
           </mat-form-field>
         </mat-grid-tile>
 
         <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <div *ngIf="!canAuthorizePayment" class="error">
-            {{ 'payment.invalid_amount' | translate }}
-          </div>
-
-          <div *ngIf="canAuthorizePayment">
-            <div id="paypal-checkout-button"></div>
-          </div>
+          <div id="paypal-checkout-button"></div>
         </mat-grid-tile>
       </mat-grid-list>
     </div>
