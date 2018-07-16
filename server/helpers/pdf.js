@@ -18,7 +18,7 @@ module.exports = {
         document.addTable("total", [[quote.totalPriceET + " €"]], [utils.pdf.getCell(localization[language].pdf.total, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
-        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + quote.datePayment, localization[language].pdf.validity + quote.validity]));
+        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + utils.format.formatDate(quote.datePayment), localization[language].pdf.validity + quote.validity]));
         if (quote.collectionCost)
             document.addContent("collection_cost", localization[language].pdf.collection_cost);
 
@@ -55,7 +55,7 @@ module.exports = {
         document.addTable("sum_to_pay", [[invoice.sumToPay + " €"]], [utils.pdf.getCell(localization[language].pdf.sum_to_pay, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
-        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + invoice.datePayment, localization[language].pdf.date_execution + invoice.dateExecution]));
+        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + utils.format.formatDate(invoice.datePayment), localization[language].pdf.date_execution + utils.format.formatDate(invoice.dateExecution)]));
         if (invoice.collectionCost)
             document.addContent("collection_cost", localization[language].pdf.collection_cost);
 

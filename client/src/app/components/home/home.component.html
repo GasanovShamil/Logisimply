@@ -1,28 +1,63 @@
-<mat-card class="card">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title i18n>Home</mat-card-title>
-  </mat-card-header>
-  <img mat-card-image src="https://www.cnx-software.com/wp-content/uploads/2010/11/in-home-display-example-mentor-embedded-inflexion.png" alt="Photo of contacts">
-  <mat-card-content>
-    <p i18n>
-      Hello! This is our future Home component.
-    </p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button i18n mat-button>LIKE</button>
-    <button i18n mat-button>SHARE</button>
-  </mat-card-actions>
-</mat-card>
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
 
-<mat-card class="card">
-  <mat-card-header>
-    <mat-card-title>Income per customer</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <canvas id="incomes-per-customer"></canvas>
-  </mat-card-content>
-  <mat-card-actions>
-    FOOTER
-  </mat-card-actions>
-</mat-card>
+<div id="error" *ngIf="!isLoadingResults && !isUserReady">
+  <div id="error-container" class="form-group">
+    {{ errorMessage }}
+  </div>
+</div>
+
+<div *ngIf="isUserReady">
+  <mat-card class="card">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-grid-list cols="10" rowHeight="2:1">
+        <mat-grid-tile [colspan]="5" [rowspan]="1">
+          {{ 'home.activity_entitled' | translate }}{{ me.activityEntitled }}
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="5" [rowspan]="1">
+          {{ 'home.activity_started' | translate }}{{ me.activityStarted | date: 'dd/MM/yyyy'}}
+        </mat-grid-tile>
+
+
+
+
+        <!--"email": "leo.foltzrahem@gmail.com",-->
+        <!--"firstname": "Yoann",-->
+        <!--"lastname": "Flégeau",-->
+        <!--"activityType": "Artisanale",-->
+        <!--"activityField": "",-->
+        <!--"categoryType": "Journaliste",-->
+
+        <!--"siret": "36252187900034",-->
+        <!--"address": "8 rue de magento sa mere",-->
+        <!--"zipCode": "75013",-->
+        <!--"town": "Paris",-->
+        <!--"country": "Chine",-->
+      </mat-grid-list>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>LIKE</button>
+      <button mat-button>SHARE</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>HEADER</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <canvas id="incomes-per-customer-type"></canvas>
+    </mat-card-content>
+    <mat-card-actions>
+      FOOTER
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+

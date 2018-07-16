@@ -206,5 +206,18 @@
     "cgu": "General Conditions of Use",
     "legal_notice": "Legal Notice",
     "grpd": "Why are we collecting your data ?"
+  },
+  "home" :{
+    "lastname": "Lastname",
+    "firstname": "Firstname",
+    "address": "Address",
+    "town": "City",
+    "country": "Country",
+    "zipcode": "ZipCode",
+    "activity_type": "Activity type",
+    "category_type": "Category type",
+    "activity_entitled": "Activity entitled",
+    "activity_started": "Activity started",
+    "siret": "Siret"
   }
 }
