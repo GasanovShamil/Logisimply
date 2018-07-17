@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {AlertService} from '../../services/alert.service';
 import {TranslateService} from '@ngx-translate/core';
@@ -17,15 +17,17 @@ import {AuthService} from "../../services/auth.service";
 export class HomeComponent implements OnInit {
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
-  isLoadingResults: boolean = true;
+  isUserLoading: boolean = true;
   isUserReady: boolean = false;
   isPaypalAllowed: boolean = false;
   me: any;
-  incomesPerCustomerTypeChart = [];
-  // chart = [];
-  // chart = [];
   errorMessage = '';
-  @ViewChild('incomes-per-customer-type') incomesPerCustomerTypeCanvas: any;
+  isIncomesPerCustomerTypeLoading: boolean = true;
+  incomesPerCustomerTypeChart = [];
+  isIncomesPerMethodLoading: boolean = true;
+  incomesPerMethodChart = [];
+  isPaymentStateOfInvoicesLoading: boolean = true;
+  paymentStateOfInvoicesChart = [];
 
   constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, private authService: AuthService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -35,19 +37,60 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.getMe();
+    this.getIncomesPerCustomerType();
+    this.getIncomesPerMethod();
+    this.getPaymentStateOfInvoices();
   }
 
   getMe() {
-    this.userService.getStats().subscribe(
+    this.userService.getMe().subscribe(
       data => {
-        this.isLoadingResults = false;
+        this.isUserLoading = false;
         this.isUserReady = true;
-        this.me = data.me;
-        this.isPaypalAllowed = data.me.credentials;
-        //this.incomesPerCustomerType(data);
+        this.me = data;
+        this.isPaypalAllowed = data.credentials;
       },
       error => {
-        this.isLoadingResults = false;
+        this.isUserLoading = false;
+        this.errorMessage =  error.error.message;
+      }
+    );
+  }
+
+  getIncomesPerCustomerType() {
+    this.userService.getIncomesPerCustomerType().subscribe(
+      data => {
+        this.isIncomesPerCustomerTypeLoading = false;
+        this.incomesPerCustomerType(data);
+      },
+      error => {
+        this.isIncomesPerCustomerTypeLoading = false;
+        this.errorMessage =  error.error.message;
+      }
+    );
+  }
+
+  getIncomesPerMethod() {
+    this.userService.getIncomesPerMethod().subscribe(
+      data => {
+        this.isIncomesPerMethodLoading = false;
+        this.incomesPerMethod(data);
+      },
+      error => {
+        this.isIncomesPerMethodLoading = false;
+        this.errorMessage =  error.error.message;
+      }
+    );
+  }
+
+  getPaymentStateOfInvoices() {
+    this.userService.getPaymentStateOfInvoices().subscribe(
+      data => {
+        this.isPaymentStateOfInvoicesLoading = false;
+        this.paymentStateOfInvoices(data);
+      },
+      error => {
+        this.isPaymentStateOfInvoicesLoading = false;
         this.errorMessage =  error.error.message;
       }
     );
@@ -76,68 +119,169 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // incomesPerCustomerType(data) {
-  //   let privateColor = HomeComponent.randomColor();
-  //   let professionnalColor = HomeComponent.randomColor();
-  //   this.incomesPerCustomerTypeChart = new Chart(this.incomesPerCustomerTypeCanvas.getContext('2d'), {
-  //     type: 'line',
-  //     data: {
-  //       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  //       datasets: [{
-  //         label: 'Private',
-  //         backgroundColor: privateColor.fill,
-  //         borderColor: privateColor.border,
-  //         data: [1, 2, 4, 8, 16, 32, 64],
-  //         fill: false,
-  //       }, {
-  //         label: 'Professionnal',
-  //         fill: false,
-  //         backgroundColor: professionnalColor.fill,
-  //         borderColor: professionnalColor.border,
-  //         data: [64, 32, 16, 8, 4, 2, 1],
-  //       }]
-  //     },
-  //     options: {
-  //       responsive: true,
-  //       title: {
-  //         display: true,
-  //         text: 'THIS IS THE TITLE : incomesPerCustomerType'
-  //       },
-  //       tooltips: {
-  //         mode: 'index',
-  //         intersect: false,
-  //       },
-  //       hover: {
-  //         mode: 'nearest',
-  //         intersect: true
-  //       },
-  //       scales: {
-  //         xAxes: [{
-  //           display: true,
-  //           scaleLabel: {
-  //             display: true,
-  //             labelString: 'Month'
-  //           }
-  //         }],
-  //         yAxes: [{
-  //           display: true,
-  //           scaleLabel: {
-  //             display: true,
-  //             labelString: 'Income'
-  //           },
-  //           ticks: {
-  //             beginAtZero:true
-  //           }
-  //         }]
-  //       }
-  //     }
-  //   });
-  // }
+  incomesPerCustomerType(data) {
+    this.translate.get(['home']).subscribe(translation => {
+      this.incomesPerCustomerTypeChart = new Chart('incomes-per-customer-type', {
+        type: 'line',
+        data: {
+          labels: [
+            translation.home.stats.month.jan,
+            translation.home.stats.month.feb,
+            translation.home.stats.month.mar,
+            translation.home.stats.month.apr,
+            translation.home.stats.month.may,
+            translation.home.stats.month.jun,
+            translation.home.stats.month.jul,
+            translation.home.stats.month.aug,
+            translation.home.stats.month.sep,
+            translation.home.stats.month.oct,
+            translation.home.stats.month.nov,
+            translation.home.stats.month.dec
+          ],
+          datasets: [{
+            label: translation.home.stats.incomes_per_customer_type.deleted,
+            data: data.deleted,
+            borderColor: 'rgba(254, 70, 70, 1)',
+            fill: true
+          }, {
+            label: translation.home.stats.incomes_per_customer_type.privates,
+            data: data.privates,
+            borderColor: 'rgba(56, 206, 36, 1)',
+            fill: true
+          }, {
+            label: translation.home.stats.incomes_per_customer_type.professionals,
+            data: data.professionals,
+            borderColor: 'rgba(251, 175, 33, 1)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: translation.home.stats.incomes_per_customer_type.title
+          },
+          legend: {
+            position: 'top',
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+          },
+          hover: {
+            mode: 'nearest',
+            intersect: true
+          },
+          scales: {
+            xAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: translation.home.stats.incomes_per_customer_type.x_axe
+              }
+            }],
+            yAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: translation.home.stats.incomes_per_customer_type.y_axe
+              },
+              ticks: {
+                beginAtZero:true
+              }
+            }]
+          }
+        }
+      });
+    });
+  }
 
-  static randomColor() {
-    let red = Math.round(Math.random() * 255);
-    let green = Math.round(Math.random() * 255);
-    let blue = Math.round(Math.random() * 255);
-    return {fill: 'rgba(' + red + ', ' + green + ', ' + blue + ', 0.2)', border: 'rgba(' + red + ', ' + green + ', ' + blue + ', 1)'}
+  incomesPerMethod(data) {
+    this.translate.get(['home']).subscribe(translation => {
+      this.incomesPerMethodChart = new Chart('incomes-per-method', {
+        type: 'doughnut',
+        data: {
+          labels: [
+            translation.home.stats.method.advanced,
+            translation.home.stats.method.asset,
+            translation.home.stats.method.paypal,
+            translation.home.stats.method.cash,
+            translation.home.stats.method.check
+          ],
+          datasets: [{
+            data: [data.advanced, data.asset, data.paypal, data.cash, data.check],
+            backgroundColor: ['rgba(136, 137, 141, 1)', 'rgba(122, 177, 154, 1)', 'rgba(0, 112, 186, 1)', 'rgba(235, 175 ,87, 1)', 'rgba(146, 154, 219, 1)'],
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: translation.home.stats.incomes_per_method.title
+          },
+          legend: {
+            position: 'top',
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true
+          }
+        }
+      });
+    });
+  }
+
+  paymentStateOfInvoices(data) {
+    this.translate.get(['home']).subscribe(translation => {
+      this.paymentStateOfInvoicesChart = new Chart('payment-state-of-invoices', {
+        type: 'bar',
+        data: {
+          labels: [
+            translation.home.stats.month.jan,
+            translation.home.stats.month.feb,
+            translation.home.stats.month.mar,
+            translation.home.stats.month.apr,
+            translation.home.stats.month.may,
+            translation.home.stats.month.jun,
+            translation.home.stats.month.jul,
+            translation.home.stats.month.aug,
+            translation.home.stats.month.sep,
+            translation.home.stats.month.oct,
+            translation.home.stats.month.nov,
+            translation.home.stats.month.dec
+          ],
+          datasets: [{
+            label: translation.home.stats.payment_state_of_invoices.payed,
+            data: data.payed,
+            backgroundColor: 'rgba(56, 206, 36, 1)',
+            fill: true
+          }, {
+            label: translation.home.stats.payment_state_of_invoices.sum_to_pay,
+            data: data.sumToPay,
+            backgroundColor: 'rgba(254, 70, 70, 1)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: translation.home.stats.payment_state_of_invoices.title
+          },
+          legend: {
+            position: 'top',
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+          },
+          hover: {
+            mode: 'nearest',
+            intersect: true
+          }
+        }
+      });
+    });
   }
 }

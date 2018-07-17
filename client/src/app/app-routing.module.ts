@@ -14,7 +14,7 @@ import {LegalNoticeComponent} from "./components/legal-notice/legal-notice.compo
 import {GrpdComponent} from "./components/grpd/grpd.component";
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
-  { path: 'activate', component: ActivateComponent },
+  { path: 'activate/:token', component: ActivateComponent },
   { path: 'payment/:user/:invoice', component: PaymentComponent },
   { path: 'notice', component: LegalNoticeComponent },
   { path: 'grpd', component: GrpdComponent },

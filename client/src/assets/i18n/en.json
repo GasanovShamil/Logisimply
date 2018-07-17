@@ -259,7 +259,8 @@
     "legal_notice": "Legal Notice",
     "grpd": "Why are we collecting your data ?"
   },
-  "home" :{
+  "home": {
+    "profile": "My information",
     "activity_entitled": "Activity entitled",
     "activity_started": "Activity started",
     "siret": "Siret",
@@ -272,7 +273,46 @@
     "town": "City",
     "country": "Country",
     "update": "Update",
-    "credentials": "PayPal credentials"
+    "credentials": "PayPal credentials",
+    "stats": {
+      "month": {
+        "jan": "January",
+        "feb": "February",
+        "mar": "March",
+        "apr": "April",
+        "may": "May",
+        "jun": "June",
+        "jul": "July",
+        "aug": "August",
+        "sep": "September",
+        "oct": "October",
+        "nov": "November",
+        "dec": "December"
+      },
+      "method": {
+        "advanced": "Advanced payments",
+        "asset": "Assets",
+        "paypal": "Paypal",
+        "cash": "Cash",
+        "check": "Checks"
+      },
+      "incomes_per_customer_type": {
+        "deleted": "Deleted",
+        "privates": "Privates",
+        "professionals": "Professionals",
+        "title": "Incomes per customer type per month for current year",
+        "x_axe": "Month",
+        "y_axe": "Incomes (€)"
+      },
+      "incomes_per_method": {
+        "title": "All incomes per means of payment"
+      },
+      "payment_state_of_invoices": {
+        "payed": "Payed",
+        "sum_to_pay": "Waiting for payment",
+        "title": "Payment state of locked invoices"
+      }
+    }
   },
   "credentialsDialog": {
     "title": "Update your PayPal credentials",
@@ -305,5 +345,10 @@
   },
   "incomesDialog": {
 
+  },
+  "activate": {
+    "congrats": "Congratulations ",
+    "activation": "your account has been activated !",
+    "back": "Back to home"
   }
 }

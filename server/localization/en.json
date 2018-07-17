@@ -6,39 +6,41 @@
   "email": {
     "invalid": "Email is invalid",
     "template": {
-      "activation": "Activation of your Logisimply account",
-      "password": "Your new password Logisimply"
-    },
-    "activation": {
-      "hello": "Hello",
-      "wording": "Please click on the following link to activate your account :",
-      "click": "Click here"
-    },
-    "password": {
-      "hello": "Hello",
-      "wording": "You'll find here your new password, it will allow you to connect at LogiSimply.",
-      "new_password": "Your new password is :"
-    },
-    "quote": {
-      "hello": "Hello",
-      "wording": "You will find attached the quote :",
-      "wording_2": " to download."
-    },
-    "invoice": {
-      "hello": "Hello",
-      "wording": "You will find attached the invoice :",
-      "wording_2": " to download."
-    },
-    "contact": {
-      "subject": "Request contact",
-      "hello": "Dear director,",
-      "contact": "Contact request from :",
-      "email": "Reply to the following address :",
-      "message": "The message of the user :"
-    },
-    "courtesy": {
-      "courtesy_form": "Sincerely yours",
-      "signature": "LogiSimply"
+      "activate": {
+        "subject": "Activation of your Logisimply account",
+        "hello": "Hello",
+        "wording": "Please click on the following link to activate your account :",
+        "click": "Click here"
+      },
+      "password": {
+        "subject": "Your new password Logisimply",
+        "hello": "Hello",
+        "wording": "You'll find here your new password, it will allow you to connect at LogiSimply.",
+        "new_password": "Your new password is :"
+      },
+      "quote": {
+        "subject": "Download your quote -",
+        "hello": "Hello",
+        "wording": "You will find attached the quote :",
+        "wording_2": " to download."
+      },
+      "invoice": {
+        "subject": "Download your invoice -",
+        "hello": "Hello",
+        "wording": "You will find attached the invoice :",
+        "wording_2": " to download."
+      },
+      "contact": {
+        "subject": "Request contact",
+        "hello": "Dear director,",
+        "contact": "Contact request from :",
+        "email": "Reply to the following address :",
+        "message": "The message of the user :"
+      },
+      "courtesy": {
+        "courtesy_form": "Sincerely yours",
+        "signature": "LogiSimply"
+      }
     }
   },
   "pdf": {
@@ -176,6 +178,7 @@
       "error": "Error while downloading the invoice"
     },
      "income": {
+       "advanced": "Error while adding the advanced payment as an income",
        "success": "Income successfully added",
        "impossible": "No invoice match this code and user"
      }

@@ -1,7 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {MediaMatcher} from "@angular/cdk/layout";
-import {Observable} from "rxjs/Observable";
 import {ActivatedRoute} from "@angular/router";
 import {UserService} from "../../services/user.service";
 
@@ -16,7 +15,8 @@ export class ActivateComponent implements OnInit {
   isLoadingResults = true;
   isUserValid = false;
   paramToken: string;
-  data = new Observable();
+  data: any;
+  errorMessage = '';
 
   constructor(private route: ActivatedRoute, public translate: TranslateService, private userService: UserService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -33,13 +33,13 @@ export class ActivateComponent implements OnInit {
     this.userService.activate(this.paramToken).subscribe(
       data => {
         this.data = data;
-        this.isUserValid = true;
         this.isLoadingResults = false;
+        this.isUserValid = true;
       },
       error => {
         this.isLoadingResults = false;
+        this.errorMessage =  error.error.message;
       }
     );
   }
-
 }

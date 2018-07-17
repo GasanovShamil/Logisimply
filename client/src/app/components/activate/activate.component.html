@@ -2,14 +2,18 @@
   <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
 </div>
 
-<div id="activate-message" *ngIf="isUserValid">
-  <h1>LogiSimply</h1>
-  <h2>Félicitations</h2>
-  <p>Bonjour {{ data.firstname }}, votre compte a bien été activé.</p>
+<div class="error" *ngIf="!isLoadingResults && !isUserValid">
+  <h1><i class="material-icons">error</i></h1>
+  <h2>{{ errorMessage }}</h2>
+  <button type="button" mat-raised-button>
+    <a class="err" href="/welcome">{{ 'activate.back' | translate }}</a>
+  </button>
 </div>
 
-<div id="error-message" *ngIf="!isLoadingResults && !isUserValid">
-  <h1>LogiSimply</h1>
-  <h2>Aïe ! Un problème est survenu.</h2>
-  <p>Le compte n'a pas pu etre activé, potentiellement car ce compte est déjà actif, ou bien n'existe pas.</p>
+<div class="success" *ngIf="isUserValid">
+  <h1><i class="material-icons">check_circle</i></h1>
+  <h2>{{ 'activate.congrats' | translate }} {{ data.firstname }}, {{ 'activate.activation' | translate }}</h2>
+  <button type="button" mat-raised-button>
+    <a class="succ" href="/welcome">{{ 'activate.back' | translate }}</a>
+  </button>
 </div>

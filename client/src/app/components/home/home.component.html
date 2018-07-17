@@ -1,18 +1,17 @@
-<div class="loading-shade" *ngIf="isLoadingResults">
-  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-</div>
-
 <div id="error" *ngIf="!isLoadingResults && !isUserReady">
   <div id="error-container" class="form-group">
     {{ errorMessage }}
   </div>
 </div>
 
-<div *ngIf="isUserReady">
-  <mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
+<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'" *ngIf="isUserReady">
+  <div class="loading-shade" *ngIf="isUserLoading">
+    <mat-spinner *ngIf="isUserLoading"></mat-spinner>
+  </div>
+
+  <div *ngIf="isUserReady">
     <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title></mat-card-title>
+      <mat-card-title>{{ 'home.profile' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <mat-form-field class="third-width">
@@ -61,43 +60,34 @@
         <mat-icon svgIcon="paypal"></mat-icon><mat-icon [ngClass]="isPaypalAllowed ? 'green' : 'red'">check_circle_outline</mat-icon>
       </div>
     </mat-card-actions>
-  </mat-card>
+  </div>
+</mat-card>
 
-  <mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
-    <mat-card-header>
-      <mat-card-title>HEADER STATS 1</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <canvas id="incomes-per-customer-type"></canvas>
-    </mat-card-content>
-    <mat-card-actions>
-      FOOTER STATS 1
-    </mat-card-actions>
-  </mat-card>
+<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
+  <div class="loading-shade" *ngIf="isIncomesPerCustomerTypeLoading">
+    <mat-spinner *ngIf="isIncomesPerCustomerTypeLoading"></mat-spinner>
+  </div>
+  <mat-card-content>
+    <canvas id="incomes-per-customer-type">{{ incomesPerCustomerTypeChart }}</canvas>
+  </mat-card-content>
+</mat-card>
 
-  <mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
-    <mat-card-header>
-      <mat-card-title>HEADER STATS 2</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <canvas id="stats-2"></canvas>
-    </mat-card-content>
-    <mat-card-actions>
-      FOOTER STATS 2
-    </mat-card-actions>
-  </mat-card>
+<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
+  <div class="loading-shade" *ngIf="isIncomesPerMethodLoading">
+    <mat-spinner *ngIf="isIncomesPerMethodLoading"></mat-spinner>
+  </div>
+  <mat-card-content>
+    <canvas id="incomes-per-method">{{ incomesPerMethodChart }}</canvas>
+  </mat-card-content>
+</mat-card>
 
-  <mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
-    <mat-card-header>
-      <mat-card-title>HEADER STATS 3</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <canvas id="stats-3"></canvas>
-    </mat-card-content>
-    <mat-card-actions>
-      FOOTER STATS 3
-    </mat-card-actions>
-  </mat-card>
-</div>
+<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
+  <div class="loading-shade" *ngIf="isPaymentStateOfInvoicesLoading">
+    <mat-spinner *ngIf="isPaymentStateOfInvoicesLoading"></mat-spinner>
+  </div>
+  <mat-card-content>
+    <canvas id="payment-state-of-invoices">{{ paymentStateOfInvoicesChart }}</canvas>
+  </mat-card-content>
+</mat-card>
 
 

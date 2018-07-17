@@ -13,13 +13,13 @@ let transporter = nodemailer.createTransport({
 
 module.exports = {
     sendActivationUrl: function(user, language) {
-        let url = config.url + "/api/users/activate/" + user.activationToken;
+        let url = config.url + "/activate/" + user.activationToken;
         let mailOptions = {
             from: config.email.user,
             to: user.email,
-            subject: localization[language].email.template.activation,
-            text: localization[language].email.activation.hello + " " + user.firstname + ",\n" + localization[language].email.activation.wording + " " + url + "\n" + localization[language].email.courtesy.courtesy_form + "\n" + localization[language].email.courtesy.signature,
-            html: "<p>" + localization[language].email.activation.hello + " " + user.firstname + "</p><p>" + localization[language].email.activation.wording + "<b> <a href='" + url + "' target='_blank'>" + localization[language].email.activation.click + "</a></p><p>" + localization[language].email.courtesy.courtesy_form + "</p><p>" + localization[language].email.courtesy.signature + "</p>"
+            subject: localization[language].email.template.activate.subject,
+            text: localization[language].email.template.activation.hello + " " + user.firstname + ",\n" + localization[language].email.template.activation.wording + " " + url + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
+            html: "<p>" + localization[language].email.template.activation.hello + " " + user.firstname + "</p><p>" + localization[language].email.template.activation.wording + "<b> <a href='" + url + "' target='_blank'>" + localization[language].email.template.activation.click + "</a></p><p>" + localization[language].email.template.courtesy.courtesy_form + "</p><p>" + localization[language].email.template.courtesy.signature + "</p>"
         };
 
         transporter.sendMail(mailOptions, function(err) {
@@ -33,9 +33,9 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: user.email,
-            subject: localization[language].email.template.password,
-            text: localization[language].email.password.hello + " " + user.firstname + ",\n" + localization[language].email.password.wording + "\n" + localization[language].email.password.new_password + " " + user.password + "\n" + localization[language].email.courtesy.courtesy_form + "\n" + localization[language].email.courtesy.signature,
-            html: "<p>" + localization[language].email.password.hello + " "+ user.firstname + "</p><p>" + localization[language].email.password.wording + "</p><p>" + localization[language].email.password.new_password + " " + user.password + "</p><p>" + localization[language].email.courtesy.courtesy_form + "</p><p>" + localization[language].email.courtesy.signature + "</p>"
+            subject: localization[language].email.template.password.subject,
+            text: localization[language].email.template.password.hello + " " + user.firstname + ",\n" + localization[language].email.template.password.wording + "\n" + localization[language].email.template.password.new_password + " " + user.password + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
+            html: "<p>" + localization[language].email.template.password.hello + " "+ user.firstname + "</p><p>" + localization[language].email.template.password.wording + "</p><p>" + localization[language].email.template.password.new_password + " " + user.password + "</p><p>" + localization[language].email.courtesy.courtesy_form + "</p><p>" + localization[language].email.template.courtesy.signature + "</p>"
         };
 
         transporter.sendMail(mailOptions, function(err) {
@@ -51,9 +51,9 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: quote.customer.email,
-            subject: localization[language].email.template.password,
-            text: localization[language].email.quote.hello + " " + quote.customer.name + ", \n " + localization[language].email.quote.wording + " " + quote.code + "\n" + localization[language].email.quote.wording_2 + "\n" + localization[language].email.courtesy.courtesy_form + "\n" + localization[language].email.courtesy.signature,
-            html: "<p>" + localization[language].email.quote.hello + " " + quote.customer.name + "</p><p>" + localization[language].email.quote.wording + " " + quote.code + " " + localization[language].email.quote.wording_2 + "</p><p>" + localization[language].email.courtesy.courtesy_form + "</p><p>" + localization[language].email.courtesy.signature + "</p>",
+            subject: localization[language].email.template.quote.subject + " " + quote.code,
+            text: localization[language].email.template.quote.hello + " " + quote.customer.name + ", \n " + localization[language].email.template.quote.wording + " " + quote.code + "\n" + localization[language].email.template.quote.wording_2 + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
+            html: "<p>" + localization[language].email.template.quote.hello + " " + quote.customer.name + "</p><p>" + localization[language].email.template.quote.wording + " " + quote.code + " " + localization[language].email.template.quote.wording_2 + "</p><p>" + localization[language].email.template.courtesy.courtesy_form + "</p><p>" + localization[language].email.template.courtesy.signature + "</p>",
             attachments: [{filename: "Devis - " + quote.code + ".pdf", path: path}]
         };
 
@@ -72,9 +72,9 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: invoice.customer.email,
-            subject: localization[language].email.template.password,
-            text: localization[language].email.invoice.hello + " " + invoice.customer.name + ", \n " + localization[language].email.quoinvoicete.wording + " " + invoice.code + "\n" + localization[language].email.invoice.wording_2 + "\n" + localization[language].email.courtesy.courtesy_form + "\n" + localization[language].email.courtesy.signature,
-            html: "<p>" + localization[language].email.invoice.hello + " " + invoice.customer.name + "</p><p>" + localization[language].email.invoice.wording + " " + invoice.code + " " + localization[language].email.invoice.wording_2 + "</p><p>" + localization[language].email.courtesy.courtesy_form + "</p><p>" + localization[language].email.courtesy.signature + "</p>",
+            subject: localization[language].email.template.invoice.subject + " " + invoice.code,
+            text: localization[language].email.template.invoice.hello + " " + invoice.customer.name + ", \n " + localization[language].email.template.invoice.wording + " " + invoice.code + "\n" + localization[language].email.template.invoice.wording_2 + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
+            html: "<p>" + localization[language].email.template.invoice.hello + " " + invoice.customer.name + "</p><p>" + localization[language].email.template.invoice.wording + " " + invoice.code + " " + localization[language].email.template.invoice.wording_2 + "</p><p>" + localization[language].email.template.courtesy.courtesy_form + "</p><p>" + localization[language].email.template.courtesy.signature + "</p>",
             attachments: [{filename: "Facture - " + invoice.code + ".pdf", path: path}]
         };
 
@@ -91,9 +91,9 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: config.email.admin,
-            subject: localization[language].email.contact.subject,
-            text: localization[language].email.contact.hello + " " + localization[language].email.contact.contact + name + "\n" + localization[language].email.contact.email + " " + email + "\n" + localization[language].email.contact.message + " " + message + "\n" + localization[language].email.courtesy.courtesy_form + "\n" + localization[language].email.courtesy.signature,
-            html: "<p>" + localization[language].email.contact.hello + "</p><p>" + localization[language].email.contact.contact + " " + name + "</p><p>" + localization[language].email.contact.email + " " + email + "</p><p>" + localization[language].email.contact.message + " " + message + "</p>"
+            subject: localization[language].email.template.contact.subject,
+            text: localization[language].email.template.contact.hello + " " + localization[language].email.template.contact.contact + name + "\n" + localization[language].email.template.contact.email + " " + email + "\n" + localization[language].email.template.contact.message + " " + message,
+            html: "<p>" + localization[language].email.template.contact.hello + "</p><p>" + localization[language].email.template.contact.contact + " " + name + "</p><p>" + localization[language].email.template.contact.email + " " + email + "</p><p>" + localization[language].email.template.contact.message + " " + message + "</p>"
         };
 
         transporter.sendMail(mailOptions, function(err) {

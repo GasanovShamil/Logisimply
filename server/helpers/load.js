@@ -1,4 +1,3 @@
-let utils = require("./utils");
 let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let incomeModel = require("../models/Income");
@@ -12,7 +11,7 @@ module.exports = {
             object.customer = (await customerModel.findOne({code: object.customer, user: user}).exec()).fullFormat();
 
         if (object.incomes && object.sumToPay && object.payed) {
-            let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
+            let incomes = await incomeModel.find({invoice: object.code, user: user, method: {$ne: "advanced"}}).exec();
             object.incomes = [];
             for (let i = 0; i < incomes.length; i++) {
                 object.incomes.push(incomes[i].fullFormat());
@@ -33,10 +32,11 @@ module.exports = {
         return object;
     },
     incomes: async (object, user) => {
-        if (object.incomes && object.sumToPay) {
-            let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
+        if (object.incomes && object.sumToPay && object.payed) {
+            let incomes = await incomeModel.find({invoice: object.code, user: user, method: {$ne: "advanced"}}).exec();
             object.incomes = incomes;
             for (let i = 0; i < incomes.length; i++) {
+                object.incomes.push(incomes[i].fullFormat());
                 object.sumToPay -= incomes[i].amount;
                 object.payed += incomes[i].amount;
             }

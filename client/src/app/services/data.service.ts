@@ -143,6 +143,11 @@ export class DataService {
     );
   }
 
+  // async downloadQuote(quoteCode: string) {
+  //   "Devis - " + quote.code + ".pdf"
+  //   return await this.http.get<Blob>('api/quotes/download/' + quoteCode, {responseType: 'blob' as 'json'}).toPromise();
+  // }
+
   downloadQuote(quoteCode: string) {
     return this.http.get<any>('api/quotes/download/'+quoteCode).pipe(
       catchError(this.handleError)

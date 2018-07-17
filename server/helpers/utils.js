@@ -31,10 +31,10 @@ module.exports = {
             return quote.customer && quote.dateQuote && this.isContentComplete(quote.content) && quote.datePayment && quote.validity && (typeof(quote.collectionCost) === "boolean");
         },
         isInvoiceComplete: function(invoice) {
-            return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && (typeof(invoice.collectionCost) === "boolean");
+            return invoice.customer && invoice.dateInvoice && this.isContentComplete(invoice.content) && invoice.datePayment && invoice.dateExecution && (typeof(invoice.collectionCost) === "boolean") && (typeof(invoice.advancedPayment) === "number");
         },
         isIncomeComplete: function(income) {
-            return income.method && income.amount && income.invoice && income.user && income.customer && income.dateIncome;
+            return income.method && (typeof(income.amount) === "number") && income.invoice && income.user && income.customer && income.dateIncome;
         },
         isCustomerTypeValid: function (type) {
             return ["private", "professional"].includes(type);
@@ -49,7 +49,7 @@ module.exports = {
             return ["draft", "lock"].includes(status);
         },
         isIncomeMethodValid: function (method) {
-            return ["paypal", "asset", "cash", "check"].includes(method);
+            return ["advanced", "paypal", "asset", "cash", "check"].includes(method);
         }
     },
     format: {

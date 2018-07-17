@@ -1,7 +1,7 @@
 <div class="container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="toolbar">
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="app-name">Logisimply</h1>
+    <h1 class="app-name">LogiSimply</h1>
     <span class="fill-remaining-space"></span>
     <mat-form-field style="width: 50px">
       <mat-select #langSelect [(ngModel)]="language" (change)="onLanguageChange(langSelect.value)">
