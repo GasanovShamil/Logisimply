@@ -73,7 +73,7 @@ module.exports = {
             from: config.email.user,
             to: invoice.customer.email,
             subject: localization[language].email.template.invoice.subject + " " + invoice.code,
-            text: localization[language].email.template.invoice.hello + " " + invoice.customer.name + ", \n " + localization[language].email.template.quoinvoicete.wording + " " + invoice.code + "\n" + localization[language].email.template.invoice.wording_2 + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
+            text: localization[language].email.template.invoice.hello + " " + invoice.customer.name + ", \n " + localization[language].email.template.invoice.wording + " " + invoice.code + "\n" + localization[language].email.template.invoice.wording_2 + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
             html: "<p>" + localization[language].email.template.invoice.hello + " " + invoice.customer.name + "</p><p>" + localization[language].email.template.invoice.wording + " " + invoice.code + " " + localization[language].email.template.invoice.wording_2 + "</p><p>" + localization[language].email.template.courtesy.courtesy_form + "</p><p>" + localization[language].email.template.courtesy.signature + "</p>",
             attachments: [{filename: "Facture - " + invoice.code + ".pdf", path: path}]
         };
