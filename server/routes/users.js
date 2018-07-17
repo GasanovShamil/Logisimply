@@ -273,11 +273,9 @@ router.post("/login", middleware.wrapper(async (req, res) => {
         case "banned":
             res.status(403).json({message: localization[req.language].users.banned});
             break;
-
         case "inactive":
             res.status(403).json({message: localization[req.language].users.inactive});
             break;
-
         case "active":
             if (user.password === md5(paramPassword))
                 jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function (err, token) {
@@ -311,30 +309,7 @@ router.use(middleware.isLogged);
  *           $ref: '#/definitions/User'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    let user = await userModel.findOne({_id: req.loggedUser._id});
-    user = user.fullFormat();
-
-    let incomesPerCustomerLabels = [];
-    let incomesPerCustomerData = [];
-
-    let customers = await customerModel.find({user: req.loggedUser._id});
-    for (let i = 0; i < customers.length; i++) {
-        let total = 0;
-        let invoices = await invoiceModel.find({customer: customers[i].code, user: req.loggedUser._id});
-        for (let j = 0; j < invoices.length; j++)
-            total += invoices[j].advancedPayment;
-        let incomes = await incomeModel.find({customer: customers[i].code, user: req.loggedUser._id});
-        for (let j = 0; j < incomes.length; j++)
-            total += incomes[j].amount;
-        incomesPerCustomerLabels.push(customers[i].code + " - " + customers[i].name);
-        incomesPerCustomerData.push(total);
-    }
-
-    let stats = {
-        incomesPerCustomerType: {labels: incomesPerCustomerLabels, data: incomesPerCustomerData}
-    };
-
-    res.status(200).json({me: user, stats: stats});
+    res.status(200).json(req.loggedUser);
 }));
 
 /**

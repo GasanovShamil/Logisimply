@@ -122,7 +122,8 @@
       "message": "Votre Message"
     }
   },
-  "home" :{
+  "home": {
+    "profile": "Mes informations",
     "email": "Email",
     "firstname": "Prénom",
     "lastname": "Nom",
@@ -136,7 +137,46 @@
     "activity_started": "Date de début d'activité",
     "siret": "Siret",
     "update": "Mettre à jour",
-    "credentials": "Informations PayPal"
+    "credentials": "Informations PayPal",
+    "stats": {
+      "month": {
+        "jan": "Janvier",
+        "feb": "Févier",
+        "mar": "Mars",
+        "apr": "Avril",
+        "may": "Mai",
+        "jun": "Juin",
+        "jul": "Juillet",
+        "aug": "Août",
+        "sep": "Septembre",
+        "oct": "Octobre",
+        "nov": "Novembre",
+        "dec": "Décembre"
+      },
+      "method": {
+        "advanced": "Acomptes",
+        "asset": "Avoirs",
+        "paypal": "PayPal",
+        "cash": "Espèces",
+        "check": "Chèques"
+      },
+      "incomes_per_customer_type": {
+        "deleted": "Supprimés",
+        "privates": "Particuliers",
+        "professionals": "Professionnels",
+        "title": "Recettes par type de client par mois pour l'année courante",
+        "x_axe": "Mois",
+        "y_axe": "Recettes (€)"
+      },
+      "incomes_per_method": {
+        "title": "Recettes totales par moyen de paiement"
+      },
+      "payment_state_of_invoices": {
+        "payed": "Payées",
+        "sum_to_pay": "En attente de paiement",
+        "title": "État de paiement des factures verrouillées"
+      }
+    }
   },
   "credentialsDialog": {
     "title": "Modification des informations PayPal",

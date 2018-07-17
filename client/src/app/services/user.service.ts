@@ -20,8 +20,26 @@ export class UserService {
     );
   }
 
-  getStats() {
+  getMe() {
     return this.http.get<any>('/api/users/me').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getIncomesPerCustomerType() {
+    return this.http.get<any>('/api/stats/incomesPerCustomerType').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getIncomesPerMethod() {
+    return this.http.get<any>('/api/stats/incomesPerMethod').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getPaymentStateOfInvoices() {
+    return this.http.get<any>('/api/stats/paymentStateOfInvoices').pipe(
       catchError(this.handleError)
     );
   }
