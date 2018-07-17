@@ -10,6 +10,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {CustomerDialogComponent} from "../dialogs/customer-dialog/customer-dialog.component";
 import {ProviderDialogComponent} from "../dialogs/provider-dialog/provider-dialog.component";
+import {ConfirmDialogComponent} from "../dialogs/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-contacts',
@@ -28,9 +29,10 @@ export class ContactsComponent implements OnInit {
   providers: Provider[] = [];
   customerSelection = new SelectionModel<Customer>(true, []);
   providerSelection = new SelectionModel<Provider>(true, []);
-  errorMessage = '';
   customer: Customer = new Customer();
   provider: Provider = new Provider();
+  customerDeleteConfirmMessage: string = '';
+  selectAtleastOneErrorMessage:string = '';
 
 
   @ViewChild('customerPaginator') customerPaginator: MatPaginator;
@@ -62,6 +64,7 @@ export class ContactsComponent implements OnInit {
   ngOnInit() {
     this.displayedCustomerColumns = (this.mobileQuery.matches)?['select','code', 'name',  'info']:['select','code', 'type', 'name', 'email', 'town', 'info'];
     this.displayedProviderColumns = (this.mobileQuery.matches)?['select','code', 'companyName', 'info']:['select','code', 'companyName', 'legalForm', 'email', 'town', 'info'];
+
     this.getCustomers();
   }
 
@@ -147,42 +150,51 @@ export class ContactsComponent implements OnInit {
 
 
   onDeleteCustomerClick(){
+    this.translate.get(['contacts']).subscribe(translation => {
+      this.selectAtleastOneErrorMessage = translation.contacts.select_at_least_one;
+      this.customerDeleteConfirmMessage = translation.contacts.customer_delete_warning;
+    });
     if(this.customerSelection.isEmpty()){
-      this.translate.get(['contacts']).subscribe(translation => {
-        this.errorMessage = translation.contacts.select_at_least_one;
-        this.alertService.error(this.errorMessage);
-      })
+       this.alertService.error(this.selectAtleastOneErrorMessage);
     } else {
-      this.dataService.deleteCustomers(this.customerSelection.selected).subscribe(
-        data => {
-          this.customerSelection.selected.forEach(item => {
-            let index: number = this.customerDataSource.data.findIndex(i => i === item);
-            this.customerDataSource.data.splice(index, 1);
-          })
-          this.customerDataSource._updateChangeSubscription();
-          this.customerSelection.clear();
-          this.alertService.success(data.message);
-        },
-        error => {
-          this.alertService.error(error.error.message);
+      let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: {message: this.customerDeleteConfirmMessage }}:{width: '300px',  data: {message: this.customerDeleteConfirmMessage }};
+      let dialogRef = this.dialog.open(ConfirmDialogComponent, config);
+      dialogRef.afterClosed().subscribe(result => {
+        if(result){
+          this.dataService.deleteCustomers(this.customerSelection.selected).subscribe(
+            data => {
+              this.customerSelection.selected.forEach(item => {
+                let index: number = this.customerDataSource.data.findIndex(i => i === item);
+                this.customerDataSource.data.splice(index, 1);
+              })
+              this.customerDataSource._updateChangeSubscription();
+              this.customerSelection.clear();
+              this.alertService.success(data.message);
+            },
+            error => {
+              this.alertService.error(error.error.message);
+            }
+          )
         }
-      )
+      })
     }
   }
 
   onDeleteProviderClick(){
+    this.translate.get(['contacts']).subscribe(translation => {
+      this.selectAtleastOneErrorMessage = translation.contacts.select_at_least_one;
+      this.customerDeleteConfirmMessage = translation.contacts.customer_delete_warning;
+      console.log(this.customerDeleteConfirmMessage);
+    });
     if(this.providerSelection.isEmpty()){
-      this.translate.get(['contacts']).subscribe(translation => {
-        this.errorMessage = translation.contacts.select_at_least_one;
-        this.alertService.error(this.errorMessage);
-      })
+        this.alertService.error(this.selectAtleastOneErrorMessage);
     } else {
       this.dataService.deleteProviders(this.providerSelection.selected).subscribe(
         data => {
           this.providerSelection.selected.forEach(item => {
             let index: number = this.providerDataSource.data.findIndex(i => i === item);
             this.providerDataSource.data.splice(index, 1);
-          })
+          });
           this.providerDataSource._updateChangeSubscription();
           this.providerSelection.clear();
           this.alertService.success(data.message);

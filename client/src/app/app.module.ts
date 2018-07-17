@@ -38,6 +38,8 @@ import { LoginDialogComponent } from './components/dialogs/login-dialog/login-di
 import { SiretPipe } from './pipes/siret.pipe';
 import { CredentialsDialogComponent } from './components/dialogs/credentials-dialog/credentials-dialog.component';
 import { UserDialogComponent } from './components/dialogs/user-dialog/user-dialog.component';
+import { ConfirmDialogComponent } from './components/dialogs/confirm-dialog/confirm-dialog.component';
+import { IncomeDialogComponent } from './components/dialogs/income-dialog/income-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -66,9 +68,11 @@ export function tokenGetter() {
     LoginDialogComponent,
     SiretPipe,
     CredentialsDialogComponent,
-    UserDialogComponent
+    UserDialogComponent,
+    ConfirmDialogComponent,
+    IncomeDialogComponent
   ],
-  entryComponents: [LoginDialogComponent, SignupDialogComponent, CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent, CredentialsDialogComponent, UserDialogComponent],
+  entryComponents: [IncomeDialogComponent, ConfirmDialogComponent, LoginDialogComponent, SignupDialogComponent, CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent, CredentialsDialogComponent, UserDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

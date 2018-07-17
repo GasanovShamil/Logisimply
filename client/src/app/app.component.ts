@@ -16,8 +16,22 @@ export class AppComponent {
       sanitizer.bypassSecurityTrustResourceUrl('assets/icons/pdf.svg'));
     iconRegistry.addSvgIcon(
       'paypal',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/paypal.svg')
-    )
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/paypal.svg'));
+    iconRegistry.addSvgIcon(
+      'en',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/en.svg'));
+    iconRegistry.addSvgIcon(
+      'fr',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/fr.svg')
+    );
+    iconRegistry.addSvgIcon(
+      'ru',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/ru.svg')
+    );
+    iconRegistry.addSvgIcon(
+      'income',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/income.svg')
+    );
     let browserLang = translate.getBrowserLang();
     let selectedLang = localStorage.getItem('Localize');
     translate.addLangs(['en', 'fr']);

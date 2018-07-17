@@ -16,6 +16,7 @@ import {MediaMatcher} from "@angular/cdk/layout";
 import {Subscription} from "rxjs/Subscription";
 import {Item} from "../../../models/item";
 import {Content} from "../../../models/content";
+import {Quote} from "../../../models/quote";
 
 @Component({
   selector: 'app-quote-dialog',
@@ -222,10 +223,11 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   saveData() {
     if (!this.close) {
       if (this.quoteForm.valid && this.contentDataSource.data.length > 0) {
-        this.quoteForm.controls['customer'].setValue(this.quoteForm.controls['customer'].value.code);
-        this.quoteForm.controls['content'].setValue(this.contentDataSource.data);
+        let quote: Quote = this.quoteForm.getRawValue();
+        quote.customer = quote.customer.code;
+        quote.content = this.contentDataSource.data;
         if (this.editMode) {
-          this.dataService.updateQuote(this.quoteForm.getRawValue()).subscribe(
+          this.dataService.updateQuote(quote).subscribe(
             data => this.dialogRef.close({
               data: data.data,
               message: data.message,
@@ -235,7 +237,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
             error => this.alertService.error(error.error.message)
           )
         } else {
-          this.dataService.addQuote(this.quoteForm.getRawValue()).subscribe(
+          this.dataService.addQuote(quote).subscribe(
             data => this.dialogRef.close({
               data: data.data,
               message: data.message,
@@ -279,7 +281,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         validity: new FormControl({
           value: this.data.validity,
           disabled: true
-        }, [Validators.pattern('^\\d+$'), Validators.required]),
+        }, [Validators.required]),
         collectionCost: new FormControl({value: this.data.collectionCost, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
         status: new FormControl({value: this.data.status, disabled: true}, []),
@@ -293,7 +295,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         subject: new FormControl('', []),
         content: new FormControl('', []),
         datePayment: new FormControl('', [Validators.required]),
-        validity: new FormControl('', [Validators.pattern('^\\d+$'), Validators.required]),
+        validity: new FormControl('', [Validators.required]),
         collectionCost: new FormControl({value: false, disabled: false}, [Validators.required]),
         comment: new FormControl('', []),
         status: new FormControl('', []),

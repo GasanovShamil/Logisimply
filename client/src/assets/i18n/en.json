@@ -54,7 +54,8 @@
     "code": "Code",
     "private": "Private",
     "professional": "Professional",
-    "select_at_least_one": "You need to select at least one element !"
+    "select_at_least_one": "You need to select at least one element !",
+    "customer_delete_warning": "All quotes/invoices of this customer will be deleted !"
   },
   "contactsDialog": {
     "customer": "Customer",
@@ -172,8 +173,9 @@
     "send_invoice": "Send invoice",
     "save_invoice": "Save invoice",
     "generate_invoice": "Generate invoice",
-    "dateExecution": "Execution date"
-
+    "dateExecution": "Execution date",
+    "advancedPayment": "Advanced payment",
+    "show_incomes": "Show incomes"
   },
   "payment":{
     "siret": "Translate | Siret : ",
@@ -295,5 +297,13 @@
     "activity_started": "Activity started",
     "siret": "Siret",
     "user_form_error_message": "Please fill in all required form fields"
+  },
+  "confirmDialog": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "warning": "Warning"
+  },
+  "incomesDialog": {
+
   }
 }
