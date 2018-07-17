@@ -124,6 +124,7 @@
     "add_new_invoice":	"Add new invoice",
     "delete_selected": "Delete selected",
     "select_at_least_one": "You need to select at least one element !",
+    "cant_delete_locked": "Can not delete locked invoices !",
     "totalPriceET": "Total price",
     "status": "Status",
     "draft": "Draft",
@@ -138,10 +139,12 @@
   },
   "billsDialog": {
     "quote": "Quote",
+    "invoice": "Invoice",
     "edit_mode": "Edit",
     "customer": "Customer",
     "subject": "Subject",
     "dateQuote": "Quote date",
+    "dateInvoice": "Invoice date",
     "datePayment": "Payment date",
     "validity": "Validity",
     "collectionCost": "Collection cost",
@@ -166,7 +169,10 @@
     "delete_element": "Delete item",
     "send_quote": "Send quote",
     "save_quote": "Save quote",
-    "generate_invoice": "Generate invoice"
+    "send_invoice": "Send invoice",
+    "save_invoice": "Save invoice",
+    "generate_invoice": "Generate invoice",
+    "dateExecution": "Execution date"
 
   },
   "payment":{

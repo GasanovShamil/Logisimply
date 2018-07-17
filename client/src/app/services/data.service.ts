@@ -206,6 +206,18 @@ export class DataService {
     );
   }
 
+  addInvoice(invoiceData) {
+    return this.http.post<any>('api/invoices/add', invoiceData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateInvoice(invoiceData) {
+    return this.http.put<any>('api/invoices/update', invoiceData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   ///////////////////////////// CONTACT SECTION /////////////////////////////
 
   contact(infos) {

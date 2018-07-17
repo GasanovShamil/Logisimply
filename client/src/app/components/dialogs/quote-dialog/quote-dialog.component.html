@@ -27,7 +27,7 @@
       </mat-form-field>
       <div class="button-row myrow">
         <button mat-button mat-icon-button type="button" matSuffix (click)="openCustomerDialog()" color="primary"
-                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}" [disabled]="!editMode">
+                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}" [disabled]="disable()">
           <mat-icon>add</mat-icon>
         </button>
       </div>

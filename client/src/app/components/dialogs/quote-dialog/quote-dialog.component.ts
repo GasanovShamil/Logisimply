@@ -204,6 +204,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
       content.description = itemRow.description;
       content.label = itemRow.label;
       content.quantity = 1;
+      this.quoteForm.controls['itemRow'].setValue(null);
       this.contentDataSource.data.push(content);
       this.contentDataSource._updateChangeSubscription();
     } else {
@@ -253,13 +254,14 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   generateInvoice(){
+    this.data.customer = this.data.customer.code;
     this.dataService.generateInvoiceFromQuote(this.data).subscribe(
-      data => {
-
-      },
-      error => {
-
-      }
+      data =>this.dialogRef.close({
+        generateInvoiceMode: true,
+        data: data.data,
+        message: data.data.code+' : '+data.message
+      }),
+      error => this.alertService.error(error.error.message)
     )
 
   }

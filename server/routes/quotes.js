@@ -345,7 +345,7 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
         }
     }, function(err, response, body) {
         if (err)
-            return res.status(response.statusCode).json({message: localization[req.language].customers.code.failed});
+            return res.status(err.statusCode).json({message: localization[req.language].customers.code.failed});
 
         res.status(200).json({message: body.message, data: body.data});
     });
