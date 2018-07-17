@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="example-container mat-elevation-z8">
-      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #quoteSort="matSort" [dataSource]="quoteDataSource" matSort>
+      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #quoteSort="matSort" [dataSource]="quoteDataSource" matSortActive="code" matSortDirection="desc" matSort>
         <ng-container matColumnDef="select">
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? quoteToggle() : null"
@@ -96,7 +96,7 @@
       </div>
     </div>
     <div class="example-container mat-elevation-z8">
-      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #invoiceSort="matSort" [dataSource]="invoiceDataSource" matSort>
+      <mat-table [ngClass]="mobileQuery.matches ?'table-mobile':'table-desktop'" #invoiceSort="matSort" [dataSource]="invoiceDataSource" matSortActive="code" matSortDirection="desc" matSort>
         <ng-container matColumnDef="select">
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? invoiceToggle() : null"

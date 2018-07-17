@@ -10,6 +10,36 @@
   width: 32%;
 }
 
+
 .close-button{
   float: right;
+}
+
+
+.draft {
+  color: #46e7ff;
+}
+.sent {
+  color: #08ff0f;
+}
+
+.lock {
+  color: #ff051a;
+}
+
+.payed {
+  color: #ffd106;
+}
+
+.input-button-row {
+  display: flex;
+}
+
+.myrow {
+  display: inline-flex;
+}
+
+.mat-column-delete {
+  overflow: visible;
+  max-width: 40px;
 }

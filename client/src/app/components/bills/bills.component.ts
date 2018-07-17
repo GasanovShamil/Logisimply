@@ -28,7 +28,8 @@ export class BillsComponent implements OnInit {
   invoices: Invoice[] = [];
   quoteSelection = new SelectionModel<Quote>(true, []);
   invoiceSelection = new SelectionModel<Invoice>(true, []);
-  errorMessage = '';
+  errorMessageAtLeastOne = '';
+  errorMessageLockedInvoices = '';
   quote: Quote = new Quote();
   invoice: Invoice = new Invoice();
 
@@ -38,7 +39,7 @@ export class BillsComponent implements OnInit {
   @ViewChild('invoicePaginator') invoicePaginator: MatPaginator;
   @ViewChild('invoiceSort') invoiceSort: MatSort;
 
-  constructor(public dialog: MatDialog, public translate: TranslateService, private dataService : DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public dialog: MatDialog, public translate: TranslateService, private dataService: DataService, private alertService: AlertService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -60,9 +61,13 @@ export class BillsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.displayedQuoteColumns = (this.mobileQuery.matches)?['select','code', 'customer', 'info']:['select','code', 'subject', 'customer', 'dateQuote', 'datePayment','totalPriceET', 'status', 'info'];
-    this.displayedInvoiceColumns = (this.mobileQuery.matches)?['select','code', 'customer', 'info']:['select','code', 'subject', 'customer', 'dateInvoice', 'datePayment','totalPriceET', 'status', 'info'];
+    this.displayedQuoteColumns = (this.mobileQuery.matches) ? ['select', 'code', 'customer', 'info'] : ['select', 'code', 'subject', 'customer', 'dateQuote', 'datePayment', 'totalPriceET', 'status', 'info'];
+    this.displayedInvoiceColumns = (this.mobileQuery.matches) ? ['select', 'code', 'customer', 'info'] : ['select', 'code', 'subject', 'customer', 'dateInvoice', 'datePayment', 'totalPriceET', 'status', 'info'];
     this.getQuotes();
+    this.translate.get(['bills']).subscribe(translation => {
+      this.errorMessageAtLeastOne = translation.bills.select_at_least_one;
+      this.errorMessageLockedInvoices = translation.bills.cant_delete_locked;
+    })
   }
 
   getQuotes() {
@@ -105,8 +110,8 @@ export class BillsComponent implements OnInit {
   }
 
 
-  onTabChange(event: MatTabChangeEvent){
-    switch(event.index){
+  onTabChange(event: MatTabChangeEvent) {
+    switch (event.index) {
       case 0 : {
         if (!this.quotes || this.quotes.length == 0) {
           this.getQuotes();
@@ -139,6 +144,7 @@ export class BillsComponent implements OnInit {
       this.quoteSelection.clear() :
       this.quoteDataSource.data.forEach(row => this.quoteSelection.select(row));
   }
+
   invoiceToggle() {
     this.isAllInvoicesSelected() ?
       this.invoiceSelection.clear() :
@@ -146,19 +152,16 @@ export class BillsComponent implements OnInit {
   }
 
 
-  onDeleteQuoteClick(){
-    if(this.quoteSelection.isEmpty()){
-      this.translate.get(['bills']).subscribe(translation => {
-        this.errorMessage = translation.bills.select_at_least_one;
-        this.alertService.error(this.errorMessage);
-      })
+  onDeleteQuoteClick() {
+    if (this.quoteSelection.isEmpty()) {
+        this.alertService.error(this.errorMessageAtLeastOne);
     } else {
       this.dataService.deleteQuotes(this.quoteSelection.selected).subscribe(
         data => {
           this.quoteSelection.selected.forEach(item => {
             let index: number = this.quoteDataSource.data.findIndex(i => i === item);
             this.quoteDataSource.data.splice(index, 1);
-          })
+          });
           this.quoteDataSource._updateChangeSubscription();
           this.quoteSelection.clear();
           this.alertService.success(data.message);
@@ -170,89 +173,109 @@ export class BillsComponent implements OnInit {
     }
   }
 
-  onDeleteInvoiceClick(){
-    if(this.invoiceSelection.isEmpty()){
-      this.translate.get(['bills']).subscribe(translation => {
-        this.errorMessage = translation.bills.select_at_least_one;
-        this.alertService.error(this.errorMessage);
-      })
-    } else {
-      this.dataService.deleteInvoices(this.invoiceSelection.selected).subscribe(
-        data => {
-          this.invoiceSelection.selected.forEach(item => {
-            let index: number = this.invoiceDataSource.data.findIndex(i => i === item);
-            this.invoiceDataSource.data.splice(index, 1);
-          })
-          this.invoiceDataSource._updateChangeSubscription();
-          this.invoiceSelection.clear();
-          this.alertService.success(data.message);
-        },
-        error => {
-          this.alertService.error(error.error.message);
+  onDeleteInvoiceClick() {
+    let cancel:boolean=false;
+    if (this.invoiceSelection.isEmpty()) {
+        this.alertService.error(this.errorMessageAtLeastOne);
+    }  else {
+      this.invoiceSelection.selected.forEach(item => {
+        if (item.status !== 'draft') {
+          cancel = true;
         }
-      )
+      })
+      if (cancel) {
+        this.alertService.error(this.errorMessageLockedInvoices);
+      } else {
+        this.dataService.deleteInvoices(this.invoiceSelection.selected).subscribe(
+          data => {
+            this.invoiceSelection.selected.forEach(item => {
+              let index: number = this.invoiceDataSource.data.findIndex(i => i === item);
+              this.invoiceDataSource.data.splice(index, 1);
+            })
+            this.invoiceDataSource._updateChangeSubscription();
+            this.invoiceSelection.clear();
+            this.alertService.success(data.message);
+          },
+          error => {
+            this.alertService.error(error.error.message);
+          }
+        )
+      }
     }
   }
 
-  updateQuoteDataTable(quote: Quote){
+  updateQuoteDataTable(quote: Quote) {
     let index: number = this.quoteDataSource.data.findIndex(i => i.code === quote.code);
     this.quoteDataSource.data.splice(index, 1, quote);
     this.quoteDataSource._updateChangeSubscription();
   }
-  updateInvoiceDataTable(invoice: Invoice){
+
+  updateInvoiceDataTable(invoice: Invoice) {
     let index: number = this.invoiceDataSource.data.findIndex(i => i.code === invoice.code);
     this.invoiceDataSource.data.splice(index, 1, invoice);
     this.invoiceDataSource._updateChangeSubscription();
   }
+
   openQuoteDialog(quote?: Quote): void {
-    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (quote)?quote:null }:{width: '600px',  data: (quote)?quote:null };
+    let config = this.mobileQuery.matches ? {
+      maxWidth: '100%',
+      minWidth: '100px',
+      data: (quote) ? quote : null
+    } : {width: '600px', data: (quote) ? quote : null};
     let dialogRef = this.dialog.open(QuoteDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.alertService.success(result.message);
-        if(result.editMode){
+      if (result) {
+        if (result.editMode) {
           this.updateQuoteDataTable(result.data);
-        } else if(result.sendMode){
+        } else if (result.sendMode) {
           this.sendQuote(result.data);
-        }else {
+        } else if (result.createMode) {
           this.quoteDataSource.data.push(result.data);
           this.quoteDataSource._updateChangeSubscription();
+        } else if(result.generateInvoiceMode){
+          this.invoiceDataSource.data.push(result.data);
+          this.invoiceDataSource._updateChangeSubscription();
         }
+        this.alertService.success(result.message);
       }
     });
   }
 
   openInvoiceDialog(invoice?: Invoice): void {
-    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (invoice)?invoice:null }:{width: '600px',  data: (invoice)?invoice:null };
+    let config = this.mobileQuery.matches ? {
+      maxWidth: '100%',
+      minWidth: '100px',
+      data: (invoice) ? invoice : null
+    } : {width: '600px', data: (invoice) ? invoice : null};
     let dialogRef = this.dialog.open(InvoiceDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.alertService.success(result.message);
-        if(result.editMode){
-          let index: number = this.invoiceDataSource.data.findIndex(i => i.code === result.data.code);
-          this.invoiceDataSource.data.splice(index, 1, result.data);
-          this.invoiceDataSource._updateChangeSubscription();
-        } else {
+      if (result) {
+        if (result.editMode) {
+          this.updateInvoiceDataTable(result.data);
+        } else if (result.sendMode) {
+          this.sendInvoice(result.data);
+        } else if (result.createMode) {
           this.invoiceDataSource.data.push(result.data);
           this.invoiceDataSource._updateChangeSubscription();
         }
+        this.alertService.success(result.message);
       }
     });
   }
 
-  sendQuote(quote: Quote){
+  sendQuote(quote: Quote) {
     this.dataService.sendQuote(quote.code).subscribe(
       data => {
         console.log(data);
         this.alertService.success(data.message);
         this.updateQuoteDataTable(data.data);
       },
-        error => {
+      error => {
         this.alertService.error(error.error.message);
-        });
+      });
   }
 
-  sendInvoice(invoice: Invoice){
+  sendInvoice(invoice: Invoice) {
     this.dataService.sendInvoice(invoice.code).subscribe(
       data => {
         console.log(data);
@@ -264,13 +287,14 @@ export class BillsComponent implements OnInit {
       });
   }
 
-  downloadInvoice(invoice: Invoice){
+  downloadInvoice(invoice: Invoice) {
 
   }
 
-  downloadQuote(quote: Quote){
+  downloadQuote(quote: Quote) {
     this.dataService.downloadQuote(quote.code).subscribe(
-      data => {},
+      data => {
+      },
       error => {
         this.alertService.error(error.error.message);
       }

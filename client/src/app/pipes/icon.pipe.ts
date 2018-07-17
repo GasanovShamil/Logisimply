@@ -21,7 +21,7 @@ export class IconPipe implements PipeTransform {
         break;
       }
       case 'payed': {
-        res = 'attach_money';
+        res = 'euro_symbol';
         break;
       }
     }

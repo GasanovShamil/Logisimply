@@ -27,7 +27,7 @@
       </mat-form-field>
       <div class="button-row myrow">
         <button mat-button mat-icon-button type="button" matSuffix (click)="openCustomerDialog()" color="primary"
-                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}" [disabled]="!editMode">
+                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}" [disabled]="disable()">
           <mat-icon>add</mat-icon>
         </button>
       </div>
@@ -131,10 +131,13 @@
   </mat-table>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="saveData()" [disabled]="!saveButton">
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.save_quote' | translate }}" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
   </button>
-  <button mat-raised-button color="primary" (click)="sendQuote()" [disabled]="editMode || saveButton">
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.generate_invoice' | translate }}" (click)="generateInvoice()" [disabled]="editMode || saveButton">
+    <mat-icon>euro_symbol</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.send_quote' | translate }}" (click)="sendQuote()" [disabled]="editMode || saveButton">
     <mat-icon>send</mat-icon>
   </button>
 </div>
