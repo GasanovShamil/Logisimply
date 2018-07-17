@@ -1,3 +1,148 @@
-<p>
-  invoice-dialog works!
-</p>
+<div class="dialog-title" mat-dialog-title>
+  <div>
+    <mat-icon *ngIf="data && data.status" [ngClass]="data.status"
+              matTooltip="{{ 'billsDialog.'+data.status | translate }}">{{data.status | icon}}
+    </mat-icon>
+    {{ 'billsDialog.invoice' | translate }}
+    <mat-hint align="end" class="close-button">
+      <button mat-icon-button (click)="onCloseClick()">
+        <mat-icon color="warn">clear</mat-icon>
+      </button>
+    </mat-hint>
+    <mat-hint *ngIf="data && data.code" align="start">{{data.code}}</mat-hint>
+  </div>
+  <mat-slide-toggle *ngIf="data && data.status === 'draft'" [labelPosition]="editLablePosition" (change)="editSliderChange($event)">{{
+    'billsDialog.edit_mode' | translate }}
+  </mat-slide-toggle>
+</div>
+<div mat-dialog-content>
+
+  <form [formGroup]="invoiceForm">
+    <div class="input-button-row">
+      <mat-form-field class="full-width">
+        <input type="text" #inputCustomer placeholder="{{ 'billsDialog.customer' | translate }}" matInput formControlName="customer"  [matAutocomplete]="autoCustomer" required>
+        <mat-autocomplete #autoCustomer="matAutocomplete" [displayWith]="displayFn" (optionSelected)="handler($event)">
+          <mat-option *ngFor="let customer of filteredOptions | async" [value]="customer">{{ customer.name }}</mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-button mat-icon-button type="button" matSuffix (click)="openCustomerDialog()" color="primary"
+                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}" [disabled]="disable()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-form-field class="half-width">
+      <input matInput [matDatepicker]="pickerDateInvoice" placeholder="{{ 'billsDialog.dateInvoice' | translate }}"
+             formControlName="dateInvoice" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerDateInvoice"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateInvoice></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput [matDatepicker]="pickerDatePayment" placeholder="{{ 'billsDialog.datePayment' | translate }}"
+             formControlName="datePayment" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerDatePayment"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDatePayment></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="{{ 'billsDialog.subject' | translate }}" formControlName="subject">
+    </mat-form-field>
+    <mat-form-field class="third">
+      <input matInput [matDatepicker]="pickerDateExecution" placeholder="{{ 'billsDialog.dateExecution' | translate }}"
+             formControlName="dateExecution" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerDateExecution"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateExecution></mat-datepicker>
+    </mat-form-field>
+    <mat-slide-toggle [labelPosition]="editLablePosition" formControlName="collectionCost">{{
+      'billsDialog.collectionCost' | translate }}
+    </mat-slide-toggle>
+    <mat-form-field class="full-width">
+      <textarea matInput placeholder="{{ 'billsDialog.comment' | translate }}" formControlName="comment"></textarea>
+    </mat-form-field>
+    <div class="input-button-row">
+      <mat-form-field class="full-width">
+        <input type="text" #inputItem placeholder="{{ 'billsDialog.find_add_item' | translate }}" matInput formControlName="itemRow"  [matAutocomplete]="autoItem">
+        <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="displayFnItem" (optionSelected)="handlerItem($event)">
+          <mat-option *ngFor="let item of filteredOptionsItem | async" [value]="item">{{ item.label }}</mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-button mat-icon-button type="button" matSuffix (click)="addItemRow()" color="primary"
+                matTooltip="{{ 'billsDialog.add_new_item' | translate }}" [disabled]="disable()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+  </form>
+  <mat-table #table [dataSource]="contentDataSource">
+    <!-- Reference Column -->
+    <ng-container matColumnDef="reference">
+      <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.reference' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input matInput placeholder="{{ 'billsDialog.reference' | translate }}" [value]="element.reference" [(ngModel)]="element.reference" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <!-- Type Column -->
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.type' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-select placeholder="{{ 'billsDialog.type' | translate }}" #typeSelect [value]="element.type" [(ngModel)]="element.type" [disabled]="disable() || mobileQuery.matches">
+          <mat-option *ngFor="let item of types" [value]="item.value">
+            {{ item.name | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-cell>
+    </ng-container>
+    <!-- Label Column -->
+    <ng-container matColumnDef="label">
+      <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.label' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input matInput placeholder="{{ 'billsDialog.label' | translate }}" [value]="element.label" [(ngModel)]="element.label" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <!-- unitPriceET Column -->
+    <ng-container matColumnDef="unitPriceET">
+      <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.unitPriceET' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <!-- quantity Column -->
+    <ng-container matColumnDef="quantity">
+      <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.quantity' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input type="number" matInput placeholder="{{ 'billsDialog.quantity' | translate }}" [value]="element.quantity" [(ngModel)]="element.quantity" [disabled]="disable()">
+      </mat-cell>
+    </ng-container>
+    <!-- discount Column -->
+    <ng-container matColumnDef="discount">
+      <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.discount' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input  matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="{{ 'billsDialog.delete_element' | translate }}" (click)="deleteItemRow(element)" [disabled]="disable()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.save_invoice' | translate }}" (click)="saveData()" [disabled]="!saveButton">
+    <mat-icon>save</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()" [disabled]="editMode || saveButton">
+    <mat-icon>send</mat-icon>
+  </button>
+</div>
+
+<!--content: new FormControl({value: this.data.content, disabled: true}, []),-->
+
+
+

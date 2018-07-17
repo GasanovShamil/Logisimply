@@ -154,6 +154,12 @@ export class DataService {
     );
   }
 
+  generateInvoiceFromQuote(quote: Quote){
+    return this.http.post<any>('api/quotes/generateInvoice', quote).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   deleteQuotes(quotes: Quote[]){
     return this.http.post<any>('api/quotes/delete', quotes).pipe(
       catchError(this.handleError)
@@ -201,6 +207,18 @@ export class DataService {
 
   getInvoicePayment(userId, invoiceCode) {
     return this.http.get<any>('api/payment/' + userId + '/' + invoiceCode + '/display').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addInvoice(invoiceData) {
+    return this.http.post<any>('api/invoices/add', invoiceData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateInvoice(invoiceData) {
+    return this.http.put<any>('api/invoices/update', invoiceData).pipe(
       catchError(this.handleError)
     );
   }

@@ -9,7 +9,6 @@ import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './components/home/home.component';
 import { UserService } from "./services/user.service";
 import {AuthGuard} from './components/guards/auth-guard.guard';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
@@ -48,7 +47,6 @@ export function tokenGetter() {
     AppComponent,
     HomeComponent,
     WelcomeComponent,
-    DashboardComponent,
     ContactsComponent,
     NavigationComponent,
     AlertComponent,

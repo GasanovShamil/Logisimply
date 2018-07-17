@@ -201,5 +201,10 @@
     "activity_started": "Date de début d'activité",
     "siret": "Siret",
     "user_form_error_message": "Please fill in all required form fields"
+  },
+  "activate": {
+    "congrats": "Félicitations ",
+    "activation": "votre compte a été activé !",
+    "back": "Retour à l'accueil"
   }
 }
