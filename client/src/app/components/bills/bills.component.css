@@ -17,7 +17,8 @@
 
 .mat-column-info {
   overflow: visible;
-  max-width: 70px;
+  max-width: 130px;
+  min-width: 20px;
 }
 
 .mat-column-status {
@@ -35,10 +36,10 @@
 }
 
 .draft {
-  color: #46e7ff;
+    color: #46e7ff;
 }
 .sent {
-  color: #08ff0f;
+  color: #0dd443;
 }
 
 .lock {

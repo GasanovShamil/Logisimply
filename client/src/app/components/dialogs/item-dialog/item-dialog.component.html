@@ -3,7 +3,9 @@
     <div>
       {{ 'itemsDialog.'+this.itemForm.controls['type'].value | translate }}
       <mat-hint align="end" class="close-button">
-        <mat-icon (click)="onCloseClick()" color="warn">clear</mat-icon>
+        <button mat-icon-button (click)="onCloseClick()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
       </mat-hint>
       <mat-hint *ngIf="data && data.reference" align="start">{{data.reference}}</mat-hint>
     </div>

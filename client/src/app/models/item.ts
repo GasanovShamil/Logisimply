@@ -1,10 +1,10 @@
 export class Item{
-  type: string;
-  reference: string;
-  label: string;
-  priceET: number;
-  description: string;
-  user:	string;
-  createdAt: string;
-  updatedAt: string;
+  type: any;
+  reference: any;
+  label: any;
+  priceET: any;
+  description: any;
+  user:	any;
+  createdAt: any;
+  updatedAt: any;
 }

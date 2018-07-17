@@ -2,7 +2,11 @@
   <div class="dialog-title" mat-dialog-title>
     <div>
       {{'signup.create_account' | translate}}
-      <mat-icon class="close-button" (click)="onCloseClick()" color="warn">clear</mat-icon>
+      <mat-hint align="end" class="close-button">
+        <button mat-icon-button (click)="onCloseClick()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
+      </mat-hint>
     </div>
   </div>
   <div mat-dialog-content>

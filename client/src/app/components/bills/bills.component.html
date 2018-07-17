@@ -64,7 +64,13 @@
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'bills.details_edit' | translate }}" (click)="openQuoteDialog(row)">
-              <mat-icon color="primary">control_point</mat-icon>
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="{{ 'bills.send_quote' | translate }}" (click)="sendQuote(row)">
+              <mat-icon color="primary">send</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="{{ 'bills.download_quote' | translate }}" (click)="downloadQuote(row)">
+              <mat-icon svgIcon="pdf"></mat-icon>
             </button>
           </mat-cell>
         </ng-container>
@@ -137,7 +143,13 @@
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let row">
             <button mat-icon-button matTooltip="{{ 'bills.details_edit' | translate }}" (click)="openInvoiceDialog(row)">
-              <mat-icon color="primary">control_point</mat-icon>
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="{{ 'bills.send_invoice' | translate }}" (click)="sendInvoice(row)">
+              <mat-icon color="primary">send</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="{{ 'bills.download_quote' | translate }}" (click)="downloadInvoice(row)">
+              <mat-icon svgIcon="pdf"></mat-icon>
             </button>
           </mat-cell>
         </ng-container>

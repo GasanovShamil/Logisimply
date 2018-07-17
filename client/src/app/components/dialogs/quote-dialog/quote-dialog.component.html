@@ -5,7 +5,9 @@
     </mat-icon>
     {{ 'billsDialog.quote' | translate }}
     <mat-hint align="end" class="close-button">
-      <mat-icon (click)="onCloseClick()" color="warn">clear</mat-icon>
+      <button mat-icon-button (click)="onCloseClick()">
+        <mat-icon color="warn">clear</mat-icon>
+      </button>
     </mat-hint>
     <mat-hint *ngIf="data && data.code" align="start">{{data.code}}</mat-hint>
   </div>
@@ -25,7 +27,7 @@
       </mat-form-field>
       <div class="button-row myrow">
         <button mat-button mat-icon-button type="button" matSuffix (click)="openCustomerDialog()" color="primary"
-                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}">
+                matTooltip="{{ 'billsDialog.add_new_customer' | translate }}" [disabled]="!editMode">
           <mat-icon>add</mat-icon>
         </button>
       </div>
@@ -42,7 +44,7 @@
       <mat-datepicker-toggle matSuffix [for]="pickerDatePayment"></mat-datepicker-toggle>
       <mat-datepicker #pickerDatePayment></mat-datepicker>
     </mat-form-field>
-    <mat-form-field class="third">
+    <mat-form-field class="full-width">
       <input matInput placeholder="{{ 'billsDialog.subject' | translate }}" formControlName="subject">
     </mat-form-field>
     <mat-form-field class="third">
@@ -63,7 +65,7 @@
     </mat-form-field>
     <div class="button-row myrow">
       <button mat-button mat-icon-button type="button" matSuffix (click)="addItemRow()" color="primary"
-              matTooltip="{{ 'billsDialog.add_new_item' | translate }}" [disabled]="!editMode">
+              matTooltip="{{ 'billsDialog.add_new_item' | translate }}" [disabled]="disable()">
         <mat-icon>add</mat-icon>
       </button>
     </div>
@@ -74,14 +76,14 @@
     <ng-container matColumnDef="reference">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.reference' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.reference' | translate }}" [value]="element.reference" [(ngModel)]="element.reference" [disabled]="!editMode">
+        <input matInput placeholder="{{ 'billsDialog.reference' | translate }}" [value]="element.reference" [(ngModel)]="element.reference" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <!-- Type Column -->
     <ng-container matColumnDef="type">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.type' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-select placeholder="{{ 'billsDialog.type' | translate }}" #typeSelect [value]="element.type" [(ngModel)]="element.type" [disabled]="!editMode">
+        <mat-select placeholder="{{ 'billsDialog.type' | translate }}" #typeSelect [value]="element.type" [(ngModel)]="element.type" [disabled]="disable() || mobileQuery.matches">
           <mat-option *ngFor="let item of types" [value]="item.value">
             {{ item.name | translate }}
           </mat-option>
@@ -92,29 +94,36 @@
     <ng-container matColumnDef="label">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.label' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.label' | translate }}" [value]="element.label" [(ngModel)]="element.label" [disabled]="!editMode">
+        <input matInput placeholder="{{ 'billsDialog.label' | translate }}" [value]="element.label" [(ngModel)]="element.label" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <!-- unitPriceET Column -->
     <ng-container matColumnDef="unitPriceET">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.unitPriceET' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="!editMode">
+        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <!-- quantity Column -->
     <ng-container matColumnDef="quantity">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.quantity' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input type="number" matInput placeholder="{{ 'billsDialog.quantity' | translate }}" [value]="element.quantity" [(ngModel)]="element.quantity" [disabled]="!editMode">
+        <input type="number" matInput placeholder="{{ 'billsDialog.quantity' | translate }}" [value]="element.quantity" [(ngModel)]="element.quantity" [disabled]="disable()">
       </mat-cell>
     </ng-container>
-
     <!-- discount Column -->
     <ng-container matColumnDef="discount">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.discount' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input  matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="!editMode">
+        <input  matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="{{ 'billsDialog.delete_element' | translate }}" (click)="deleteItemRow(element)" [disabled]="disable()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
       </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -125,7 +134,7 @@
   <button mat-raised-button color="primary" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
   </button>
-  <button mat-raised-button color="primary" (click)="sendQuote()" [disabled]="editMode">
+  <button mat-raised-button color="primary" (click)="sendQuote()" [disabled]="editMode || saveButton">
     <mat-icon>send</mat-icon>
   </button>
 </div>

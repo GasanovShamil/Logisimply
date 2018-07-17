@@ -1,19 +1,19 @@
 import {Content} from "./content";
 
 export class Quote {
-  customer: string;
-  code: string;
-  dateQuote: string;
-  subject: string;
+  customer: any;
+  code: any;
+  dateQuote: any;
+  subject: any;
   content: Content[];
-  discount: string;
-  totalPriceET: string;
-  datePayment: string;
-  validity: string;
+  discount: any;
+  totalPriceET: any;
+  datePayment: any;
+  validity: any;
   collectionCost: boolean;
-  comment: string;
-  status: string;
-  user: string;
-  createdAt: string;
-  updatedAt: string;
+  comment: any;
+  status: any;
+  user: any;
+  createdAt: any;
+  updatedAt: any;
 }
