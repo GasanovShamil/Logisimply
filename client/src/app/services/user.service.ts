@@ -20,8 +20,14 @@ export class UserService {
     );
   }
 
-  stats() {
+  getStats() {
     return this.http.get<any>('/api/users/me').pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  update(credentialsData) {
+    return this.http.put<any>('api/users/update', credentialsData).pipe(
       catchError(this.handleError)
     );
   }

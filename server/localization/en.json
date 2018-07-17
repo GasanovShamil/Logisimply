@@ -8,6 +8,37 @@
     "template": {
       "activation": "Activation of your Logisimply account",
       "password": "Your new password Logisimply"
+    },
+    "activation": {
+      "hello": "Hello",
+      "wording": "Please click on the following link to activate your account :",
+      "click": "Click here"
+    },
+    "password": {
+      "hello": "Hello",
+      "wording": "You'll find here your new password, it will allow you to connect at LogiSimply.",
+      "new_password": "Your new password is :"
+    },
+    "quote": {
+      "hello": "Hello",
+      "wording": "You will find attached the quote :",
+      "wording_2": " to download."
+    },
+    "invoice": {
+      "hello": "Hello",
+      "wording": "You will find attached the invoice :",
+      "wording_2": " to download."
+    },
+    "contact": {
+      "subject": "Request contact",
+      "hello": "Dear director,",
+      "contact": "Contact request from :",
+      "email": "Reply to the following address :",
+      "message": "The message of the user :"
+    },
+    "courtesy": {
+      "courtesy_form": "Sincerely yours",
+      "signature": "LogiSimply"
     }
   },
   "pdf": {
@@ -136,7 +167,8 @@
     },
     "delete": {
       "one": "Invoice successfully deleted",
-      "multiple": "Invoices successfully deleted"
+      "multiple": "Invoices successfully deleted (Locked invoice were ignored)",
+      "impossible": "No deletable invoice match this code"
     },
     "send": "Invoice successfully sent",
     "download": {
@@ -147,5 +179,8 @@
        "success": "Income successfully added",
        "impossible": "No invoice match this code and user"
      }
+  },
+  "contact": {
+    "success": "Your message has been succefully sent"
   }
 }

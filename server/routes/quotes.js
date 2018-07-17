@@ -294,13 +294,9 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramQuotes = req.body;
-    let count = 0;
-    for (let i = 0; i < paramQuotes.length; i++) {
-        let quote = await quoteModel.findOneAndRemove({code: paramQuotes[i].code, user: req.loggedUser._id});
-        if (quote)
-            count++;
-    }
-    res.status(200).json({message: localization[req.language].quotes.delete.multiple, data: count});
+    let codes = paramQuotes.map(quote => quote.code);
+    let result = await quoteModel.deleteMany({code: {$in: codes}, user: req.loggedUser._id});
+    res.status(200).json({message: localization[req.language].quotes.delete.multiple, data: result.deletedCount});
 }));
 
 /**

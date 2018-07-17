@@ -85,8 +85,6 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
-    this.translate.use('fr');
-    localStorage.setItem('Localize', 'fr');
     this.getInvoicePayment();
   }
 

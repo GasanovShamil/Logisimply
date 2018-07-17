@@ -33,7 +33,7 @@
     "siret": "Siret",
     "signup_button": "Signup",
     "create_form_error_message": "Please fill in all required form fields",
-    "create_account": "Create account",
+    "create_account": "Create an account",
     "min_password_length": "Min length: 8"
   },
   "contacts": {
@@ -239,11 +239,6 @@
     "contact": "Contact Us",
     "sub_message": "For everything you want to tell us !",
     "button_message": "Send Message",
-    "message_name": "Please enter your name.",
-    "message_email": "Please enter your email address.",
-    "message_content": "Please enter a message.",
-    "grpd": "Why are we collecting your data ?",
-    "legal_notice": "How to use LogiSimply ?",
     "placeholder": {
       "name": "Your Name",
       "email": "Your Email",
@@ -263,18 +258,17 @@
     "grpd": "Why are we collecting your data ?"
   },
   "home" :{
-    "activity_entitled": "Activity entitled : ",
-    "activity_started": "Activity started : ",
-    "siret": "Translate | Siret : ",
-    "activity_field": "Activity field : ",
-    "activity_type": "Activity type : ",
-    "category_type": "Category : ",
-    "name": "Name : ",
-    "email": "Email : ",
-    "address": "Address : ",
-    "zip_code": "ZipCode : ",
-    "town": "City : ",
-    "country": "Country : ",
+    "activity_entitled": "Activity entitled",
+    "activity_started": "Activity started",
+    "siret": "Siret",
+    "activity_type": "Activity type",
+    "category_type": "Category",
+    "name": "Name",
+    "email": "Email",
+    "address": "Address",
+    "zip_code": "ZipCode",
+    "town": "City",
+    "country": "Country",
     "update": "Update",
     "credentials": "PayPal credentials"
   },
@@ -283,5 +277,23 @@
     "client": "Client ID",
     "secret": "Client secret",
     "credentials_form_error_message": "Please fill in all required form fields"
+  },
+  "userDialog": {
+    "title": "Update your account",
+    "email": "Email",
+    "password": "Password",
+    "min_password_length": "Min length: 8",
+    "firstname": "Firstname",
+    "lastname": "Lastname",
+    "address": "Address",
+    "zip_code": "Zip code",
+    "town": "City",
+    "country": "Country",
+    "activity_type": "Activity type",
+    "category_type": "Category type",
+    "activity_entitled": "Activity entitled",
+    "activity_started": "Activity started",
+    "siret": "Siret",
+    "user_form_error_message": "Please fill in all required form fields"
   }
 }

@@ -363,21 +363,26 @@ router.get("/me", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramUser = req.body;
-    if (!utils.fields.isUserComplete(paramUser))
+    if (!utils.fields.isUserCompleteNoPassword(paramUser))
         return res.status(400).json({message: localization[req.language].fields.required});
 
     if (!utils.fields.isEmailValid(paramUser.email))
         return res.status(400).json({message: localization[req.language].email.invalid});
 
-    paramUser.password = md5(paramUser.password);
+    let user = null;
+    if (!paramUser.password) {
+        user = await userModel.findOne({_id: req.loggedUser._id});
+        paramUser.password = user.password;
+    } else
+        paramUser.password = md5(paramUser.password);
     paramUser.updatedAt = new Date();
     await userModel.findOneAndUpdate({_id: req.loggedUser._id}, {$set: paramUser}, null);
-    let user = await userModel.findOne({_id: req.loggedUser._id});
+    user = await userModel.findOne({_id: req.loggedUser._id});
     jwt.sign(JSON.stringify(user.fullFormat()), config.jwt_key, function(err, token) {
         if (err)
             return res.status(500).json({message: err});
 
-        res.status(200).json({message: localization[req.language].users.update, token: token});
+        res.status(200).json({message: localization[req.language].users.update, data: user.fullFormat(), token: token});
     });
 }));
 

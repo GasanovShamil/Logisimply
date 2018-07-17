@@ -17,6 +17,10 @@ export class CredentialsDialogComponent implements OnInit {
   constructor(private alertService: AlertService, private userService: UserService, public translate: TranslateService, public dialogRef: MatDialogRef<CredentialsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
+    this.setForm();
+  }
+
+  setForm() {
     this.credentialsForm = new FormGroup({
       client: new FormControl('', [Validators.required]),
       secret: new FormControl('', [Validators.required])
