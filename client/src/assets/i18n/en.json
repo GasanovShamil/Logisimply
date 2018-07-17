@@ -174,7 +174,10 @@
     "generate_invoice": "Generate invoice",
     "dateExecution": "Execution date",
     "advancedPayment": "Advanced payment",
-    "show_incomes": "Show incomes"
+    "show_incomes": "Show incomes",
+    "total_discount": "Total discount",
+    "sumToPay": "Unpaid",
+    "totalPriceET": "Total price ET"
   },
   "payment": {
     "siret": "Translate | Siret : ",
@@ -343,5 +346,18 @@
     "back": "Back to home"
   },
   "incomesDialog": {
+    "incomes": "Incomes",
+    "amount": "Ammount",
+    "add_new_income":"Add new income",
+    "add_income": "Add income",
+    "payment_method": "Payment method",
+    "payment_methods": {
+      "advanced": "Advanced",
+      "asset": "Asset",
+      "paypal": "PayPal",
+      "cash": "Cash",
+      "check": "Check"
+    },
+    "dateIncome": "Income date"
   }
 }

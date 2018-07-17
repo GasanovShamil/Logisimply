@@ -338,6 +338,7 @@ router.post("/generateInvoice", middleware.wrapper(async (req, res) => {
             datePayment: paramQuote.datePayment,
             dateExecution: paramQuote.dateQuote,
             collectionCost: paramQuote.collectionCost,
+            advancedPayment: 0,
             comment: paramQuote.comment
         }
     }, function(err, response, body) {

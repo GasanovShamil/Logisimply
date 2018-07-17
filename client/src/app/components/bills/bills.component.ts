@@ -64,6 +64,7 @@ export class BillsComponent implements OnInit {
     this.displayedQuoteColumns = (this.mobileQuery.matches) ? ['select', 'code', 'customer', 'info'] : ['select', 'code', 'subject', 'customer', 'dateQuote', 'datePayment', 'totalPriceET', 'status', 'info'];
     this.displayedInvoiceColumns = (this.mobileQuery.matches) ? ['select', 'code', 'customer', 'info'] : ['select', 'code', 'subject', 'customer', 'dateInvoice', 'datePayment', 'totalPriceET', 'status', 'info'];
     this.getQuotes();
+    this.getInvoices();
     this.translate.get(['bills']).subscribe(translation => {
       this.errorMessageAtLeastOne = translation.bills.select_at_least_one;
       this.errorMessageLockedInvoices = translation.bills.cant_delete_locked;

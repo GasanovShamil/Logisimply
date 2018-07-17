@@ -19,7 +19,7 @@ contentSchema.methods.withTotal = function() {
         unitPriceET: this.unitPriceET,
         quantity: this.quantity,
         discount: this.discount || 0,
-        totalPriceET: (this.unitPriceET * this.quantity) - (this.discount ? this.discount : 0)
+        totalPriceET: this.unitPriceET * this.quantity
     };
 };
 

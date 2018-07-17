@@ -49,8 +49,8 @@
       <input matInput placeholder="{{ 'contactsDialog.website' | translate }}" formControlName="website">
     </mat-form-field>
   </div>
-  <div mat-dialog-actions>
-    <button mat-raised-button color="primary" type="submit" [disabled]="!saveButton">
+  <div mat-dialog-actions class="button-row">
+    <button mat-mini-fab color="primary" type="submit" [disabled]="!saveButton">
       <mat-icon>save</mat-icon>
     </button>
   </div>

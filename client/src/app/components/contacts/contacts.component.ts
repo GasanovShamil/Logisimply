@@ -207,7 +207,7 @@ export class ContactsComponent implements OnInit {
   }
 
   openCustomerDialog(customer?: Customer): void {
-    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (customer)?customer:null }:{width: '600px',  data: (customer)?customer:null };
+    let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (customer)?customer:null }:{width: '600px', data: (customer)?customer:null };
     let dialogRef = this.dialog.open(CustomerDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if(result){

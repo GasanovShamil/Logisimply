@@ -32,17 +32,23 @@
         </button>
       </div>
     </div>
-    <mat-form-field class="half-width">
+    <mat-form-field class="third">
       <input matInput [matDatepicker]="pickerDateInvoice" placeholder="{{ 'billsDialog.dateInvoice' | translate }}"
              formControlName="dateInvoice" required>
       <mat-datepicker-toggle matSuffix [for]="pickerDateInvoice"></mat-datepicker-toggle>
       <mat-datepicker #pickerDateInvoice></mat-datepicker>
     </mat-form-field>
-    <mat-form-field class="half-width">
+    <mat-form-field class="third">
       <input matInput [matDatepicker]="pickerDatePayment" placeholder="{{ 'billsDialog.datePayment' | translate }}"
              formControlName="datePayment" required>
       <mat-datepicker-toggle matSuffix [for]="pickerDatePayment"></mat-datepicker-toggle>
       <mat-datepicker #pickerDatePayment></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="third">
+      <input matInput [matDatepicker]="pickerDateExecution" placeholder="{{ 'billsDialog.dateExecution' | translate }}"
+             formControlName="dateExecution" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerDateExecution"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateExecution></mat-datepicker>
     </mat-form-field>
     <mat-form-field class="half-width">
       <input matInput placeholder="{{ 'billsDialog.subject' | translate }}" formControlName="subject">
@@ -56,12 +62,14 @@
       <input matInput type="number" placeholder="{{ 'billsDialog.advancedPayment' | translate }}" formControlName="advancedPayment" required>
     </mat-form-field>
     <mat-form-field class="half-width">
-      <input matInput [matDatepicker]="pickerDateExecution" placeholder="{{ 'billsDialog.dateExecution' | translate }}"
-             formControlName="dateExecution" required>
-      <mat-datepicker-toggle matSuffix [for]="pickerDateExecution"></mat-datepicker-toggle>
-      <mat-datepicker #pickerDateExecution></mat-datepicker>
+      <input type="number" matInput placeholder="{{ 'billsDialog.total_discount' | translate }}" formControlName="discount">
     </mat-form-field>
-
+    <mat-form-field class="half-width">
+      <input type="number" matInput placeholder="{{ 'billsDialog.sumToPay' | translate }}" formControlName="sumToPay">
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input type="number" matInput placeholder="{{ 'billsDialog.totalPriceET' | translate }}" formControlName="totalPriceET">
+    </mat-form-field>
     <mat-form-field class="full-width">
       <textarea matInput placeholder="{{ 'billsDialog.comment' | translate }}" formControlName="comment"></textarea>
     </mat-form-field>
@@ -139,14 +147,14 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 </div>
-<div mat-dialog-actions>
-  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.save_invoice' | translate }}" (click)="saveData()" [disabled]="!saveButton">
+<div mat-dialog-actions class="button-row">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.save_invoice' | translate }}" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
   </button>
-  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.show_incomes' | translate }}" (click)="showIncomes()" [disabled]="editMode || saveButton">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.show_incomes' | translate }}" (click)="showIncomes()" [disabled]="editMode || saveButton">
     <mat-icon svgIcon="income"></mat-icon>
   </button>
-  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()" [disabled]="editMode || saveButton">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()" [disabled]="editMode || saveButton">
     <mat-icon>send</mat-icon>
   </button>
 </div>
