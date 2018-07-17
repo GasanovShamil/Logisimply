@@ -9,10 +9,10 @@
   margin: 4px;
 }
 
-/*.card {*/
-  /*width: 75%;*/
-  /*height: 75%;*/
-/*}*/
+#paypal-allowed {
+  display: inline-block;
+  vertical-align: middle;
+}
 
 .card {
   display: inline-block;

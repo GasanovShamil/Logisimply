@@ -38,7 +38,9 @@
     <mat-card-actions class="center">
       <button mat-raised-button color="primary">{{ 'home.update' | translate }}</button>
       <button mat-raised-button color="primary" (click)="openCredentialsDialog()">{{ 'home.credentials' | translate }}</button>
-      <mat-icon svgIcon="pdf"></mat-icon><mat-icon [ngClass]="isPaypalAllowed ? 'green' : 'red'">check_circle_outline</mat-icon>
+      <div id="paypal-allowed">
+        <mat-icon svgIcon="paypal"></mat-icon><mat-icon [ngClass]="isPaypalAllowed ? 'green' : 'red'">check_circle_outline</mat-icon>
+      </div>
     </mat-card-actions>
   </mat-card>
 
