@@ -238,6 +238,7 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramIncome = req.body;
+
     if (!utils.fields.isIncomeMethodValid(paramIncome.method))
         return res.status(400).json({message: localization[req.language].fields.prohibited});
 

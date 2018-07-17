@@ -176,6 +176,7 @@
       "error": "Error while downloading the invoice"
     },
      "income": {
+       "advanced": "Error while adding the advanced payment as an income",
        "success": "Income successfully added",
        "impossible": "No invoice match this code and user"
      }

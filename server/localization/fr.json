@@ -176,6 +176,7 @@
       "error": "Problème lors du téléchargement de la facture"
     },
     "income": {
+      "advanced": "Problème lors de la génération de l'acompte en recette",
       "success": "Recette ajoutée avec succès",
       "impossible": "Aucune facture ne correspond au code et à l'utilisateur demandés"
     }

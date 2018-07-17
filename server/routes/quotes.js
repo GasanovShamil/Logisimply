@@ -8,6 +8,7 @@ let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let quoteModel = require("../models/Quote");
 let request = require("request");
+let fs = require("fs");
 let express = require("express");
 let router = express.Router();
 
@@ -377,7 +378,7 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
     quote.status = "sent";
     quote.save();
     let result = await quote.fullFormat({owner: req.loggedUser._id, infos: true});
-    pdf.getQuote(result, req.language, mailer.sendQuote);
+    await pdf.getQuote(result, req.language, mailer.sendQuote);
     res.status(200).json({message: localization[req.language].quotes.send, data: result});
 }));
 
@@ -412,14 +413,40 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
         return res.status(400).json({message: localization[req.language].quotes.code.failed});
 
     let result = await quote.fullFormat({owner: req.loggedUser._id, infos: true});
-    pdf.getQuote(result, req.language);
-    res.download(utils.pdf.getPath(result.user._id, result.code), "Devis - " + quote.code + ".pdf", function(err) {
-        if (err)
-            return res.status(500).json({message: localization[req.language].quotes.download.error});
+    await pdf.getQuote(result, req.language, function (quote, language) {
+        res.download(utils.pdf.getPath(quote.user._id, quote.code), "Devis - " + quote.code + ".pdf", function(err) {
+            if (err)
+                console.log(err);
+            else
+                console.log("success dl");
 
-        utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
-        res.status(200).json({message: localization[req.language].quotes.download.success, data: result});
+            utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
+        });
     });
+
+    // var http = require('http');
+    // var fs = require('fs');
+    //
+    // var download = function(url, dest, cb) {
+    //     var file = fs.createWriteStream(dest);
+    //     var request = http.get(url, function(response) {
+    //         response.pipe(file);
+    //         file.on('finish', function() {
+    //             file.close(cb);  // close() is async, call cb after close completes.
+    //         });
+    //     }).on('error', function(err) { // Handle errors
+    //         fs.unlink(dest); // Delete the file async. (But we don't check the result)
+    //         if (cb) cb(err.message);
+    //     });
+    // };
+    //
+    //
+    // fs.readFile(utils.pdf.getPath(result.user._id, result.code), function (err,data) {
+    //     res.contentType("application/pdf");
+    //     res.send(data);
+    // });
+    //
+    // utils.pdf.remove(utils.pdf.getPath(result.user._id, result.code));
 }));
 
 module.exports = router;

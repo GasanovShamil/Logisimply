@@ -1,3 +1,4 @@
+let config = require("../config");
 let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
@@ -7,6 +8,7 @@ let userModel = require("../models/User");
 let customerModel = require("../models/Customer");
 let incomeModel = require("../models/Income");
 let invoiceModel = require("../models/Invoice");
+let request = require("request");
 let express = require("express");
 let router = express.Router();
 
@@ -74,6 +76,7 @@ let router = express.Router();
  *       - datePayment
  *       - dateExecution
  *       - collectionCost
+ *       - advancedPayment
  */
 
 router.use(middleware.localize);
@@ -118,8 +121,6 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     user.parameters.invoices += 1;
     user.save();
     paramInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.invoices);
-    if (!paramInvoice.advancedPayment)
-        paramInvoice.advancedPayment = 0;
     paramInvoice.status = "draft";
     paramInvoice.user = req.loggedUser._id;
     paramInvoice.createdAt = new Date();
@@ -216,6 +217,10 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
  */
 router.put("/update", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
+    let countInvoice = await invoiceModel.countDocuments({code: paramInvoice.code, status: "draft", user: req.loggedUser._id});
+    if (countInvoice === 0)
+        return res.status(400).json({message: localization[req.language].invoices.update.impossible});
+
     if (!utils.fields.isInvoiceStatusValid(paramInvoice.status))
         return res.status(400).json({message: localization[req.language].fields.prohibited});
 
@@ -226,12 +231,6 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     if (countCustomer === 0)
         return res.status(400).json({message: localization[req.language].customers.code.failed});
 
-    let countInvoice = await invoiceModel.countDocuments({code: paramInvoice.code, status: "draft", user: req.loggedUser._id});
-    if (countInvoice === 0)
-        return res.status(400).json({message: localization[req.language].invoices.update.impossible});
-
-    if (!paramInvoice.advancedPayment)
-        paramInvoice.advancedPayment = 0;
     paramInvoice.updatedAt = new Date();
     await invoiceModel.findOneAndUpdate({code: paramInvoice.code, user: req.loggedUser._id}, {$set: paramInvoice}, null);
     let invoice = await invoiceModel.findOne({code: paramInvoice.code, user: req.loggedUser._id});
@@ -337,9 +336,30 @@ router.get("/send/:code", middleware.wrapper(async (req, res) => {
         return res.status(400).json({message: localization[req.language].invoices.code.failed});
 
     invoice.status = "lock";
-    invoice.save();
+    invoice.updatedAt = new Date();
+    invoice.save()
+    if (invoice.advancedPayment > 0) {
+        let countIncome = await incomeModel.countDocuments({method: "advanced", invoice: invoice.code, customer: invoice.customer, user: req.loggedUser._id});
+        if (countIncome === 0)
+            request({
+                url: config.url + "/api/payment/add/",
+                method: "post",
+                headers: utils.forward.getHeaders(req, true),
+                json: {
+                    method: "advanced",
+                    amount: invoice.advancedPayment,
+                    invoice: invoice.code,
+                    user: invoice.user,
+                    customer: invoice.customer,
+                    dateIncome: invoice.updatedAt
+                }
+            }, function (err) {
+                if (err)
+                    return res.status(400).json({message: localization[req.language].invoices.income.advanced});
+            });
+    }
     let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
-    pdf.getInvoice(result, req.language, mailer.sendInvoice);
+    await pdf.getInvoice(result, req.language, mailer.sendInvoice);
     res.status(200).json({message: localization[req.language].invoices.send, data: result});
 }));
 
@@ -374,7 +394,7 @@ router.get("/download/:code", middleware.wrapper(async (req, res) => {
         return res.status(400).json({message: localization[req.language].invoices.code.failed});
 
     let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
-    pdf.getInvoice(result, req.language);
+    await pdf.getInvoice(result, req.language);
     res.download(utils.pdf.getPath(result.user._id, result.code), "Facture - " + result.code + ".pdf", function(err) {
         if (err)
             return res.status(500).json({message: localization[req.language].invoices.download.error});

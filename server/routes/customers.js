@@ -341,7 +341,7 @@ router.post("/delete", middleware.wrapper(async (req, res) => {
     let result = await customerModel.deleteMany({code: {$in: codes}, user: req.loggedUser._id});
     await quoteModel.deleteMany({customer: {$in: customersCode}, user: req.loggedUser._id});
     await invoiceModel.deleteMany({customer: {$in: customersCode}, user: req.loggedUser._id});
-    res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: result.deletedCount});
+    res.status(200).json({message: localization[req.language].customers.delete.multiple, data: result.deletedCount});
 }));
 
 /**
