@@ -8,6 +8,37 @@
     "template": {
       "activation": "Activation de votre compte Logisimply",
       "password": "Votre nouveau mot de passe Logisimply"
+    },
+    "activation": {
+      "hello": "Bonjour",
+      "wording": "Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply :",
+      "click": "Cliquez-ici"
+    },
+    "password": {
+      "hello": "Bonjour",
+      "wording": "Vous trouverez dans cet email votre nouveau mot de passe, celui-ci va vour permettre de vous connecter à LogiSimply.",
+      "new_password": "Votre nouveau mot de passe est :"
+    },
+    "quote": {
+      "hello": "Bonjour",
+      "wording": "Vous trouverez ci-joint le devis :",
+      "wording_2": " à télécharger."
+    },
+    "invoice": {
+      "hello": "Bonjour",
+      "wording": "Vous trouverez ci-joint la facture :",
+      "wording_2": " à télécharger."
+    },
+    "contact": {
+      "subject": "Demande de contact",
+      "hello": "Cher administrateur,",
+      "contact": "Demande de contact de la part de :",
+      "email": "Répondre à l'adresse suivante :",
+      "message": "Le message de l'utilisateur :"
+    },
+    "courtesy": {
+      "courtesy_form": "Bien cordialement,",
+      "signature": "LogiSimply"
     }
   },
   "pdf": {
@@ -148,5 +179,8 @@
       "success": "Recette ajoutée avec succès",
       "impossible": "Aucune facture ne correspond au code et à l'utilisateur demandés"
     }
+  },
+  "contact": {
+    "success": "Votre message a bien été envoyé !"
   }
 }

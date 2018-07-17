@@ -17,8 +17,8 @@ router.post("/", middleware.wrapper(async (req, res) => {
     if (!utils.fields.isEmailValid(paramEmail))
         return res.status(400).json({message: localization[req.language].email.invalid});
 
-    mailer.sendContact(paramName, paramEmail, paramMessage);
-    res.status(200).json({message: 'Votre message a bien été envoyé !'});
+    mailer.sendContact(paramName, paramEmail, paramMessage, req.language);
+    res.status(200).json({message: localization[req.language].contact.success});
 }));
 
 module.exports = router;
