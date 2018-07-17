@@ -53,6 +53,36 @@ section h3.section-subheading {
   font-family: 'Droid Serif', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+@media (min-width: 320px) {
+  section h2.section-heading {
+    font-size: 26px;
+  }
+
+  .btn-xl {
+    font-size: 14px;
+    padding: 20px 40px;
+    width: 275px;
+  }
+}
+
+@media (min-width: 375px) {
+  section h2.section-heading {
+    font-size: 32px;
+  }
+
+  .btn-xl {
+    font-size: 18px;
+    padding: 20px 40px;
+    width: 328px;
+  }
+}
+
+@media (min-width: 425px) {
+  section h2.section-heading {
+    font-size: 35px;
+  }
+}
+
 @media (min-width: 768px) {
   section {
     padding: 150px 0;
