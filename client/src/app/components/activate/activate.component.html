@@ -6,14 +6,14 @@
   <h1><i class="material-icons">error</i></h1>
   <h2>{{ errorMessage }}</h2>
   <button type="button" mat-raised-button>
-    <a class="err" href="/welcome">Retour à l'accueil</a>
+    <a class="err" href="/welcome">{{ 'activate.back' | translate }}</a>
   </button>
 </div>
 
 <div class="success" *ngIf="isUserValid">
   <h1><i class="material-icons">check_circle</i></h1>
-  <h2>Félicitations {{ data.firstname }}, votre compte a bien été activé !</h2>
+  <h2>{{ 'activate.congrats' | translate }} {{ data.firstname }}, {{ 'activate.activation' | translate }}</h2>
   <button type="button" mat-raised-button>
-    <a class="succ" href="/welcome">Retour à l'accueil</a>
+    <a class="succ" href="/welcome">{{ 'activate.back' | translate }}</a>
   </button>
 </div>
