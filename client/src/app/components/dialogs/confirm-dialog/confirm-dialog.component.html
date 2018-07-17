@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{'confirmDialog.warning' | translate}}</h1>
+<div mat-dialog-content>
+  <p>{{data.message}}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="onNoClick()" cdkFocusInitial>{{'confirmDialog.cancel' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="onYesClick()" >{{'confirmDialog.confirm' | translate}}</button>
+</div>

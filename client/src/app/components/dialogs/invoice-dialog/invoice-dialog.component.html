@@ -44,18 +44,24 @@
       <mat-datepicker-toggle matSuffix [for]="pickerDatePayment"></mat-datepicker-toggle>
       <mat-datepicker #pickerDatePayment></mat-datepicker>
     </mat-form-field>
-    <mat-form-field class="full-width">
+    <mat-form-field class="half-width">
       <input matInput placeholder="{{ 'billsDialog.subject' | translate }}" formControlName="subject">
     </mat-form-field>
-    <mat-form-field class="third">
+    <div class="half-width" style="display: inline-block">
+    <mat-slide-toggle [labelPosition]="editLablePosition" formControlName="collectionCost">{{
+      'billsDialog.collectionCost' | translate }}
+    </mat-slide-toggle>
+    </div>
+    <mat-form-field class="half-width">
+      <input matInput type="number" placeholder="{{ 'billsDialog.advancedPayment' | translate }}" formControlName="advancedPayment" required>
+    </mat-form-field>
+    <mat-form-field class="half-width">
       <input matInput [matDatepicker]="pickerDateExecution" placeholder="{{ 'billsDialog.dateExecution' | translate }}"
              formControlName="dateExecution" required>
       <mat-datepicker-toggle matSuffix [for]="pickerDateExecution"></mat-datepicker-toggle>
       <mat-datepicker #pickerDateExecution></mat-datepicker>
     </mat-form-field>
-    <mat-slide-toggle [labelPosition]="editLablePosition" formControlName="collectionCost">{{
-      'billsDialog.collectionCost' | translate }}
-    </mat-slide-toggle>
+
     <mat-form-field class="full-width">
       <textarea matInput placeholder="{{ 'billsDialog.comment' | translate }}" formControlName="comment"></textarea>
     </mat-form-field>
@@ -104,7 +110,7 @@
     <ng-container matColumnDef="unitPriceET">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.unitPriceET' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
+        <input matInput type="number" placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <!-- quantity Column -->
@@ -118,7 +124,7 @@
     <ng-container matColumnDef="discount">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.discount' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input  matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
+        <input  matInput type="number" placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="delete">
@@ -136,6 +142,9 @@
 <div mat-dialog-actions>
   <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.save_invoice' | translate }}" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.show_incomes' | translate }}" (click)="showIncomes()" [disabled]="editMode || saveButton">
+    <mat-icon svgIcon="income"></mat-icon>
   </button>
   <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()" [disabled]="editMode || saveButton">
     <mat-icon>send</mat-icon>

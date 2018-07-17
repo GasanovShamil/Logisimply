@@ -1,25 +1,28 @@
 {
-  "navigation":{
-    "logout": "Deconnexion",
-    "home": "Accueil",
-    "dashboard": "Dashboard",
+  "navigation": {
+    "logout": "Logout",
+    "home": "Home",
     "contacts": "Contacts",
-    "contacts": "Contacts"
+    "items": "Catalog",
+    "bills": "Bills"
   },
   "login": {
     "email_placeholder": "Email",
     "password_placeholder": "Enter your password",
     "login_button": "Login",
-    "create_button": "Create",
-    "forgot_password": "Forgot password ?"
+    "login_account": "Login",
+    "forgot_password": "Forgot password ?",
+    "resend_activation_mail": "Resend activation email",
+    "enter_email_error": "Enter your email please",
+    "login_form_error_message": "Please fill in all required form fields"
   },
-  "signup" :{
+  "signup": {
     "email_placeholder": "Email",
     "password_placeholder": "Enter your password",
     "lastname": "Lastname",
     "firstname": "Firstname",
     "address": "Address",
-    "city": "City",
+    "town": "City",
     "country": "Country",
     "zipcode": "ZipCode",
     "activity_type": "Activity type",
@@ -28,7 +31,9 @@
     "activity_started": "Activity started",
     "siret": "Siret",
     "signup_button": "Signup",
-    "login_button": "Login"
+    "create_form_error_message": "Please fill in all required form fields",
+    "create_account": "Create an account",
+    "min_password_length": "Min length: 8"
   },
   "contacts": {
     "customers": "Customers",
@@ -45,9 +50,133 @@
     "company_name": "Company name",
     "legal_form": "Legal form",
     "details_edit": "Details/Edit",
-    "select_at_least_one": "Vous devez selectionner au moin un element !"
+    "code": "Code",
+    "private": "Private",
+    "professional": "Professional",
+    "select_at_least_one": "You need to select at least one element !",
+    "customer_delete_warning": "All quotes/invoices of this customer will be deleted !"
   },
-  "payment":{
+  "contactsDialog": {
+    "customer": "Customer",
+    "provider": "Provider",
+    "type": "Type",
+    "comment": "Comment",
+    "lastname": "Lastname",
+    "firstname": "Firstname",
+    "civility": "Civility",
+    "address": "Address",
+    "town": "City",
+    "country": "Country",
+    "zipcode": "ZipCode",
+    "private": "Private",
+    "professional": "Professional",
+    "phone": "Phone",
+    "siret": "Siret",
+    "email_placeholder": "Email",
+    "name": "Name",
+    "companyName": "Company name",
+    "legalForm": "Legal form",
+    "edit_mode": "Edit",
+    "website": "Website",
+    "contacts_form_error_message": "Please fill in all required form fields"
+  },
+  "itemsDialog": {
+    "title": "Product/Service",
+    "type": "Type",
+    "reference": "Reference",
+    "label": "Label",
+    "priceET": "Price H.T.",
+    "description": "Description",
+    "product": "Product",
+    "service": "Service",
+    "edit_mode": "Edit"
+  },
+  "dataSelect": {
+    "private_customer": "Private",
+    "professional_customer": "Professional",
+    "product": "Product",
+    "service": "Service"
+  },
+  "items": {
+    "add_new_item": "Add new item",
+    "delete_selected": "Delete selected",
+    "filter": "Filter",
+    "type": "Type",
+    "reference": "Reference",
+    "label": "Label",
+    "priceET": "Price H.T.",
+    "description": "Description",
+    "details_edit": "Details/Edit",
+    "product": "Product",
+    "service": "Service"
+  },
+  "bills": {
+    "quotes": "Quotes",
+    "code": "Code",
+    "customer": "Customer",
+    "dateQuote": "Quote date",
+    "dateInvoice": "Invoice date",
+    "datePayment": "Payment date",
+    "subject": "Subject",
+    "invoices": "Invoices",
+    "filter": "Filter",
+    "add_new_quote": "Add new quote",
+    "add_new_invoice": "Add new invoice",
+    "delete_selected": "Delete selected",
+    "select_at_least_one": "You need to select at least one element !",
+    "cant_delete_locked": "Can not delete locked invoices !",
+    "totalPriceET": "Total price",
+    "status": "Status",
+    "draft": "Draft",
+    "sent": "Sent",
+    "lock": "Lock",
+    "payed": "Payed",
+    "details_edit": "Details/Edit",
+    "send_quote": "Send quote",
+    "send_invoice": "Send invoice",
+    "download_quote": "Download quote",
+    "download_invoice": "Download invoice"
+  },
+  "billsDialog": {
+    "quote": "Quote",
+    "invoice": "Invoice",
+    "edit_mode": "Edit",
+    "customer": "Customer",
+    "subject": "Subject",
+    "dateQuote": "Quote date",
+    "dateInvoice": "Invoice date",
+    "datePayment": "Payment date",
+    "validity": "Validity",
+    "collectionCost": "Collection cost",
+    "status": "Status",
+    "draft": "Draft",
+    "sent": "Sent",
+    "lock": "Lock",
+    "payed": "Payed",
+    "comment": "Comment",
+    "add_new_customer": "Add new customer",
+    "find_add_item": "Find/add item",
+    "add_new_item": "Add new item",
+    "reference": "Ref.",
+    "label": "Label",
+    "unitPriceET": "Unite price",
+    "quantity": "Quantity",
+    "discount": "Discount",
+    "type": "Type",
+    "product": "Product",
+    "service": "Service",
+    "mobile_content_error_message": "On mobile device you can only add items from your database",
+    "delete_element": "Delete item",
+    "send_quote": "Send quote",
+    "save_quote": "Save quote",
+    "send_invoice": "Send invoice",
+    "save_invoice": "Save invoice",
+    "generate_invoice": "Generate invoice",
+    "dateExecution": "Execution date",
+    "advancedPayment": "Advanced payment",
+    "show_incomes": "Show incomes"
+  },
+  "payment": {
     "siret": "Siret : ",
     "date": "Date : ",
     "banner": "Facture - ",
@@ -107,20 +236,20 @@
     "login": "Se connecter",
     "team": "Notre équipe incroyable ",
     "job": "Développeur",
-    "team_message":"Nous sommes très fiers de vous offrir la possibilité de créer vos factures !",
+    "team_message": "Nous sommes très fiers de vous offrir la possibilité de créer vos factures !",
     "contact": "Contactez Nous",
     "sub_message": "À propos de tout ce que vous désirez !",
     "button_message": "Envoyer votre message",
-    "message_name": "Veuillez saisir votre nom.",
-    "message_email": "Veuillez saisir votre adresse email.",
-    "message_content": "Veuillez entrer votre message.",
-    "grpd": "Pourquoi collectons-nous vos données ?",
-    "legal_notice": "Comment fonctionne LogiSimply ?",
     "placeholder": {
       "name": "Votre Nom",
       "email": "Votre Email",
       "message": "Votre Message"
-    }
+    },
+    "message_name": "Veuillez saisir votre nom.",
+    "message_email": "Veuillez saisir votre adresse email.",
+    "message_content": "Veuillez entrer votre message.",
+    "grpd": "Pourquoi collectons-nous vos données ?",
+    "legal_notice": "Comment fonctionne LogiSimply ?"
   },
   "home": {
     "profile": "Mes informations",
@@ -138,6 +267,7 @@
     "siret": "Siret",
     "update": "Mettre à jour",
     "credentials": "Informations PayPal",
+    "name": "Nom",
     "stats": {
       "month": {
         "jan": "Janvier",
@@ -202,9 +332,24 @@
     "siret": "Siret",
     "user_form_error_message": "Please fill in all required form fields"
   },
+  "confirmDialog": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "warning": "Warning"
+  },
   "activate": {
     "congrats": "Félicitations ",
     "activation": "votre compte a été activé !",
     "back": "Retour à l'accueil"
+  },
+  "incomesDialog": {
   }
 }
+
+
+
+
+
+
+
+

@@ -1,8 +1,7 @@
 {
-  "navigation":{
+  "navigation": {
     "logout": "Logout",
     "home": "Home",
-    "dashboard": "Dashboard",
     "contacts": "Contacts",
     "items": "Catalog",
     "bills": "Bills"
@@ -17,7 +16,7 @@
     "enter_email_error": "Enter your email please",
     "login_form_error_message": "Please fill in all required form fields"
   },
-  "signup" :{
+  "signup": {
     "email_placeholder": "Email",
     "password_placeholder": "Enter your password",
     "lastname": "Lastname",
@@ -54,7 +53,8 @@
     "code": "Code",
     "private": "Private",
     "professional": "Professional",
-    "select_at_least_one": "You need to select at least one element !"
+    "select_at_least_one": "You need to select at least one element !",
+    "customer_delete_warning": "All quotes/invoices of this customer will be deleted !"
   },
   "contactsDialog": {
     "customer": "Customer",
@@ -80,13 +80,13 @@
     "website": "Website",
     "contacts_form_error_message": "Please fill in all required form fields"
   },
-  "itemsDialog":{
+  "itemsDialog": {
     "title": "Product/Service",
     "type": "Type",
-    "reference":	"Reference",
-    "label":	"Label",
-    "priceET":	"Price H.T.",
-    "description":	"Description",
+    "reference": "Reference",
+    "label": "Label",
+    "priceET": "Price H.T.",
+    "description": "Description",
     "product": "Product",
     "service": "Service",
     "edit_mode": "Edit"
@@ -97,15 +97,15 @@
     "product": "Product",
     "service": "Service"
   },
-  "items":{
+  "items": {
     "add_new_item": "Add new item",
     "delete_selected": "Delete selected",
-    "filter":	"Filter",
-    "type":	"Type",
-    "reference":	"Reference",
-    "label":	"Label",
-    "priceET":	"Price H.T.",
-    "description":	"Description",
+    "filter": "Filter",
+    "type": "Type",
+    "reference": "Reference",
+    "label": "Label",
+    "priceET": "Price H.T.",
+    "description": "Description",
     "details_edit": "Details/Edit",
     "product": "Product",
     "service": "Service"
@@ -119,9 +119,9 @@
     "datePayment": "Payment date",
     "subject": "Subject",
     "invoices": "Invoices",
-    "filter":	"Filter",
-    "add_new_quote":	"Add new quote",
-    "add_new_invoice":	"Add new invoice",
+    "filter": "Filter",
+    "add_new_quote": "Add new quote",
+    "add_new_invoice": "Add new invoice",
     "delete_selected": "Delete selected",
     "select_at_least_one": "You need to select at least one element !",
     "cant_delete_locked": "Can not delete locked invoices !",
@@ -172,10 +172,11 @@
     "send_invoice": "Send invoice",
     "save_invoice": "Save invoice",
     "generate_invoice": "Generate invoice",
-    "dateExecution": "Execution date"
-
+    "dateExecution": "Execution date",
+    "advancedPayment": "Advanced payment",
+    "show_incomes": "Show incomes"
   },
-  "payment":{
+  "payment": {
     "siret": "Translate | Siret : ",
     "date": "Date : ",
     "banner": "Invoice - ",
@@ -235,7 +236,7 @@
     "login": "Login",
     "team": "Our amazing team",
     "job": "Developer",
-    "team_message":"We are very proud to offer you the possibility of built your own invoice thanks to our app !",
+    "team_message": "We are very proud to offer you the possibility of built your own invoice thanks to our app !",
     "contact": "Contact Us",
     "sub_message": "For everything you want to tell us !",
     "button_message": "Send Message",
@@ -244,34 +245,29 @@
       "email": "Your Email",
       "message": "Your Message"
     },
-    "title_activity": "Our activity",
-    "content_activity": "With LogiSimply, you can enter essential information for creating your invoices for your customers. With an easy-to-use interface and logical thinking for you, creating invoices has never been easier.",
-    "presentation_shamil":"The veteran of the team, whose passion is computer science and specialized in development and web architecture with a lot of professional experience. Development is my hobby",
-    "presentation_leo": "Young student in the last year of the engineering cycle, specialized in web development with 2 years of professional experience thanks to the alternation.",
-    "presentation_yoann":"Young developer, who was not at all destined to evolve in this environment, it is by discovering one day the joys of the code, that I took a liking to this universe as vast as interesting.",
-    "built_invoice": "Built your invoice",
-    "money_info": "Field the money informations",
-    "save_time": "Don't waist time anymore",
-    "done": "Aaaaand ... it's done !",
-    "cgu": "General Conditions of Use",
-    "legal_notice": "Legal Notice",
-    "grpd": "Why are we collecting your data ?"
+    "message_name": "TRANSLATE | Veuillez saisir votre nom.",
+    "message_email": "TRANSLATE | Veuillez saisir votre adresse email.",
+    "message_content": "TRANSLATE | Veuillez entrer votre message.",
+    "grpd": "Why are we collecting your data ?",
+    "legal_notice": "Legal Notice"
   },
   "home": {
     "profile": "My information",
-    "activity_entitled": "Activity entitled",
-    "activity_started": "Activity started",
-    "siret": "Siret",
-    "activity_type": "Activity type",
-    "category_type": "Category",
-    "name": "Name",
     "email": "Email",
+    "firstname": "Firstname",
+    "lastname": "Lastname",
     "address": "Address",
     "zip_code": "ZipCode",
     "town": "City",
     "country": "Country",
+    "activity_type": "Activity type",
+    "category_type": "Category",
+    "activity_entitled": "Activity entitled",
+    "activity_started": "Activity started",
+    "siret": "Siret",
     "update": "Update",
     "credentials": "PayPal credentials",
+    "name": "Name",
     "stats": {
       "month": {
         "jan": "January",
@@ -336,9 +332,16 @@
     "siret": "Siret",
     "user_form_error_message": "Please fill in all required form fields"
   },
+  "confirmDialog": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "warning": "Warning"
+  },
   "activate": {
     "congrats": "Congratulations ",
     "activation": "your account has been activated !",
     "back": "Back to home"
+  },
+  "incomesDialog": {
   }
 }

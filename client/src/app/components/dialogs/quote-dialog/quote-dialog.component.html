@@ -48,7 +48,7 @@
       <input matInput placeholder="{{ 'billsDialog.subject' | translate }}" formControlName="subject">
     </mat-form-field>
     <mat-form-field class="third">
-      <input matInput placeholder="{{ 'billsDialog.validity' | translate }}" formControlName="validity" required>
+      <input matInput type="number" placeholder="{{ 'billsDialog.validity' | translate }}" formControlName="validity" required>
     </mat-form-field>
     <mat-slide-toggle [labelPosition]="editLablePosition" formControlName="collectionCost">{{
       'billsDialog.collectionCost' | translate }}
@@ -101,7 +101,7 @@
     <ng-container matColumnDef="unitPriceET">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.unitPriceET' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
+        <input matInput type="number" placeholder="{{ 'billsDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <!-- quantity Column -->
@@ -115,7 +115,7 @@
     <ng-container matColumnDef="discount">
       <mat-header-cell *matHeaderCellDef> {{ 'billsDialog.discount' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <input  matInput placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
+        <input  matInput type="number" placeholder="{{ 'billsDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="delete">

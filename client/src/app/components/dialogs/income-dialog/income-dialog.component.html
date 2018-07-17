@@ -1,0 +1,98 @@
+<div class="dialog-title" mat-dialog-title>
+  <div>
+    <mat-icon *ngIf="data && data.status" [ngClass]="data.status"
+              matTooltip="{{ 'incomesDialog.'+data.status | translate }}">{{data.status | icon}}
+    </mat-icon>
+    {{ 'incomesDialog.incomes' | translate }}
+    <mat-hint align="end" class="close-button">
+      <button mat-icon-button (click)="onCloseClick()">
+        <mat-icon color="warn">clear</mat-icon>
+      </button>
+    </mat-hint>
+  </div>
+</div>
+<div mat-dialog-content>
+    <div class="input-button-row">
+      <mat-form-field class="full-width">
+        <input type="text" #inputItem placeholder="{{ 'incomesDialog.find_add_item' | translate }}" matInput>
+      </mat-form-field>
+      <div class="button-row myrow">
+        <button mat-button mat-icon-button type="button" matSuffix (click)="addItemRow()" color="primary"
+                matTooltip="{{ 'incomesDialog.add_new_item' | translate }}" [disabled]="disable()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+  <mat-table #table [dataSource]="contentDataSource">
+    <!-- Reference Column -->
+    <ng-container matColumnDef="reference">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.reference' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input matInput placeholder="{{ 'incomesDialog.reference' | translate }}" [value]="element.reference" [(ngModel)]="element.reference" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <!-- Type Column -->
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.type' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-select placeholder="{{ 'incomesDialog.type' | translate }}" #typeSelect [value]="element.type" [(ngModel)]="element.type" [disabled]="disable() || mobileQuery.matches">
+          <mat-option *ngFor="let item of types" [value]="item.value">
+            {{ item.name | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-cell>
+    </ng-container>
+    <!-- Label Column -->
+    <ng-container matColumnDef="label">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.label' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input matInput placeholder="{{ 'incomesDialog.label' | translate }}" [value]="element.label" [(ngModel)]="element.label" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <!-- unitPriceET Column -->
+    <ng-container matColumnDef="unitPriceET">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.unitPriceET' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input matInput type="number" placeholder="{{ 'incomesDialog.unitPriceET' | translate }}" [value]="element.unitPriceET" [(ngModel)]="element.unitPriceET" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <!-- quantity Column -->
+    <ng-container matColumnDef="quantity">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.quantity' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input type="number" matInput placeholder="{{ 'incomesDialog.quantity' | translate }}" [value]="element.quantity" [(ngModel)]="element.quantity" [disabled]="disable()">
+      </mat-cell>
+    </ng-container>
+    <!-- discount Column -->
+    <ng-container matColumnDef="discount">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.discount' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <input  matInput type="number" placeholder="{{ 'incomesDialog.discount' | translate }}" [value]="element.discount" [(ngModel)]="element.discount" [disabled]="disable() || mobileQuery.matches">
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="{{ 'incomesDialog.delete_element' | translate }}" (click)="deleteItemRow(element)" [disabled]="disable()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" matTooltip="{{ 'incomesDialog.save_invoice' | translate }}" (click)="saveData()" [disabled]="!saveButton">
+    <mat-icon>save</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" matTooltip="{{ 'incomesDialog.show_incomes' | translate }}" (click)="showIncomes()" [disabled]="editMode || saveButton">
+    <mat-icon svgIcon="income"></mat-icon>
+  </button>
+  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()" [disabled]="editMode || saveButton">
+    <mat-icon>send</mat-icon>
+  </button>
+</div>
+
+
+

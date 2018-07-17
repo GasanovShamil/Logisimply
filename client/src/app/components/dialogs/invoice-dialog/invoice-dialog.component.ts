@@ -15,15 +15,17 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertService} from "../../../services/alert.service";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {DataService} from "../../../services/data.service";
+import {Quote} from "../../../models/quote";
+import {Invoice} from "../../../models/invoice";
 
 @Component({
   selector: 'app-invoice-dialog',
   templateUrl: './invoice-dialog.component.html',
   styleUrls: ['./invoice-dialog.component.css']
 })
-export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy  {
+export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   saveButton: boolean = (this.data) ? false : true;
-  editLablePosition = 'after';
+  editLablePosition = 'before';
   invoiceForm: FormGroup;
   editMode: boolean = false;
   close: boolean = false;
@@ -90,7 +92,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.displayedColumns = this.mobileQuery.matches ? ['delete','label', 'quantity'] : ['delete','reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
+    this.displayedColumns = this.mobileQuery.matches ? ['delete', 'label', 'quantity'] : ['delete', 'reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
     this.setFormGroup();
     this.filteredOptions = this.invoiceForm.controls['customer'].valueChanges
       .pipe(
@@ -221,10 +223,11 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
   saveData() {
     if (!this.close) {
       if (this.invoiceForm.valid && this.contentDataSource.data.length > 0) {
-        this.invoiceForm.controls['customer'].setValue(this.invoiceForm.controls['customer'].value.code);
-        this.invoiceForm.controls['content'].setValue(this.contentDataSource.data);
+        let invoice: Invoice = this.invoiceForm.getRawValue();
+        invoice.customer = invoice.customer.code;
+        invoice.content = this.contentDataSource.data;
         if (this.editMode) {
-          this.dataService.updateInvoice(this.invoiceForm.getRawValue()).subscribe(
+          this.dataService.updateInvoice(invoice).subscribe(
             data => this.dialogRef.close({
               data: data.data,
               message: data.message,
@@ -234,7 +237,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
             error => this.alertService.error(error.error.message)
           )
         } else {
-          this.dataService.addInvoice(this.invoiceForm.getRawValue()).subscribe(
+          this.dataService.addInvoice(invoice).subscribe(
             data => this.dialogRef.close({
               data: data.data,
               message: data.message,
@@ -262,7 +265,8 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
         subject: new FormControl({value: this.data.subject, disabled: true}, []),
         content: new FormControl({value: this.data.content, disabled: true}, []),
         datePayment: new FormControl({value: this.data.datePayment, disabled: true}, [Validators.required]),
-        dateExecution: new FormControl({ value: this.data.dateExecution,disabled: true }, [Validators.required]),
+        dateExecution: new FormControl({value: this.data.dateExecution, disabled: true}, [Validators.required]),
+        advancedPayment: new FormControl({value: this.data.advancedPayment, disabled: true}, [Validators.required]),
         collectionCost: new FormControl({value: this.data.collectionCost, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
         status: new FormControl({value: this.data.status, disabled: true}, []),
@@ -277,6 +281,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
         content: new FormControl('', []),
         datePayment: new FormControl('', [Validators.required]),
         dateExecution: new FormControl('', [Validators.required]),
+        advancedPayment: new FormControl({value: 0, disabled: false}, [Validators.required]),
         collectionCost: new FormControl({value: false, disabled: false}, [Validators.required]),
         comment: new FormControl('', []),
         status: new FormControl('', []),
@@ -309,7 +314,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
     }
   }
 
-  deleteItemRow(content:Content){
+  deleteItemRow(content: Content) {
     let index: number = this.contentDataSource.data.findIndex(i => i.reference === content.reference);
     this.contentDataSource.data.splice(index, 1);
     this.contentDataSource._updateChangeSubscription();
