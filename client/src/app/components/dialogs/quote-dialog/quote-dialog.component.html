@@ -130,14 +130,14 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 </div>
-<div mat-dialog-actions>
-  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.save_quote' | translate }}" (click)="saveData()" [disabled]="!saveButton">
+<div mat-dialog-actions class="button-row">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.save_quote' | translate }}" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
   </button>
-  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.generate_invoice' | translate }}" (click)="generateInvoice()" [disabled]="editMode || saveButton">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.generate_invoice' | translate }}" (click)="generateInvoice()" [disabled]="editMode || saveButton">
     <mat-icon>euro_symbol</mat-icon>
   </button>
-  <button mat-raised-button color="primary" matTooltip="{{ 'billsDialog.send_quote' | translate }}" (click)="sendQuote()" [disabled]="editMode || saveButton">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.send_quote' | translate }}" (click)="sendQuote()" [disabled]="editMode || saveButton">
     <mat-icon>send</mat-icon>
   </button>
 </div>

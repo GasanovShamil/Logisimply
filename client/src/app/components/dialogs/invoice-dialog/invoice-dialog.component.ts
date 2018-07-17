@@ -17,6 +17,7 @@ import {MediaMatcher} from "@angular/cdk/layout";
 import {DataService} from "../../../services/data.service";
 import {Quote} from "../../../models/quote";
 import {Invoice} from "../../../models/invoice";
+import {IncomeDialogComponent} from "../income-dialog/income-dialog.component";
 
 @Component({
   selector: 'app-invoice-dialog',
@@ -182,6 +183,9 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
   editSliderChange(event: MatSlideToggleChange) {
     if (event.checked) {
       this.invoiceForm.enable();
+      this.invoiceForm.controls['discount'].disable();
+      this.invoiceForm.controls['sumToPay'].disable();
+      this.invoiceForm.controls['totalPriceET'].disable();
       this.saveButton = true;
       this.editMode = true;
     } else {
@@ -268,6 +272,9 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
         dateExecution: new FormControl({value: this.data.dateExecution, disabled: true}, [Validators.required]),
         advancedPayment: new FormControl({value: this.data.advancedPayment, disabled: true}, [Validators.required]),
         collectionCost: new FormControl({value: this.data.collectionCost, disabled: true}, [Validators.required]),
+        discount: new FormControl({value: this.data.discount, disabled: true}, []),
+        sumToPay: new FormControl({value: this.data.sumToPay, disabled: true}, []),
+        totalPriceET: new FormControl({value: this.data.totalPriceET, disabled: true}, []),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
         status: new FormControl({value: this.data.status, disabled: true}, []),
         itemRow: new FormControl({value: '', disabled: true}, [])
@@ -283,6 +290,9 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
         dateExecution: new FormControl('', [Validators.required]),
         advancedPayment: new FormControl({value: 0, disabled: false}, [Validators.required]),
         collectionCost: new FormControl({value: false, disabled: false}, [Validators.required]),
+        discount: new FormControl({value: '', disabled: true}, []),
+        sumToPay: new FormControl({value: '', disabled: true}, []),
+        totalPriceET: new FormControl({value: '', disabled: true}, []),
         comment: new FormControl('', []),
         status: new FormControl('', []),
         itemRow: new FormControl('', [])
@@ -318,6 +328,23 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
     let index: number = this.contentDataSource.data.findIndex(i => i.reference === content.reference);
     this.contentDataSource.data.splice(index, 1);
     this.contentDataSource._updateChangeSubscription();
+  }
+
+  showIncomes(){
+    if (!this.editMode || !this.saveButton) {
+      let mobileDevice: boolean = this.mobileQuery.matches;
+      let config = mobileDevice ? {
+        maxWidth: '100%',
+        minWidth: '100px',
+        data: this.invoiceForm.getRawValue()
+      } : {width: '600px', data: this.invoiceForm.getRawValue()};
+      let dialogRef = this.dialog.open(IncomeDialogComponent, config);
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+
+        }
+      });
+    }
   }
 
   disable() {
