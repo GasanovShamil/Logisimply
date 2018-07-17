@@ -235,7 +235,11 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
           )
         } else {
           this.dataService.addQuote(this.quoteForm.getRawValue()).subscribe(
-            data => this.dialogRef.close(data),
+            data => this.dialogRef.close({
+              data: data.data,
+              message: data.message,
+              createMode: true
+            }),
             error => this.alertService.error(error.error.message)
           )
         }
@@ -246,6 +250,18 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         })
       }
     }
+  }
+
+  generateInvoice(){
+    this.dataService.generateInvoiceFromQuote(this.data).subscribe(
+      data => {
+
+      },
+      error => {
+
+      }
+    )
+
   }
 
   setFormGroup() {

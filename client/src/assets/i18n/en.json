@@ -163,7 +163,11 @@
     "product": "Product",
     "service": "Service",
     "mobile_content_error_message": "On mobile device you can only add items from your database",
-    "delete_element": "Delete item"
+    "delete_element": "Delete item",
+    "send_quote": "Send quote",
+    "save_quote": "Save quote",
+    "generate_invoice": "Generate invoice"
+
   },
   "payment":{
     "siret": "Translate | Siret : ",

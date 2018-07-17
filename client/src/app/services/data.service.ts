@@ -149,6 +149,12 @@ export class DataService {
     );
   }
 
+  generateInvoiceFromQuote(quote: Quote){
+    return this.http.post<any>('api/quotes/generateInvoice', quote).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   deleteQuotes(quotes: Quote[]){
     return this.http.post<any>('api/quotes/delete', quotes).pipe(
       catchError(this.handleError)
