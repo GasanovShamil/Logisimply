@@ -313,7 +313,8 @@ router.use(middleware.isLogged);
 router.get("/me", middleware.wrapper(async (req, res) => {
     let user = await userModel.findOne({_id: req.loggedUser._id});
     user = user.fullFormat();
-    let customersData = [];
+
+    let incomesPerCustomerLabels = [];
     let incomesPerCustomerData = [];
 
     let customers = await customerModel.find({user: req.loggedUser._id});
@@ -325,16 +326,15 @@ router.get("/me", middleware.wrapper(async (req, res) => {
         let incomes = await incomeModel.find({customer: customers[i].code, user: req.loggedUser._id});
         for (let j = 0; j < incomes.length; j++)
             total += incomes[j].amount;
-        customersData.push(customers[i].code + " - " + customers[i].name);
+        incomesPerCustomerLabels.push(customers[i].code + " - " + customers[i].name);
         incomesPerCustomerData.push(total);
     }
 
-    user.stats = {
-        customers: customersData,
-        incomesPerCustomer: incomesPerCustomerData
+    let stats = {
+        incomesPerCustomerType: {labels: incomesPerCustomerLabels, data: incomesPerCustomerData}
     };
 
-    res.status(200).json(user);
+    res.status(200).json({me: user, stats: stats});
 }));
 
 /**
@@ -407,16 +407,17 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: Credentials set
  */
-router.post("/users/credentials", middleware.wrapper(async (req, res) => {
+router.post("/credentials", middleware.wrapper(async (req, res) => {
     let paramClient = req.body.client;
     let paramSecret = req.body.secret;
     let user = await userModel.findOne({_id: req.loggedUser._id});
     if (!user)
         return res.status(400).json({message: localization[req.language].users.failed});
+
     user.parameters.paypal.client = paramClient;
     user.parameters.paypal.secret = paramSecret;
     user.save();
-    res.status(200).json(user.fullFormat());
+    res.status(200).json({message: localization[req.language].users.credentials, data: user.fullFormat()});
 }));
 
 module.exports = router;

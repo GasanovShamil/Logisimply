@@ -154,7 +154,10 @@
     "label": "Label",
     "unitPriceET": "Unite price",
     "quantity": "Quantity",
-    "discount": "Discount"
+    "discount": "Discount",
+    "type": "Type",
+    "product": "Product",
+    "service": "Service"
   },
   "payment":{
     "siret": "Translate | Siret : ",
@@ -184,11 +187,18 @@
       "amount": "Amount",
       "date": "Date"
     },
-    "paying": "Pay",
+    "income_method": {
+      "paypal": "PayPal",
+      "asset": "Asset",
+      "cash": "Cash",
+      "check": "Check"
+    },
+    "paying": "Amount",
     "not_allowed": " did not allow online payment.",
     "paypal_success": "Payment successfully made",
     "paypal_error": "PayPal Internal Server Error",
-    "income_error": "Income Internal Server Error"
+    "income_error": "Income Internal Server Error",
+    "mobile": "Not available on mobile"
   },
   "welcome": {
     "menu": {
@@ -222,6 +232,40 @@
       "name": "Your Name",
       "email": "Your Email",
       "message": "Your Message"
-    }
+    },
+    "title_activity": "Our activity",
+    "content_activity": "With LogiSimply, you can enter essential information for creating your invoices for your customers. With an easy-to-use interface and logical thinking for you, creating invoices has never been easier.",
+    "presentation_shamil":"The veteran of the team, whose passion is computer science and specialized in development and web architecture with a lot of professional experience. Development is my hobby",
+    "presentation_leo": "Young student in the last year of the engineering cycle, specialized in web development with 2 years of professional experience thanks to the alternation.",
+    "presentation_yoann":"Young developer, who was not at all destined to evolve in this environment, it is by discovering one day the joys of the code, that I took a liking to this universe as vast as interesting.",
+    "built_invoice": "Built your invoice",
+    "money_info": "Field the money informations",
+    "save_time": "Don't waist time anymore",
+    "done": "Aaaaand ... it's done !",
+    "cgu": "General Conditions of Use",
+    "legal_notice": "Legal Notice",
+    "grpd": "Why are we collecting your data ?"
+  },
+  "home" :{
+    "activity_entitled": "Activity entitled : ",
+    "activity_started": "Activity started : ",
+    "siret": "Translate | Siret : ",
+    "activity_field": "Activity field : ",
+    "activity_type": "Activity type : ",
+    "category_type": "Category : ",
+    "name": "Name : ",
+    "email": "Email : ",
+    "address": "Address : ",
+    "zip_code": "ZipCode : ",
+    "town": "City : ",
+    "country": "Country : ",
+    "update": "Update",
+    "credentials": "PayPal credentials"
+  },
+  "credentialsDialog": {
+    "title": "Update your PayPal credentials",
+    "client": "Client ID",
+    "secret": "Client secret",
+    "credentials_form_error_message": "Please fill in all required form fields"
   }
 }

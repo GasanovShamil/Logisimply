@@ -39,7 +39,14 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns:string[] ;
   myContents: Content[] = [];
   contentDataSource = new MatTableDataSource(this.myContents);
-
+  types = [{
+    "name": "billsDialog.product",
+    "value": "product"
+  },
+    {
+      "name": "billsDialog.service",
+      "value": "service"
+    }];
   @ViewChild('inputCustomer', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
   @ViewChild('inputItem', { read: MatAutocompleteTrigger }) triggerItem: MatAutocompleteTrigger;
 
@@ -73,6 +80,10 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         this.alertService.error(error.error.message);
       }
     )
+    if(this.data){
+      this.contentDataSource.data = this.data.content;
+      this.contentDataSource._updateChangeSubscription();
+    }
 
   }
 
@@ -197,15 +208,16 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
 
   saveData() {
     if (!this.close) {
-      if (this.quoteForm.valid) {
+      if (this.quoteForm.valid && this.contentDataSource.data.length > 0) {
         this.quoteForm.controls['customer'].setValue(this.quoteForm.controls['customer'].value.code);
+        this.quoteForm.controls['content'].setValue(this.contentDataSource.data);
         if (this.editMode) {
-          this.dataService.updateProvider(this.quoteForm.getRawValue()).subscribe(
+          this.dataService.updateQuote(this.quoteForm.getRawValue()).subscribe(
             data => this.dialogRef.close({data: data.data, message: data.message, editMode: this.editMode}),
             error => this.alertService.error(error.error.message)
           )
         } else {
-          this.dataService.addProvider(this.quoteForm.getRawValue()).subscribe(
+          this.dataService.addQuote(this.quoteForm.getRawValue()).subscribe(
             data => this.dialogRef.close(data),
             error => this.alertService.error(error.error.message)
           )

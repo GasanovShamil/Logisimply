@@ -7,7 +7,7 @@ module.exports = {
 
         document.addContent("company_name", quote.user.activityEntitled);
         document.addContent("date_quote", localization[language].pdf.date + quote.dateQuote);
-        document.addContent("company_infos", utils.pdf.formatTextBloc([localization[language].pdf.siret + quote.user.siret, quote.user.firstname + " " + quote.user.lastname + " - " + quote.user.email, quote.user.address, quote.user.zipCode + " " + quote.user.town, quote.user.country]));
+        document.addContent("company_infos", utils.pdf.formatTextBloc([localization[language].pdf.siret + utils.format.getSiret(quote.user.siret), quote.user.firstname + " " + quote.user.lastname + " - " + quote.user.email, quote.user.address, quote.user.zipCode + " " + quote.user.town, quote.user.country]));
         document.addContent("customer_infos", utils.pdf.formatTextBloc([quote.customer.civility + " " + quote.customer.name, quote.customer.address, quote.customer.zipCode + " " + quote.customer.town, quote.customer.country]));
         document.addContent("banner", localization[language].pdf.banner.quote + quote.code);
         document.addContent("object", localization[language].pdf.subject + quote.subject);
@@ -18,7 +18,7 @@ module.exports = {
         document.addTable("total", [[quote.totalPriceET + " €"]], [utils.pdf.getCell(localization[language].pdf.total, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
-        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + quote.datePayment, localization[language].pdf.validity + quote.validity]));
+        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + utils.format.formatDate(quote.datePayment), localization[language].pdf.validity + quote.validity]));
         if (quote.collectionCost)
             document.addContent("collection_cost", localization[language].pdf.collection_cost);
 
@@ -42,7 +42,7 @@ module.exports = {
 
         document.addContent("company_name", invoice.user.activityEntitled);
         document.addContent("date_invoice", localization[language].pdf.date + invoice.dateInvoice);
-        document.addContent("company_infos", utils.pdf.formatTextBloc([localization[language].pdf.siret + invoice.user.siret, invoice.user.firstname + " " + invoice.user.lastname + " - " + invoice.user.email, invoice.user.address, invoice.user.zipCode + " " + invoice.user.town, invoice.user.country]));
+        document.addContent("company_infos", utils.pdf.formatTextBloc([localization[language].pdf.siret + utils.format.getSiret(invoice.user.siret), invoice.user.firstname + " " + invoice.user.lastname + " - " + invoice.user.email, invoice.user.address, invoice.user.zipCode + " " + invoice.user.town, invoice.user.country]));
         document.addContent("customer_infos", utils.pdf.formatTextBloc([invoice.customer.civility + " " + invoice.customer.name, invoice.customer.address, invoice.customer.zipCode + " " + invoice.customer.town, invoice.customer.country]));
         document.addContent("banner", localization[language].pdf.banner.invoice + invoice.code);
         document.addContent("object", localization[language].pdf.subject + invoice.subject);
@@ -55,7 +55,7 @@ module.exports = {
         document.addTable("sum_to_pay", [[invoice.sumToPay + " €"]], [utils.pdf.getCell(localization[language].pdf.sum_to_pay, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
 
-        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + invoice.datePayment, localization[language].pdf.date_execution + invoice.dateExecution]));
+        document.addContent("date_payment", utils.pdf.formatTextBloc([localization[language].pdf.date_payment + utils.format.formatDate(invoice.datePayment), localization[language].pdf.date_execution + utils.format.formatDate(invoice.dateExecution)]));
         if (invoice.collectionCost)
             document.addContent("collection_cost", localization[language].pdf.collection_cost);
 

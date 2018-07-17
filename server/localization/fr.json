@@ -67,7 +67,8 @@
     "banned": "Votre compte a été banni, contactez l'administrateur à l'adresse suivante : admin@logisimply.fr",
     "inactive": "Vous devez activer votre compte, un email vous a été envoyé",
     "update": "Compte modifié avec succès",
-    "failed": "Aucun utilisateur"
+    "failed": "Aucun utilisateur",
+    "credentials": "Vos informations PayPal ont bien été mises à jour"
   },
   "items": {
     "add": "Produit/Service créé avec succès",

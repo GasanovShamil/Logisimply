@@ -20,7 +20,7 @@ export class DataService {
 ///////////////////////////// CUSTOMER SECTION /////////////////////////////
 
   addCustomer(customerData) {
-    return this.http.post<any>('/api/customers/add', customerData).pipe(
+    return this.http.post<any>('api/customers/add', customerData).pipe(
       catchError(this.handleError)
     );
   }
@@ -32,25 +32,25 @@ export class DataService {
   }
 
   getMyCustomers() {
-    return this.http.get<Customer[]>('/api/customers/me').pipe(
+    return this.http.get<Customer[]>('api/customers/me').pipe(
       catchError(this.handleError)
     );
   }
 
   getCustomerBySiret(customerSiret) {
-    return this.http.get<any>('/api/customers/'+customerSiret).pipe(
+    return this.http.get<any>('api/customers/'+customerSiret).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteCustomerById(customerId) {
-    return this.http.delete<any>('/api/customers/'+customerId).pipe(
+    return this.http.delete<any>('api/customers/'+customerId).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteCustomers(customers: Customer[]){
-    return this.http.post<any>('/api/customers/delete', customers).pipe(
+    return this.http.post<any>('api/customers/delete', customers).pipe(
       catchError(this.handleError)
     );
   }
@@ -58,7 +58,7 @@ export class DataService {
   ///////////////////////////// PROVIDER SECTION /////////////////////////////
 
   addProvider(providerData) {
-    return this.http.post<any>('/api/providers/add', providerData).pipe(
+    return this.http.post<any>('api/providers/add', providerData).pipe(
       catchError(this.handleError)
     );
   }
@@ -70,25 +70,25 @@ export class DataService {
   }
 
   getMyProviders() {
-    return this.http.get<any>('/api/providers/me').pipe(
+    return this.http.get<any>('api/providers/me').pipe(
       catchError(this.handleError)
     );
   }
 
   getProviderBySiret(providerSiret) {
-    return this.http.get<any>('/api/providers/'+providerSiret).pipe(
+    return this.http.get<any>('api/providers/'+providerSiret).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteProviderById(providerId) {
-    return this.http.delete<any>('/api/providers/'+providerId).pipe(
+    return this.http.delete<any>('api/providers/'+providerId).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteProviders(providers: Provider[]){
-    return this.http.post<any>('/api/providers/delete', providers).pipe(
+    return this.http.post<any>('api/providers/delete', providers).pipe(
       catchError(this.handleError)
     );
   }
@@ -98,7 +98,7 @@ export class DataService {
 
 
   addItem(itemData) {
-    return this.http.post<any>('/api/items/add', itemData).pipe(
+    return this.http.post<any>('api/items/add', itemData).pipe(
       catchError(this.handleError)
     );
   }
@@ -110,19 +110,19 @@ export class DataService {
   }
 
   getMyItems() {
-    return this.http.get<any>('/api/items/me').pipe(
+    return this.http.get<any>('api/items/me').pipe(
       catchError(this.handleError)
     );
   }
 
   deleteItemById(itemId) {
-    return this.http.delete<any>('/api/items/'+itemId).pipe(
+    return this.http.delete<any>('api/items/'+itemId).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteItems(items: Item[]){
-    return this.http.post<any>('/api/items/delete', items).pipe(
+    return this.http.post<any>('api/items/delete', items).pipe(
       catchError(this.handleError)
     );
   }
@@ -132,33 +132,52 @@ export class DataService {
 ///////////////////////////// QUOTE SECTION /////////////////////////////
 
   getMyQuotes() {
-    return this.http.get<any>('/api/quotes/me').pipe(
+    return this.http.get<any>('api/quotes/me').pipe(
       catchError(this.handleError)
     );
   }
 
   deleteQuotes(quotes: Quote[]){
-    return this.http.post<any>('/api/quotes/delete', quotes).pipe(
+    return this.http.post<any>('api/quotes/delete', quotes).pipe(
       catchError(this.handleError)
     );
   }
 
+  addQuote(quoteData) {
+    return this.http.post<any>('api/quotes/add', quoteData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateQuote(quoteData) {
+    return this.http.put<any>('api/quotes/update', quoteData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteQuotById(quoteId) {
+    return this.http.delete<any>('api/quotes/'+quoteId).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
   ///////////////////////////// INVOICE SECTION /////////////////////////////
 
   getMyInvoices() {
-    return this.http.get<any>('/api/invoices/me').pipe(
+    return this.http.get<any>('api/invoices/me').pipe(
       catchError(this.handleError)
     );
   }
 
   deleteInvoices(invoices: Invoice[]){
-    return this.http.post<any>('/api/invoices/delete', invoices).pipe(
+    return this.http.post<any>('api/invoices/delete', invoices).pipe(
       catchError(this.handleError)
     );
   }
 
   getInvoicePayment(userId, invoiceCode) {
-    return this.http.get<any>('/api/payment/' + userId + '/' + invoiceCode + '/display').pipe(
+    return this.http.get<any>('api/payment/' + userId + '/' + invoiceCode + '/display').pipe(
       catchError(this.handleError)
     );
   }

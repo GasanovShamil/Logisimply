@@ -74,11 +74,18 @@
       "amount": "Montant",
       "date": "Date"
     },
-    "paying": "Payer",
+    "income_method": {
+      "paypal": "PayPal",
+      "asset": "Avoir",
+      "cash": "Espèces",
+      "check": "Chèque"
+    },
+    "paying": "Montant",
     "not_allowed": " n'a pas activé le paiement en ligne.",
     "paypal_success": "Votre paiement a bien été effectué",
     "paypal_error": "Un problème est survenu lors de la relation avec PayPal",
-    "income_error": "Un problème est survenu lors de l'ajout de la recette"
+    "income_error": "Un problème est survenu lors de l'ajout de la recette",
+    "mobile": "Cette fonctionnalité n'est pas disponible sur mobile"
   },
   "welcome": {
     "menu": {
@@ -113,5 +120,27 @@
       "email": "Votre Email",
       "message": "Votre Message"
     }
+  },
+  "home" :{
+    "activity_entitled": "Intitulé d'activité : ",
+    "activity_started": "Date de début d'activité : ",
+    "siret": "Siret : ",
+    "activity_field": "Domaine d'activité : ",
+    "activity_type": "Type d'activité : ",
+    "category_type": "Categorie : ",
+    "name": "Nom complet : ",
+    "email": "Email : ",
+    "address": "Adresse : ",
+    "zip_code": "Code postal : ",
+    "town": "Ville : ",
+    "country": "Pays : ",
+    "update": "Modifier",
+    "credentials": "Informations PayPal"
+  },
+  "credentialsDialog": {
+    "title": "Modification des informations PayPal",
+    "client": "Client ID",
+    "secret": "Client secret",
+    "credentials_form_error_message": "Merci de remplir les champs obligatoire"
   }
 }

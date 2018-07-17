@@ -1,10 +1,13 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {AlertService} from '../../services/alert.service';
 import {TranslateService} from '@ngx-translate/core';
 import {UserService} from '../../services/user.service';
-import {Observable} from 'rxjs/Observable';
 import {Chart} from 'chart.js';
+import {Customer} from "../../models/customer";
+import {CustomerDialogComponent} from "../dialogs/customer-dialog/customer-dialog.component";
+import {CredentialsDialogComponent} from "../dialogs/credentials-dialog/credentials-dialog.component";
+import {MatDialog} from "@angular/material";
 
 @Component({
   selector: 'app-home',
@@ -14,11 +17,17 @@ import {Chart} from 'chart.js';
 export class HomeComponent implements OnInit {
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
-  customersData = new Observable();
-  incomesPerCustomerData = new Observable();
-  chart = [];
+  isLoadingResults: boolean = true;
+  isUserReady: boolean = false;
+  isPaypalAllowed: boolean = false;
+  me: any;
+  incomesPerCustomerTypeChart = [];
+  // chart = [];
+  // chart = [];
+  errorMessage = '';
+  @ViewChild('incomes-per-customer-type') incomesPerCustomerTypeCanvas: any;
 
-  constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -31,92 +40,92 @@ export class HomeComponent implements OnInit {
   getMe() {
     this.userService.stats().subscribe(
       data => {
-        this.customersData = data.stats.customers;
-        this.incomesPerCustomerData = data.stats.incomesPerCustomer;
-        this.incomesPerCustomer();
+        this.isLoadingResults = false;
+        this.isUserReady = true;
+        this.me = data.me;
+        this.isPaypalAllowed = data.me.credentials;
+        //this.incomesPerCustomerType(data);
       },
       error => {
-        this.alertService.error('PROBLEM: ' + error.error.message);
+        this.isLoadingResults = false;
+        this.errorMessage =  error.error.message;
       }
     );
   }
 
-  incomesPerCustomer() {
-    this.chart = new Chart('incomes-per-customer', {
-      type: 'horizontalBar',
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
-            }
-          }]
-        }
+  openCredentialsDialog(): void {
+    let config = this.mobileQuery.matches ? {maxWidth: '100%', minWidth: '100px'} : {width: '600px'};
+    let dialogRef = this.dialog.open(CredentialsDialogComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.isPaypalAllowed = result.data.credentials;
+        this.alertService.success(result.message);
       }
     });
   }
-}
 
-// <script>
-// var ctx = document.getElementById("incomesPerCustomer");
-// var myChart = new Chart(ctx, {
-//   type: 'bar',
-//   data: {
-//     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-//     datasets: [{
-//       label: '# of Votes',
-//       data: [12, 19, 3, 5, 2, 3],
-//       backgroundColor: [
-//         'rgba(255, 99, 132, 0.2)',
-//         'rgba(54, 162, 235, 0.2)',
-//         'rgba(255, 206, 86, 0.2)',
-//         'rgba(75, 192, 192, 0.2)',
-//         'rgba(153, 102, 255, 0.2)',
-//         'rgba(255, 159, 64, 0.2)'
-//       ],
-//       borderColor: [
-//         'rgba(255,99,132,1)',
-//         'rgba(54, 162, 235, 1)',
-//         'rgba(255, 206, 86, 1)',
-//         'rgba(75, 192, 192, 1)',
-//         'rgba(153, 102, 255, 1)',
-//         'rgba(255, 159, 64, 1)'
-//       ],
-//       borderWidth: 1
-//     }]
-//   },
-//   options: {
-//     scales: {
-//       yAxes: [{
-//         ticks: {
-//           beginAtZero:true
-//         }
-//       }]
-//     }
-//   }
-// });
-// </script>
+  // incomesPerCustomerType(data) {
+  //   let privateColor = HomeComponent.randomColor();
+  //   let professionnalColor = HomeComponent.randomColor();
+  //   this.incomesPerCustomerTypeChart = new Chart(this.incomesPerCustomerTypeCanvas.getContext('2d'), {
+  //     type: 'line',
+  //     data: {
+  //       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  //       datasets: [{
+  //         label: 'Private',
+  //         backgroundColor: privateColor.fill,
+  //         borderColor: privateColor.border,
+  //         data: [1, 2, 4, 8, 16, 32, 64],
+  //         fill: false,
+  //       }, {
+  //         label: 'Professionnal',
+  //         fill: false,
+  //         backgroundColor: professionnalColor.fill,
+  //         borderColor: professionnalColor.border,
+  //         data: [64, 32, 16, 8, 4, 2, 1],
+  //       }]
+  //     },
+  //     options: {
+  //       responsive: true,
+  //       title: {
+  //         display: true,
+  //         text: 'THIS IS THE TITLE : incomesPerCustomerType'
+  //       },
+  //       tooltips: {
+  //         mode: 'index',
+  //         intersect: false,
+  //       },
+  //       hover: {
+  //         mode: 'nearest',
+  //         intersect: true
+  //       },
+  //       scales: {
+  //         xAxes: [{
+  //           display: true,
+  //           scaleLabel: {
+  //             display: true,
+  //             labelString: 'Month'
+  //           }
+  //         }],
+  //         yAxes: [{
+  //           display: true,
+  //           scaleLabel: {
+  //             display: true,
+  //             labelString: 'Income'
+  //           },
+  //           ticks: {
+  //             beginAtZero:true
+  //           }
+  //         }]
+  //       }
+  //     }
+  //   });
+  // }
+
+  static randomColor() {
+    let red = Math.round(Math.random() * 255);
+    let green = Math.round(Math.random() * 255);
+    let blue = Math.round(Math.random() * 255);
+    return {fill: 'rgba(' + red + ', ' + green + ', ' + blue + ', 0.2)', border: 'rgba(' + red + ', ' + green + ', ' + blue + ', 1)'}
+  }
+}

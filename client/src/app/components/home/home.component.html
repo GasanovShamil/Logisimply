@@ -1,28 +1,82 @@
-<mat-card class="card">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title i18n>Home</mat-card-title>
-  </mat-card-header>
-  <img mat-card-image src="https://www.cnx-software.com/wp-content/uploads/2010/11/in-home-display-example-mentor-embedded-inflexion.png" alt="Photo of contacts">
-  <mat-card-content>
-    <p i18n>
-      Hello! This is our future Home component.
-    </p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button i18n mat-button>LIKE</button>
-    <button i18n mat-button>SHARE</button>
-  </mat-card-actions>
-</mat-card>
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
 
-<mat-card class="card">
-  <mat-card-header>
-    <mat-card-title>Income per customer</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <canvas id="incomes-per-customer"></canvas>
-  </mat-card-content>
-  <mat-card-actions>
-    FOOTER
-  </mat-card-actions>
-</mat-card>
+<div id="error" *ngIf="!isLoadingResults && !isUserReady">
+  <div id="error-container" class="form-group">
+    {{ errorMessage }}
+  </div>
+</div>
+
+<div *ngIf="isUserReady">
+  <mat-card [ngClass]="mobileQuery.matches ? 'card full' : 'card half'">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-grid-list cols="10" rowHeight="2:1">
+        <mat-grid-tile [colspan]="5" [rowspan]="4" id="company-infos">
+          <div><span class="bold">{{ 'home.activity_entitled' | translate }}</span>{{ me.activityEntitled }}</div>
+          <div><span class="bold">{{ 'home.activity_started' | translate }}</span>{{ me.activityStarted | date: 'dd/MM/yyyy' }}</div>
+          <div><span class="bold">{{ 'home.siret' | translate }}</span>{{ me.siret | siret }}</div>
+          <div><span class="bold">{{ 'home.activity_type' | translate }}</span>{{ me.activityType }}</div>
+          <div><span class="bold">{{ 'home.activity_field' | translate }}</span>{{ me.activityField }}</div>
+          <div><span class="bold">{{ 'home.category_type' | translate }}</span>{{ me.categoryType }}</div>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="5" [rowspan]="4" id="person-infos">
+          <div><span class="bold">{{ 'home.name' | translate }}</span>{{ me.firstname + ' ' + me.lastname}}</div>
+          <div><span class="bold">{{ 'home.email' | translate }}</span>{{ me.email }}</div>
+          <div><span class="bold">{{ 'home.address' | translate }}</span>{{ me.address }}</div>
+          <div><span class="bold">{{ 'home.zip_code' | translate }}</span>{{ me.zipCode }}</div>
+          <div><span class="bold">{{ 'home.town' | translate }}</span>{{ me.town }}</div>
+          <div><span class="bold">{{ 'home.country' | translate }}</span>{{ me.country }}</div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-card-content>
+    <mat-card-actions class="center">
+      <button mat-raised-button color="primary">{{ 'home.update' | translate }}</button>
+      <button mat-raised-button color="primary" (click)="openCredentialsDialog()">{{ 'home.credentials' | translate }}</button>
+      <mat-icon svgIcon="pdf"></mat-icon><mat-icon [ngClass]="isPaypalAllowed ? 'green' : 'red'">check_circle_outline</mat-icon>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card [ngClass]="mobileQuery.matches ? 'card full' : 'card half'">
+    <mat-card-header>
+      <mat-card-title>HEADER STATS 1</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <canvas id="incomes-per-customer-type"></canvas>
+    </mat-card-content>
+    <mat-card-actions>
+      FOOTER STATS 1
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card [ngClass]="mobileQuery.matches ? 'card full' : 'card half'">
+    <mat-card-header>
+      <mat-card-title>HEADER STATS 2</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <canvas id="stats-2"></canvas>
+    </mat-card-content>
+    <mat-card-actions>
+      FOOTER STATS 2
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card [ngClass]="mobileQuery.matches ? 'card full' : 'card half'">
+    <mat-card-header>
+      <mat-card-title>HEADER STATS 3</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <canvas id="stats-3"></canvas>
+    </mat-card-content>
+    <mat-card-actions>
+      FOOTER STATS 3
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+

@@ -1,5 +1,4 @@
 let config = require("../config");
-let utils = require("../helpers/utils");
 let load = require("../helpers/load");
 let content = require("./Content");
 let mongoose = require("mongoose");
@@ -35,12 +34,12 @@ quoteSchema.methods.fullFormat = function(include) {
     let result = {
         customer: this.customer,
         code: this.code,
-        dateQuote: utils.format.formatDate(this.dateQuote),
+        dateQuote: this.dateQuote,
         subject: this.subject || "",
         content: arrayContent,
         discount: discount,
         totalPriceET: totalPriceET,
-        datePayment: utils.format.formatDate(this.datePayment),
+        datePayment: this.datePayment,
         validity: this.validity,
         collectionCost: this.collectionCost,
         comment: this.comment || "",
