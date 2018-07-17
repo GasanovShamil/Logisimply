@@ -14,3 +14,11 @@
   align-items: center;
   justify-content: center;
 }
+
+.green {
+  color: rgba(13, 212, 67, 1)
+}
+
+.red {
+  color: rgba(186, 5, 19, 1);
+}

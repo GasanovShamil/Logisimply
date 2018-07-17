@@ -187,11 +187,18 @@
       "amount": "Amount",
       "date": "Date"
     },
-    "paying": "Pay",
+    "income_method": {
+      "paypal": "PayPal",
+      "asset": "Asset",
+      "cash": "Cash",
+      "check": "Check"
+    },
+    "paying": "Amount",
     "not_allowed": " did not allow online payment.",
     "paypal_success": "Payment successfully made",
     "paypal_error": "PayPal Internal Server Error",
-    "income_error": "Income Internal Server Error"
+    "income_error": "Income Internal Server Error",
+    "mobile": "Not available on mobile"
   },
   "welcome": {
     "header_presentation": "LogiSimply is a web application that allows you to create your invoices and quotes very simply",
@@ -211,16 +218,25 @@
     "grpd": "Why are we collecting your data ?"
   },
   "home" :{
-    "activity_entitled": "Activity entitled",
-    "activity_started": "Activity started",
-    "lastname": "Lastname",
-    "firstname": "Firstname",
-    "address": "Address",
-    "town": "City",
-    "country": "Country",
-    "zipcode": "ZipCode",
-    "activity_type": "Activity type",
-    "category_type": "Category type",
-    "siret": "Siret"
+    "activity_entitled": "Activity entitled : ",
+    "activity_started": "Activity started : ",
+    "siret": "Translate | Siret : ",
+    "activity_field": "Activity field : ",
+    "activity_type": "Activity type : ",
+    "category_type": "Category : ",
+    "name": "Name : ",
+    "email": "Email : ",
+    "address": "Address : ",
+    "zip_code": "ZipCode : ",
+    "town": "City : ",
+    "country": "Country : ",
+    "update": "Update",
+    "credentials": "PayPal credentials"
+  },
+  "credentialsDialog": {
+    "title": "Update your PayPal credentials",
+    "client": "Client ID",
+    "secret": "Client secret",
+    "credentials_form_error_message": "Please fill in all required form fields"
   }
 }

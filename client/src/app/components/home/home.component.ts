@@ -4,8 +4,10 @@ import {AlertService} from '../../services/alert.service';
 import {TranslateService} from '@ngx-translate/core';
 import {UserService} from '../../services/user.service';
 import {Chart} from 'chart.js';
-import {MatSort} from "@angular/material";
-
+import {Customer} from "../../models/customer";
+import {CustomerDialogComponent} from "../dialogs/customer-dialog/customer-dialog.component";
+import {CredentialsDialogComponent} from "../dialogs/credentials-dialog/credentials-dialog.component";
+import {MatDialog} from "@angular/material";
 
 @Component({
   selector: 'app-home',
@@ -17,6 +19,7 @@ export class HomeComponent implements OnInit {
   private _mobileQueryListener: () => void;
   isLoadingResults: boolean = true;
   isUserReady: boolean = false;
+  isPaypalAllowed: boolean = false;
   me: any;
   incomesPerCustomerTypeChart = [];
   // chart = [];
@@ -24,7 +27,7 @@ export class HomeComponent implements OnInit {
   errorMessage = '';
   @ViewChild('incomes-per-customer-type') incomesPerCustomerTypeCanvas: any;
 
-  constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -40,7 +43,8 @@ export class HomeComponent implements OnInit {
         this.isLoadingResults = false;
         this.isUserReady = true;
         this.me = data.me;
-        this.incomesPerCustomerType(data);
+        this.isPaypalAllowed = data.me.credentials;
+        //this.incomesPerCustomerType(data);
       },
       error => {
         this.isLoadingResults = false;
@@ -49,63 +53,74 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  incomesPerCustomerType(data) {
-    let privateColor = HomeComponent.randomColor();
-    let professionnalColor = HomeComponent.randomColor();
-    this.incomesPerCustomerTypeChart = new Chart(this.incomesPerCustomerTypeCanvas.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'Private',
-          backgroundColor: privateColor.fill,
-          borderColor: privateColor.border,
-          data: [1, 2, 4, 8, 16, 32, 64],
-          fill: false,
-        }, {
-          label: 'Professionnal',
-          fill: false,
-          backgroundColor: professionnalColor.fill,
-          borderColor: professionnalColor.border,
-          data: [64, 32, 16, 8, 4, 2, 1],
-        }]
-      },
-      options: {
-        responsive: true,
-        title: {
-          display: true,
-          text: 'THIS IS THE TITLE : incomesPerCustomerType'
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true
-        },
-        scales: {
-          xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Month'
-            }
-          }],
-          yAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Income'
-            },
-            ticks: {
-              beginAtZero:true
-            }
-          }]
-        }
+  openCredentialsDialog(): void {
+    let config = this.mobileQuery.matches ? {maxWidth: '100%', minWidth: '100px'} : {width: '600px'};
+    let dialogRef = this.dialog.open(CredentialsDialogComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.isPaypalAllowed = result.data.credentials;
+        this.alertService.success(result.message);
       }
     });
   }
+
+  // incomesPerCustomerType(data) {
+  //   let privateColor = HomeComponent.randomColor();
+  //   let professionnalColor = HomeComponent.randomColor();
+  //   this.incomesPerCustomerTypeChart = new Chart(this.incomesPerCustomerTypeCanvas.getContext('2d'), {
+  //     type: 'line',
+  //     data: {
+  //       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  //       datasets: [{
+  //         label: 'Private',
+  //         backgroundColor: privateColor.fill,
+  //         borderColor: privateColor.border,
+  //         data: [1, 2, 4, 8, 16, 32, 64],
+  //         fill: false,
+  //       }, {
+  //         label: 'Professionnal',
+  //         fill: false,
+  //         backgroundColor: professionnalColor.fill,
+  //         borderColor: professionnalColor.border,
+  //         data: [64, 32, 16, 8, 4, 2, 1],
+  //       }]
+  //     },
+  //     options: {
+  //       responsive: true,
+  //       title: {
+  //         display: true,
+  //         text: 'THIS IS THE TITLE : incomesPerCustomerType'
+  //       },
+  //       tooltips: {
+  //         mode: 'index',
+  //         intersect: false,
+  //       },
+  //       hover: {
+  //         mode: 'nearest',
+  //         intersect: true
+  //       },
+  //       scales: {
+  //         xAxes: [{
+  //           display: true,
+  //           scaleLabel: {
+  //             display: true,
+  //             labelString: 'Month'
+  //           }
+  //         }],
+  //         yAxes: [{
+  //           display: true,
+  //           scaleLabel: {
+  //             display: true,
+  //             labelString: 'Income'
+  //           },
+  //           ticks: {
+  //             beginAtZero:true
+  //           }
+  //         }]
+  //       }
+  //     }
+  //   });
+  // }
 
   static randomColor() {
     let red = Math.round(Math.random() * 255);
