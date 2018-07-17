@@ -1,5 +1,4 @@
 let config = require("../config");
-let utils = require("../helpers/utils");
 let mongoose = require("mongoose");
 mongoose.connect("mongodb://" + config.mongo.host + ":" + config.mongo.port + "/" + config.mongo.database, {useNewUrlParser: true});
 
@@ -34,8 +33,8 @@ let userSchema = mongoose.Schema ({
     updatedAt: Date
 });
 
-userSchema.methods.fullFormat = function(include) {
-    let result = {
+userSchema.methods.fullFormat = function() {
+    return {
         _id: this._id,
         email: this.email,
         firstname: this.firstname,
@@ -52,15 +51,9 @@ userSchema.methods.fullFormat = function(include) {
         country: this.country || "",
         status: this.status,
         createdAt: this.createdAt,
-        updatedAt: this.updatedAt
+        updatedAt: this.updatedAt,
+        credentials: this.parameters.paypal.client !== "" && this.parameters.paypal.secret !== ""
     };
-
-    if (include) {
-        if (include.credentials)
-            result.credentials = this.parameters.paypal.client && this.parameters.paypal.secret;
-    }
-
-    return result;
 };
 
 module.exports = mongoose.model("User", userSchema);

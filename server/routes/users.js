@@ -407,16 +407,17 @@ router.put("/update", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: Credentials set
  */
-router.post("/users/credentials", middleware.wrapper(async (req, res) => {
+router.post("/credentials", middleware.wrapper(async (req, res) => {
     let paramClient = req.body.client;
     let paramSecret = req.body.secret;
     let user = await userModel.findOne({_id: req.loggedUser._id});
     if (!user)
         return res.status(400).json({message: localization[req.language].users.failed});
+
     user.parameters.paypal.client = paramClient;
     user.parameters.paypal.secret = paramSecret;
     user.save();
-    res.status(200).json(user.fullFormat());
+    res.status(200).json({message: localization[req.language].users.credentials, data: user.fullFormat()});
 }));
 
 module.exports = router;

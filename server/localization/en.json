@@ -67,7 +67,8 @@
     "banned": "Your account has been banned, contact the administrator at : admin@logisimply.fr",
     "inactive": "You must activate your account, an email has been sent to you",
     "update": "Account successfully updated",
-    "failed": "No user"
+    "failed": "No user",
+    "credentials": "Your PayPal credentials have been successfully updated"
   },
   "items": {
     "add": "Item successfully created",

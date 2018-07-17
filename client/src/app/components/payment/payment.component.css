@@ -74,22 +74,15 @@
   margin: 15px 0;
   font-size: 20px;
 }
-
-#date {
-}
-
 #customer-infos {
   font-size: 14px;
   margin-bottom: 5px !important;
 }
 
 #banner {
-  background: rgba(17, 31, 70, 1);
+  background: rgba(63, 81, 181, 1);
   color: rgba(255, 255, 255, 1);
   font-size: 20px;
-}
-
-#subject {
 }
 
 #immatriculation {
@@ -117,6 +110,7 @@
 }
 
 #comment {
+  font-style: italic;
 }
 
 #sum-to-paypay {
@@ -125,6 +119,10 @@
 
 #tva {
   font-size: 14px;
+}
+
+#paying-amount {
+  text-align: center;
 }
 
 .bold {
@@ -137,8 +135,4 @@
 
 .number {
   text-align: right;
-}
-
-.error {
-  color: rgba(197, 36, 26, 1);
 }

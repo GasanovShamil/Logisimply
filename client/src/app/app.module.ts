@@ -36,10 +36,11 @@ import { LegalNoticeComponent } from './components/legal-notice/legal-notice.com
 import { GrpdComponent } from './components/grpd/grpd.component';
 import { SignupDialogComponent } from './components/dialogs/signup-dialog/signup-dialog.component';
 import { LoginDialogComponent } from './components/dialogs/login-dialog/login-dialog.component';
+import { SiretPipe } from './pipes/siret.pipe';
+import { CredentialsDialogComponent } from './components/dialogs/credentials-dialog/credentials-dialog.component';
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
-
 
 @NgModule({
   declarations: [
@@ -63,9 +64,11 @@ export function tokenGetter() {
     LegalNoticeComponent,
     GrpdComponent,
     SignupDialogComponent,
-    LoginDialogComponent
+    LoginDialogComponent,
+    SiretPipe,
+    CredentialsDialogComponent
   ],
-  entryComponents: [LoginDialogComponent, SignupDialogComponent, CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent],
+  entryComponents: [LoginDialogComponent, SignupDialogComponent, CustomerDialogComponent, ProviderDialogComponent, ItemDialogComponent, QuoteDialogComponent, InvoiceDialogComponent, CredentialsDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

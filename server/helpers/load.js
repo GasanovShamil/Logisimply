@@ -5,14 +5,12 @@ let incomeModel = require("../models/Income");
 
 module.exports = {
     infos: async (object, user) => {
-        if (object.user) {
-            object.user = (await userModel.findOne({_id: user}).exec()).fullFormat({credentials: true});
-            object.user.siret = utils.format.getSiret(object.user.siret);
-        }
-        if (object.customer) {
+        if (object.user)
+            object.user = (await userModel.findOne({_id: user}).exec()).fullFormat();
+
+        if (object.customer)
             object.customer = (await customerModel.findOne({code: object.customer, user: user}).exec()).fullFormat();
-            object.customer.siret = utils.format.getSiret(object.customer.siret);
-        }
+
         if (object.incomes && object.sumToPay && object.payed) {
             let incomes = await incomeModel.find({invoice: object.code, user: user}).exec();
             object.incomes = [];
