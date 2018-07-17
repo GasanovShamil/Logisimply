@@ -1,0 +1,62 @@
+<form [formGroup]="userForm" (submit)="saveData()">
+  <div class="dialog-title" mat-dialog-title>
+    <div>
+      {{'userDialog.title' | translate}}
+      <mat-hint align="end" class="close-button">
+        <button mat-icon-button (click)="onCloseClick()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
+      </mat-hint>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.email' | translate }}" formControlName="email" required />
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.password' | translate }}" [type]="hide ? 'password' : 'text'" formControlName="password" />
+      <mat-hint align="end">{{'userDialog.min_password_length' | translate}}</mat-hint>
+      <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.firstname' | translate }}" formControlName="firstname" required />
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.lastname' | translate }}" formControlName="lastname" required />
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="{{ 'userDialog.address' | translate }}" formControlName="address" required />
+    </mat-form-field>
+    <mat-form-field class="third-width">
+      <input matInput #postalCode placeholder="{{ 'userDialog.zip_code' | translate }}" formControlName="zipCode" required />
+      <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="third-width">
+      <input matInput placeholder="{{ 'userDialog.town' | translate }}" formControlName="town" required />
+    </mat-form-field>
+    <mat-form-field class="third-width">
+      <input matInput placeholder="{{ 'userDialog.country' | translate }}" formControlName="country" required />
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.activity_type' | translate }}" formControlName="activityType" />
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.category_type' | translate }}" formControlName="categoryType" />
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput placeholder="{{ 'userDialog.activity_entitled' | translate }}" formControlName="activityEntitled" required />
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput [matDatepicker]="picker" placeholder="{{ 'userDialog.activity_started' | translate }}" formControlName="activityStarted" required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="half-width">
+      <input matInput #siretHint placeholder="{{ 'userDialog.siret' | translate }}" formControlName="siret" required />
+      <mat-hint align="end">{{ siretHint.value.length }} / 14</mat-hint>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon></button>
+  </div>
+</form>

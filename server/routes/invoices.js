@@ -150,7 +150,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
 router.get("/me", middleware.wrapper(async (req, res) => {
     let invoices = await invoiceModel.find({user: req.loggedUser._id});
     for (let i = 0; i < invoices.length; i++)
-        invoices[i] = await invoices[i].fullFormat({owner: req.loggedUser._id, customer: true});
+        invoices[i] = await invoices[i].fullFormat({owner: req.loggedUser._id, infos: true});
     res.status(200).json(invoices);
 }));
 
@@ -184,7 +184,7 @@ router.get("/:code", middleware.wrapper(async (req, res) => {
     if (!invoice)
         return res.status(400).json({message: localization[req.language].invoices.code.failed});
 
-    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
     res.status(200).json(result);
 }));
 
@@ -238,7 +238,7 @@ router.put("/update", middleware.wrapper(async (req, res) => {
     if (!invoice)
         return res.status(400).json({message: localization[req.language].invoices.code.failed});
 
-    let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    let result = await invoice.fullFormat({owner: req.loggedUser._id, infos: true});
     res.status(200).json({message: localization[req.language].invoices.update.success, data: result});
 }));
 
@@ -303,16 +303,9 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramInvoices = req.body;
-    let count = 0;
-    for (let i = 0; i < paramInvoices.length; i++) {
-        let countInvoice = await invoiceModel.countDocuments({code: paramInvoices[i].code, status: {$ne: "lock"}, user: req.loggedUser._id});
-        if (countInvoice === 1) {
-            let invoice = await invoiceModel.findOneAndRemove({code: paramInvoices[i].code, user: req.loggedUser._id});
-            if (invoice)
-                count++;
-        }
-    }
-    res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: count});
+    let codes = paramInvoices.map(invoice => invoice.code);
+    let result = await invoiceModel.deleteMany({code: {$in: codes}, status: {$ne: "lock"}, user: req.loggedUser._id});
+    res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: result.deletedCount});
 }));
 
 /**

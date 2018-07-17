@@ -10,6 +10,9 @@ module.exports = {
         isUserComplete: function(user) {
             return user.email && user.password && user.firstname && user.lastname && user.activityEntitled && user.activityStarted && user.siret && user.address && user.zipCode && user.town;
         },
+        isUserCompleteNoPassword: function(user) {
+            return user.email && user.firstname && user.lastname && user.activityEntitled && user.activityStarted && user.siret && user.address && user.zipCode && user.town;
+        },
         isCustomerComplete: function(customer) {
             return customer.email && customer.type && customer.name && customer.address && customer.zipCode && customer.town && customer.country;
         },

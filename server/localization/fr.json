@@ -136,7 +136,7 @@
     },
     "delete": {
       "one": "Facture supprimée avec succès",
-      "multiple": "Factures supprimées avec succès",
+      "multiple": "Factures supprimées avec succès (Les factures vérouillés ont été ignorées)",
       "impossible": "Aucune facture supprimable ne correspond au code demandé"
     },
     "send": "Facture envoyée avec succès",

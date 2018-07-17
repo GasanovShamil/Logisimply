@@ -136,7 +136,8 @@
     },
     "delete": {
       "one": "Invoice successfully deleted",
-      "multiple": "Invoices successfully deleted"
+      "multiple": "Invoices successfully deleted (Locked invoice were ignored)",
+      "impossible": "No deletable invoice match this code"
     },
     "send": "Invoice successfully sent",
     "download": {

@@ -251,13 +251,9 @@ router.delete("/delete/:reference", middleware.wrapper(async (req, res) => {
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramItems = req.body;
-    let count = 0;
-    for (let i = 0; i < paramItems.length; i++) {
-        let item = await itemModel.findOneAndRemove({reference: paramItems[i].reference, user: req.loggedUser._id});
-        if (item)
-            count++;
-    }
-    res.status(200).json({message: localization[req.language].items.delete.multiple, data: count});
+    let references = paramItems.map(item => item.reference);
+    let result = await itemModel.deleteMany({reference: {$in: references}, user: req.loggedUser._id});
+    res.status(200).json({message: localization[req.language].items.delete.multiple, data: result.deletedCount});
 }));
 
 module.exports = router;

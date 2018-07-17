@@ -4,10 +4,10 @@ import {AlertService} from '../../services/alert.service';
 import {TranslateService} from '@ngx-translate/core';
 import {UserService} from '../../services/user.service';
 import {Chart} from 'chart.js';
-import {Customer} from "../../models/customer";
-import {CustomerDialogComponent} from "../dialogs/customer-dialog/customer-dialog.component";
 import {CredentialsDialogComponent} from "../dialogs/credentials-dialog/credentials-dialog.component";
 import {MatDialog} from "@angular/material";
+import {UserDialogComponent} from "../dialogs/user-dialog/user-dialog.component";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-home',
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
   errorMessage = '';
   @ViewChild('incomes-per-customer-type') incomesPerCustomerTypeCanvas: any;
 
-  constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, private authService: AuthService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit {
   }
 
   getMe() {
-    this.userService.stats().subscribe(
+    this.userService.getStats().subscribe(
       data => {
         this.isLoadingResults = false;
         this.isUserReady = true;
@@ -51,6 +51,18 @@ export class HomeComponent implements OnInit {
         this.errorMessage =  error.error.message;
       }
     );
+  }
+
+  openUserDialog(): void {
+    let config = this.mobileQuery.matches ? {maxWidth: '100%', minWidth: '100px', data: this.me } : {width: '600px',  data: this.me};
+    let dialogRef = this.dialog.open(UserDialogComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.me = result.data;
+        this.authService.updateToken(result.token);
+        this.alertService.success(result.message);
+      }
+    });
   }
 
   openCredentialsDialog(): void {

@@ -123,19 +123,19 @@
     }
   },
   "home" :{
-    "activity_entitled": "Intitulé d'activité : ",
-    "activity_started": "Date de début d'activité : ",
-    "siret": "Siret : ",
-    "activity_field": "Domaine d'activité : ",
-    "activity_type": "Type d'activité : ",
-    "category_type": "Categorie : ",
-    "name": "Nom complet : ",
-    "email": "Email : ",
-    "address": "Adresse : ",
-    "zip_code": "Code postal : ",
-    "town": "Ville : ",
-    "country": "Pays : ",
-    "update": "Modifier",
+    "email": "Email",
+    "firstname": "Prénom",
+    "lastname": "Nom",
+    "address": "Adresse",
+    "zip_code": "Code postal",
+    "town": "Ville",
+    "country": "Pays",
+    "activity_type": "Type d'activité",
+    "category_type": "Categorie",
+    "activity_entitled": "Intitulé d'activité",
+    "activity_started": "Date de début d'activité",
+    "siret": "Siret",
+    "update": "Mettre à jour",
     "credentials": "Informations PayPal"
   },
   "credentialsDialog": {
@@ -143,5 +143,23 @@
     "client": "Client ID",
     "secret": "Client secret",
     "credentials_form_error_message": "Merci de remplir les champs obligatoire"
+  },
+  "userDialog": {
+    "title": "Modifier votre compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "min_password_length": "8 caractères minimum",
+    "firstname": "Prénom",
+    "lastname": "Nom",
+    "address": "Adresse",
+    "zip_code": "Code postal",
+    "town": "Ville",
+    "country": "Pays",
+    "activity_type": "Type d'activité",
+    "category_type": "Categorie",
+    "activity_entitled": "Intitulé d'activité",
+    "activity_started": "Date de début d'activité",
+    "siret": "Siret",
+    "user_form_error_message": "Please fill in all required form fields"
   }
 }
