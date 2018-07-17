@@ -117,7 +117,6 @@ router.post("/create", middleware.wrapper(async (req, res) => {
         return res.status(400).json({message: localization[req.language].invoices.income.impossible});
 
     let user = await userModel.findOne({_id: paramUser}).exec();
-    let result = await invoice.fullFormat({owner: paramUser, customer: true});
     request({
         url: config.paypal_endpoint + "/v1/payments/payment",
         method: 'post',
@@ -125,9 +124,9 @@ router.post("/create", middleware.wrapper(async (req, res) => {
         json: {
             intent: "sale",
             payer: {payment_method: "paypal"},
-            transactions: utils.paypal.getTransactions(result, paramAmount),
+            transactions: utils.paypal.getTransactions(invoice, paramAmount),
             redirect_urls: {return_url: config.url + '/payment/' + paramUser + '/' + paramCode, cancel_url: config.url + '/payment/' + paramUser + '/' + paramCode},
-            note_to_payer: result.comment
+            note_to_payer: invoice.comment
         }
     }, function(err, response, body) {
         if (err)
@@ -179,15 +178,13 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
         return res.status(400).json({message: localization[req.language].invoices.income.impossible});
 
     let user = await userModel.findOne({_id: paramUser}).exec();
-    let result = await invoice.fullFormat({owner: paramUser, infos: true});
-
     request({
         url: config.paypal_endpoint + "/v1/payments/payment/" + paramPayment + "/execute",
         method: "post",
         auth: utils.paypal.getAuth(user),
         json: {
             payer_id: paramPayer,
-            transactions: utils.paypal.getTransactions(result, paramAmount)
+            transactions: utils.paypal.getTransactions(invoice, paramAmount)
         }
     }, function(err, response) {
         if (err)

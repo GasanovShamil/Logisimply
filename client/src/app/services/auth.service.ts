@@ -27,7 +27,6 @@ export class AuthService {
   login(loginData) {
     return this.http.post<any>('/api/users/login', loginData)
       .map(data => {
-        // login successful if there's a jwt token in the response
         if (data['token']) {
           let decoded_token = jwt_decode(data['token']);
           localStorage.setItem("access_token" , data['token']);
@@ -36,6 +35,11 @@ export class AuthService {
       }).pipe(
         catchError(this.handleError)
       );
+  }
+
+  updateToken(token) {
+    localStorage.setItem("access_token" , token);
+    localStorage.setItem("current_user", JSON.stringify(jwt_decode(token)));
   }
 
   logout(){

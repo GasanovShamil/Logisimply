@@ -20,23 +20,23 @@
       <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
     </mat-form-field>
     <mat-form-field class="half-width">
-      <input matInput placeholder="{{ 'signup.lastname' | translate }}" formControlName="lastname" required>
+      <input matInput placeholder="{{ 'signup.firstname' | translate }}" formControlName="firstname" required>
     </mat-form-field>
     <mat-form-field class="half-width">
-      <input matInput placeholder="{{ 'signup.firstname' | translate }}" formControlName="firstname" required>
+      <input matInput placeholder="{{ 'signup.lastname' | translate }}" formControlName="lastname" required>
     </mat-form-field>
     <mat-form-field class="full-width">
       <input matInput placeholder="{{ 'signup.address' | translate }}" formControlName="address" required>
+    </mat-form-field>
+    <mat-form-field class="third">
+      <input matInput #postalCode placeholder="{{ 'signup.zipcode' | translate }}" formControlName="zipCode" required>
+      <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
     </mat-form-field>
     <mat-form-field class="third">
       <input matInput placeholder="{{ 'signup.town' | translate }}" formControlName="town" required>
     </mat-form-field>
     <mat-form-field class="third">
       <input matInput placeholder="{{ 'signup.country' | translate }}" formControlName="country" required>
-    </mat-form-field>
-    <mat-form-field class="third">
-      <input matInput #postalCode placeholder="{{ 'signup.zipcode' | translate }}" formControlName="zipCode" required>
-      <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
     </mat-form-field>
     <mat-form-field class="half-width">
       <input matInput placeholder="{{ 'signup.activity_type' | translate }}" formControlName="activityType">

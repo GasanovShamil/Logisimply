@@ -2,6 +2,8 @@ let localization = require("../localization/localize");
 let middleware = require("../helpers/middleware");
 let utils = require("../helpers/utils");
 let userModel = require("../models/User");
+let quoteModel = require("../models/Quote");
+let invoiceModel = require("../models/Invoice");
 let customerModel = require("../models/Customer");
 let express = require("express");
 let router = express.Router();
@@ -299,6 +301,8 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
     if (!customer)
         return res.status(400).json({message: localization[req.language].customers.code.failed});
 
+    await quoteModel.deleteMany({customer: customer.code, user: req.loggedUser._id});
+    await invoiceModel.deleteMany({customer: customer.code, user: req.loggedUser._id});
     let result = await customer.fullFormat();
     res.status(200).json({message: localization[req.language].customers.delete.one, data: result});
 }));
@@ -331,13 +335,13 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramCustomers = req.body;
-    let count = 0;
-    for (let i = 0; i < paramCustomers.length; i++) {
-        let customer = await customerModel.findOneAndRemove({code: paramCustomers[i].code, user: req.loggedUser._id});
-        if (customer)
-            count++;
-    }
-    res.status(200).json({message: localization[req.language].customers.delete.multiple, data: count});
+    let codes = paramCustomers.map(customer => customer.code);
+    let customers = await customerModel.find({code: {$in: codes}, user: req.loggedUser._id});
+    let customersCode = customers.map(customer => customer.code);
+    let result = await customerModel.deleteMany({code: {$in: codes}, user: req.loggedUser._id});
+    await quoteModel.deleteMany({customer: {$in: customersCode}, user: req.loggedUser._id});
+    await invoiceModel.deleteMany({customer: {$in: customersCode}, user: req.loggedUser._id});
+    res.status(200).json({message: localization[req.language].invoices.delete.multiple, data: result.deletedCount});
 }));
 
 /**

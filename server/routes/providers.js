@@ -266,13 +266,9 @@ router.delete("/delete/:code", middleware.wrapper(async (req, res) => {
  */
 router.post("/delete", middleware.wrapper(async (req, res) => {
     let paramProviders = req.body;
-    let count = 0;
-    for (let i = 0; i < paramProviders.length; i++) {
-        let provider = await providerModel.findOneAndRemove({code: paramProviders[i].code, user: req.loggedUser._id});
-        if (provider)
-            count++;
-    }
-    res.status(200).json({message: localization[req.language].providers.delete.multiple, data: count});
+    let codes = paramProviders.map(provider => provider.code);
+    let result = await providerModel.deleteMany({code: {$in: codes}, user: req.loggedUser._id});
+    res.status(200).json({message: localization[req.language].providers.delete.multiple, data: result.deletedCount});
 }));
 
 module.exports = router;
