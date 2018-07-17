@@ -258,7 +258,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   generateInvoice(){
     this.data.customer = this.data.customer.code;
     this.dataService.generateInvoiceFromQuote(this.data).subscribe(
-      data =>this.dialogRef.close({
+      data => this.dialogRef.close({
         generateInvoiceMode: true,
         data: data.data,
         message: data.data.code+' : '+data.message

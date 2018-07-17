@@ -26,12 +26,15 @@ invoiceSchema.methods.fullFormat = function(include) {
     let arrayContent = [];
     let discount = 0;
     let totalPriceET = 0;
+    console.log("ANTE/ total: " + totalPriceET + " - discount: " + discount + " - advanced: " + this.advancedPayment);
     for (let i = 0; i < this.content.length; i++) {
         let line = this.content[i].withTotal();
         arrayContent.push(line);
         discount += line.discount;
         totalPriceET += line.totalPriceET;
+        console.log("INSIDE/ total: " + totalPriceET + " - discount: " + discount + " - advanced: " + this.advancedPayment);
     }
+    console.log("POST/ total: " + totalPriceET + " - discount: " + discount + " - advanced: " + this.advancedPayment);
 
     let result = {
         customer: this.customer,
@@ -54,6 +57,8 @@ invoiceSchema.methods.fullFormat = function(include) {
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
+
+    console.log("FINAL/ total: " + totalPriceET + " - discount: " + discount + " - advanced: " + this.advancedPayment + " remaining: " + result.sumToPay);
 
     if (include && include.owner) {
         if (include.infos)

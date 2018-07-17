@@ -347,7 +347,7 @@
   },
   "incomesDialog": {
     "incomes": "Incomes",
-    "ammount": "Ammount",
+    "amount": "Ammount",
     "add_new_income":"Add new income",
     "add_income": "Add income",
     "payment_method": "Payment method",
