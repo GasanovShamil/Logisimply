@@ -130,7 +130,11 @@
     "sent": "Sent",
     "lock": "Lock",
     "payed": "Payed",
-    "details_edit": "Details/Edit"
+    "details_edit": "Details/Edit",
+    "send_quote": "Send quote",
+    "send_invoice": "Send invoice",
+    "download_quote": "Download quote",
+    "download_invoice": "Download invoice"
   },
   "billsDialog": {
     "quote": "Quote",
@@ -157,7 +161,9 @@
     "discount": "Discount",
     "type": "Type",
     "product": "Product",
-    "service": "Service"
+    "service": "Service",
+    "mobile_content_error_message": "On mobile device you can only add items from your database",
+    "delete_element": "Delete item"
   },
   "payment":{
     "siret": "Translate | Siret : ",

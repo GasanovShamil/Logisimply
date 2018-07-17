@@ -7,7 +7,6 @@ let cookieParser = require("cookie-parser");
 let bodyParser = require("body-parser");
 let cors = require("cors");
 let swaggerJSDoc = require("swagger-jsdoc");
-
 let test = require("./routes/test");
 let users = require("./routes/users");
 let customers = require("./routes/customers");

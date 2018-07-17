@@ -60,8 +60,8 @@ export class BillsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.displayedQuoteColumns = (this.mobileQuery.matches)?['select','code', 'customer', 'totalPriceET',  'info']:['select','code', 'subject', 'customer', 'dateQuote', 'datePayment','totalPriceET', 'status', 'info'];
-    this.displayedInvoiceColumns = (this.mobileQuery.matches)?['select','code', 'customer', 'totalPriceET', 'info']:['select','code', 'subject', 'customer', 'dateInvoice', 'datePayment','totalPriceET', 'status', 'info'];
+    this.displayedQuoteColumns = (this.mobileQuery.matches)?['select','code', 'customer', 'info']:['select','code', 'subject', 'customer', 'dateQuote', 'datePayment','totalPriceET', 'status', 'info'];
+    this.displayedInvoiceColumns = (this.mobileQuery.matches)?['select','code', 'customer', 'info']:['select','code', 'subject', 'customer', 'dateInvoice', 'datePayment','totalPriceET', 'status', 'info'];
     this.getQuotes();
   }
 
@@ -194,6 +194,16 @@ export class BillsComponent implements OnInit {
     }
   }
 
+  updateQuoteDataTable(quote: Quote){
+    let index: number = this.quoteDataSource.data.findIndex(i => i.code === quote.code);
+    this.quoteDataSource.data.splice(index, 1, quote);
+    this.quoteDataSource._updateChangeSubscription();
+  }
+  updateInvoiceDataTable(invoice: Invoice){
+    let index: number = this.invoiceDataSource.data.findIndex(i => i.code === invoice.code);
+    this.invoiceDataSource.data.splice(index, 1, invoice);
+    this.invoiceDataSource._updateChangeSubscription();
+  }
   openQuoteDialog(quote?: Quote): void {
     let config = this.mobileQuery.matches? {maxWidth: '100%', minWidth: '100px', data: (quote)?quote:null }:{width: '600px',  data: (quote)?quote:null };
     let dialogRef = this.dialog.open(QuoteDialogComponent, config);
@@ -201,11 +211,10 @@ export class BillsComponent implements OnInit {
       if(result){
         this.alertService.success(result.message);
         if(result.editMode){
-          console.log(JSON.stringify(result.data));
-          let index: number = this.quoteDataSource.data.findIndex(i => i.code === result.data.code);
-          this.quoteDataSource.data.splice(index, 1, result.data);
-          this.quoteDataSource._updateChangeSubscription();
-        } else {
+          this.updateQuoteDataTable(result.data);
+        } else if(result.sendMode){
+          this.sendQuote(result.data);
+        }else {
           this.quoteDataSource.data.push(result.data);
           this.quoteDataSource._updateChangeSubscription();
         }
@@ -229,5 +238,42 @@ export class BillsComponent implements OnInit {
         }
       }
     });
+  }
+
+  sendQuote(quote: Quote){
+    this.dataService.sendQuote(quote.code).subscribe(
+      data => {
+        console.log(data);
+        this.alertService.success(data.message);
+        this.updateQuoteDataTable(data.data);
+      },
+        error => {
+        this.alertService.error(error.error.message);
+        });
+  }
+
+  sendInvoice(invoice: Invoice){
+    this.dataService.sendInvoice(invoice.code).subscribe(
+      data => {
+        console.log(data);
+        this.alertService.success(data.message);
+        this.updateInvoiceDataTable(data.data);
+      },
+      error => {
+        this.alertService.error(error.error.message);
+      });
+  }
+
+  downloadInvoice(invoice: Invoice){
+
+  }
+
+  downloadQuote(quote: Quote){
+    this.dataService.downloadQuote(quote.code).subscribe(
+      data => {},
+      error => {
+        this.alertService.error(error.error.message);
+      }
+    )
   }
 }

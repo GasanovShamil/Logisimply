@@ -39,3 +39,7 @@
   display: inline-flex;
 }
 
+.mat-column-delete {
+  overflow: visible;
+  max-width: 40px;
+}

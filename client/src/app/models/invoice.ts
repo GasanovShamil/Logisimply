@@ -1,22 +1,22 @@
 import {Content} from "./content";
 
 export class Invoice {
-  customer: string;
-  code: string;
-  dateInvoice: string;
-  subject: string;
+  customer: any;
+  code: any;
+  dateInvoice: any;
+  subject: any;
   content: Content[];
-  discount: string;
-  totalPriceET: string;
-  advancedPayment: string;
-  sumToPay: string;
+  discount: any;
+  totalPriceET: any;
+  advancedPayment: any;
+  sumToPay: any;
   incomes: any[];
-  datePayment:string;
-  dateExecution: string;
-  collectionCost: boolean;
-  comment: string;
-  status: string;
-  user: string;
-  createdAt: string;
-  updatedAt: string;
+  datePayment:any;
+  dateExecution: any;
+  collectionCost: any;
+  comment: any;
+  status: any;
+  user: any;
+  createdAt: any;
+  updatedAt: any;
 }

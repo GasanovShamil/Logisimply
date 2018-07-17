@@ -3,7 +3,9 @@
     <div>
       {{ 'contactsDialog.customer' | translate }}
       <mat-hint align="end" class="close-button">
-        <mat-icon (click)="onCloseClick()" color="warn">clear</mat-icon>
+        <button mat-icon-button (click)="onCloseClick()">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
       </mat-hint>
       <mat-hint *ngIf="data && data.code" align="start">{{data.code}}</mat-hint>
     </div>

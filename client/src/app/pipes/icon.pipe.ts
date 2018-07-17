@@ -5,7 +5,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class IconPipe implements PipeTransform {
 
-  transform(value: any, color?: any): any {
+  transform(value: any): any {
     let res;
     switch (value) {
       case 'draft': {
@@ -14,12 +14,15 @@ export class IconPipe implements PipeTransform {
       }
       case 'sent': {
         res = 'mail';
+        break;
       }
       case 'lock': {
         res = 'lock';
+        break;
       }
       case 'payed': {
         res = 'attach_money';
+        break;
       }
     }
     return res;

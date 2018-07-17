@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {MatIconRegistry} from "@angular/material";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-root',
@@ -8,7 +10,14 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class AppComponent {
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    iconRegistry.addSvgIcon(
+      'pdf',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/pdf.svg'));
+    iconRegistry.addSvgIcon(
+      'paypal',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/paypal.svg')
+    )
     let browserLang = translate.getBrowserLang();
     let selectedLang = localStorage.getItem('Localize');
     translate.addLangs(['en', 'fr']);

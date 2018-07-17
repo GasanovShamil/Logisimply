@@ -13,7 +13,7 @@ module.exports = {
         document.addContent("object", localization[language].pdf.subject + quote.subject);
         document.addContent("legal_notice_immatriculation", localization[language].pdf.immatriculation);
 
-        document.addTable("content", utils.pdf.getTableBody(quote.content), utils.pdf.getTableHead());
+        document.addTable("content", utils.pdf.getTableBody(quote.content), utils.pdf.getTableHead(language));
         document.addTable("discount", [[quote.discount]], [utils.pdf.getCell(localization[language].pdf.discount, 70, "center")]);
         document.addTable("total", [[quote.totalPriceET + " €"]], [utils.pdf.getCell(localization[language].pdf.total, 70, "center")]);
         document.addContent("legal_notice_tva",localization[language].pdf.tva);
@@ -33,7 +33,8 @@ module.exports = {
                 console.log("PDF generate failed - user : " + quote.user._id + " / quote : " + quote.code);
             else {
                 console.log("PDF generate succeeded - user : " + quote.user._id + " / quote : " + quote.code);
-                callback(quote, language);
+                if (callback)
+                    callback(quote, language);
             }
         });
     },
@@ -70,7 +71,8 @@ module.exports = {
                 console.log("PDF generate failed - user : " + invoice.user._id + " / invoice : " + invoice.code);
             else {
                 console.log("PDF generate succeeded - user : " + invoice.user._id + " / invoice : " + invoice.code);
-                callback(invoice, language);
+                if (callback)
+                    callback(invoice, language);
             }
         });
     }

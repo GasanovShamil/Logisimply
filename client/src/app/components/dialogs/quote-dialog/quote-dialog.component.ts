@@ -36,8 +36,9 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   private _mobileQueryListener: () => void;
   customerSelectSubscription: Subscription;
   itemSelectSubscription: Subscription;
-  displayedColumns:string[] ;
+  displayedColumns: string[];
   myContents: Content[] = [];
+  mobile_content_error_message: string;
   contentDataSource = new MatTableDataSource(this.myContents);
   types = [{
     "name": "billsDialog.product",
@@ -47,8 +48,8 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
       "name": "billsDialog.service",
       "value": "service"
     }];
-  @ViewChild('inputCustomer', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
-  @ViewChild('inputItem', { read: MatAutocompleteTrigger }) triggerItem: MatAutocompleteTrigger;
+  @ViewChild('inputCustomer', {read: MatAutocompleteTrigger}) trigger: MatAutocompleteTrigger;
+  @ViewChild('inputItem', {read: MatAutocompleteTrigger}) triggerItem: MatAutocompleteTrigger;
 
   // @ViewChild('autoCustomer') trigger: MatAutocompleteTrigger;
   // @ViewChild('autoItem') triggerItem: MatAutocompleteTrigger;
@@ -80,15 +81,17 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         this.alertService.error(error.error.message);
       }
     )
-    if(this.data){
+    if (this.data) {
       this.contentDataSource.data = this.data.content;
       this.contentDataSource._updateChangeSubscription();
     }
-
+    this.translate.get(['billsDialog']).subscribe(translation => {
+      this.mobile_content_error_message = translation.billsDialog.mobile_content_error_message;
+    })
   }
 
   ngOnInit(): void {
-    this.displayedColumns = ['reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
+    this.displayedColumns = this.mobileQuery.matches ? ['delete','label', 'quantity'] : ['delete','reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
     this.setFormGroup();
     this.filteredOptions = this.quoteForm.controls['customer'].valueChanges
       .pipe(
@@ -97,7 +100,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         map(name => name ? this.filter(name) : this.myCustomers.slice())
       );
 
-   this.filteredOptionsItem = this.quoteForm.controls['itemRow'].valueChanges
+    this.filteredOptionsItem = this.quoteForm.controls['itemRow'].valueChanges
       .pipe(
         startWith<string | Item>(''),
         map(value => typeof value === 'string' ? value : (value) ? value.label : null),
@@ -192,7 +195,9 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   addItemRow() {
     let content = new Content();
     let itemRow: Item = this.quoteForm.controls['itemRow'].value;
-    if (itemRow) {
+    if (this.mobileQuery.matches && !itemRow) {
+      this.alertService.error(this.mobile_content_error_message);
+    } else if (itemRow) {
       content.reference = itemRow.reference;
       content.unitPriceET = itemRow.priceET;
       content.type = itemRow.type;
@@ -200,10 +205,17 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
       content.label = itemRow.label;
       content.quantity = 1;
       this.contentDataSource.data.push(content);
+      this.contentDataSource._updateChangeSubscription();
     } else {
       this.contentDataSource.data.push(content);
+      this.contentDataSource._updateChangeSubscription();
     }
-    this.contentDataSource._updateChangeSubscription();
+  }
+
+  sendQuote() {
+    if (!this.close && !this.editMode) {
+      this.dialogRef.close({data: this.data, sendMode: true})
+    }
   }
 
   saveData() {
@@ -213,7 +225,12 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         this.quoteForm.controls['content'].setValue(this.contentDataSource.data);
         if (this.editMode) {
           this.dataService.updateQuote(this.quoteForm.getRawValue()).subscribe(
-            data => this.dialogRef.close({data: data.data, message: data.message, editMode: this.editMode}),
+            data => this.dialogRef.close({
+              data: data.data,
+              message: data.message,
+              editMode: this.editMode,
+              sendMode: false
+            }),
             error => this.alertService.error(error.error.message)
           )
         } else {
@@ -241,7 +258,10 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         subject: new FormControl({value: this.data.subject, disabled: true}, []),
         content: new FormControl({value: this.data.content, disabled: true}, []),
         datePayment: new FormControl({value: this.data.datePayment, disabled: true}, [Validators.required]),
-        validity: new FormControl({value: this.data.validity, disabled: true }, [Validators.pattern('^\\d+$'), Validators.required]),
+        validity: new FormControl({
+          value: this.data.validity,
+          disabled: true
+        }, [Validators.pattern('^\\d+$'), Validators.required]),
         collectionCost: new FormControl({value: this.data.collectionCost, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
         status: new FormControl({value: this.data.status, disabled: true}, []),
@@ -256,7 +276,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         content: new FormControl('', []),
         datePayment: new FormControl('', [Validators.required]),
         validity: new FormControl('', [Validators.pattern('^\\d+$'), Validators.required]),
-        collectionCost: new FormControl('', [Validators.required]),
+        collectionCost: new FormControl({value: false, disabled: false}, [Validators.required]),
         comment: new FormControl('', []),
         status: new FormControl('', []),
         itemRow: new FormControl('', [])
@@ -285,6 +305,20 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
           this.quoteForm.controls['customer'].setValue(result.data);
         }
       });
+    }
+  }
+
+  deleteItemRow(content:Content){
+    let index: number = this.contentDataSource.data.findIndex(i => i.reference === content.reference);
+    this.contentDataSource.data.splice(index, 1);
+    this.contentDataSource._updateChangeSubscription();
+  }
+
+  disable() {
+    if (!this.editMode && this.saveButton) {
+      return false;
+    } else if (!this.editMode) {
+      return true;
     }
   }
 }
