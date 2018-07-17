@@ -1,37 +1,45 @@
-#activate-message {
-  background-image: url("/assets/images/background.jpg");
-  width: 100%;
-  height: 100vh;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  color: #FFFFFF;
-}
-
-#activate-message h1 {
-  margin: 0;
-  padding-top: 2%;
-  font-size: 4em;
+h1{
+  font-size: 8em;
   text-align: center;
-  text-shadow: 1px 1px #000000;
-}
-
-#activate-message h2 {
-  margin: 0;
-  margin-left: 20%;
-  padding-top: 10%;
-  font-size: 3.2em;
-  text-shadow: 1px 1px #000000;
-}
-
-#activate-message p {
-  margin: 0;
-  margin-left: 20%;
-  text-shadow: 1px 1px #000000;
-}
-
-#error-message {
-  background-image: url("/assets/images/error.png");
-  width: 100%;
-  height: 100vh;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   color: #FFFFFF;
+  padding-top: 2%;
+  margin: 0;
+}
+
+h2{
+  font-size: 1.7em;
+  color: #FFFFFF;
+  padding-top: 2%;
+}
+
+.material-icons {
+  font-size: 1.5em;
+}
+
+div.error{
+  background-color: #B9121B;
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+  width:100%;
+  text-align:center;
+}
+
+a.err {
+  text-decoration: none;
+  color: #B9121B;
+  font-weight: bold;
+}
+
+div.success{
+  background-color: #84D41D;
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+  width:100%;
+  text-align:center;
+}
+
+a.succ {
+  text-decoration: none;
+  color: #84D41D;
+  font-weight: bold;
 }

@@ -295,5 +295,10 @@
     "activity_started": "Activity started",
     "siret": "Siret",
     "user_form_error_message": "Please fill in all required form fields"
+  },
+  "activate": {
+    "congrats": "Congratulations ",
+    "activation": "your account has been activated !",
+    "back": "Back to home"
   }
 }
