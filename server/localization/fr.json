@@ -54,13 +54,13 @@
       "reference": "Ref",
       "label": "Libellé",
       "description": "Description",
-      "unit_price_ET": "P.U. H.T.",
+      "unit_price_ET": "PU HT",
       "quantity": "Qté",
       "discount": "Remise (€)",
-      "total_price_ET": "Total H.T."
+      "total_price_ET": "Total HT"
     },
     "discount": "Remise",
-    "total": "Total H.T.",
+    "total": "Total HT",
     "payed": "Total réglé",
     "sum_to_pay": "Restant dû",
     "tva": "TVA non applicable, art. 293 B du CGI",

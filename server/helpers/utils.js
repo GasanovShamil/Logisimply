@@ -49,7 +49,7 @@ module.exports = {
             return ["draft", "lock"].includes(status);
         },
         isIncomeMethodValid: function (method) {
-            return ["advanced", "paypal", "asset", "cash", "check"].includes(method);
+            return ["advanced", "paypal", "asset", "transfer", "cash", "check"].includes(method);
         }
     },
     format: {

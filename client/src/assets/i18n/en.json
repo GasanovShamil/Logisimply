@@ -188,16 +188,16 @@
     "content": {
       "reference": "Ref",
       "label": "Label",
-      "unit_price_ET": "U.P. E.T.",
+      "unit_price_ET": "UP ET",
       "quantity": "Qty",
       "discount": "Discount (€)",
-      "total_price_ET": "Total E.T."
+      "total_price_ET": "Total ET"
     },
     "date_payment": "Payment due date : ",
     "date_execution": "Sale/benefit date : ",
     "collection_cost": "Translate | En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
     "discount": "Discount (€)",
-    "total": "Total E.T.",
+    "total": "Total ET",
     "comment": "Comment : ",
     "payed": "Total payed",
     "sum_to_pay": "Remaining",
@@ -209,6 +209,7 @@
     },
     "income_method": {
       "paypal": "PayPal",
+      "transfer": "Transfer",
       "asset": "Asset",
       "cash": "Cash",
       "check": "Check"
@@ -290,6 +291,7 @@
         "advanced": "Advanced payments",
         "asset": "Assets",
         "paypal": "Paypal",
+        "transfer": "Transfer",
         "cash": "Cash",
         "check": "Checks"
       },

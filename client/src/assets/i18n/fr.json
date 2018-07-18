@@ -18,7 +18,7 @@
   },
   "signup": {
     "email_placeholder": "Email",
-    "password_placeholder": "Entrez votre e-mail",
+    "password_placeholder": "Mot de passe",
     "lastname": "Nom de famille",
     "firstname": "Prénom",
     "address": "Adresse",
@@ -26,9 +26,9 @@
     "country": "Pays",
     "zipcode": "Code postal",
     "activity_type": "Type d’activité",
-    "category_type": "Type de catégorie",
-    "activity_entitled": "Activité intitulée",
-    "activity_started": "Activité commencée",
+    "category_type": "Catégorie",
+    "activity_entitled": "Intitulé d'activité",
+    "activity_started": "Date de début d'activité",
     "siret": "Siret",
     "signup_button": "S’inscrire",
     "create_form_error_message": "Veuillez remplir tous les champs de formulaire requis",
@@ -188,16 +188,16 @@
     "content": {
       "reference": "Ref",
       "label": "Libellé",
-      "unit_price_ET": "P.U. H.T.",
+      "unit_price_ET": "PU HT",
       "quantity": "Qté",
       "discount": "Remise (€)",
-      "total_price_ET": "Total H.T."
+      "total_price_ET": "Total HT"
     },
     "date_payment": "Date d'échéance de paiement : ",
     "date_execution": "Date de la vente/prestation : ",
     "collection_cost": "En cas de retard de paiement, application d'une indemnité forfaitaire pour frais de recouvrement de 40€ selon l'article D. 441-5 du code du commerce.",
     "discount": "Remise (€)",
-    "total": "Total H.T.",
+    "total": "Total HT",
     "comment": "Commentaires : ",
     "payed": "Total réglé",
     "sum_to_pay": "Restant dû",
@@ -209,6 +209,7 @@
     },
     "income_method": {
       "paypal": "PayPal",
+      "transfer": "Virement",
       "asset": "Avoir",
       "cash": "Espèces",
       "check": "Chèque"
@@ -290,6 +291,7 @@
         "advanced": "Acomptes",
         "asset": "Avoirs",
         "paypal": "PayPal",
+        "transfer": "Virement",
         "cash": "Espèces",
         "check": "Chèques"
       },

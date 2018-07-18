@@ -38,6 +38,7 @@ router.get("/incomesPerMethod", middleware.wrapper(async (req, res) => {
     let advancedData = 0;
     let assetData = 0;
     let paypalData = 0;
+    let transferData = 0;
     let cashData = 0;
     let checkData = 0;
     let incomes = await incomeModel.find({user: req.loggedUser._id});
@@ -52,6 +53,9 @@ router.get("/incomesPerMethod", middleware.wrapper(async (req, res) => {
             case "paypal":
                 paypalData += incomes[i].amount;
                 break;
+            case "transfer":
+                transferData += incomes[i].amount;
+                break;
             case "cash":
                 cashData += incomes[i].amount;
                 break;
@@ -61,7 +65,7 @@ router.get("/incomesPerMethod", middleware.wrapper(async (req, res) => {
         }
     }
 
-    res.status(200).json({advanced: advancedData, asset: assetData, paypal: paypalData, cash: cashData, check: checkData});
+    res.status(200).json({advanced: advancedData, asset: assetData, paypal: paypalData, transfer: transferData, cash: cashData, check: checkData});
 }));
 
 router.get("/paymentStateOfInvoices", middleware.wrapper(async (req, res) => {
