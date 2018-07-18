@@ -32,8 +32,10 @@ module.exports = {
     },
     wrapper: function(callback) {
         return function(req, res) {
-            //callback(req, res).catch(() => res.status(500).json({message: localization[req.language].middleware.error}));
-            //callback(req, res).catch((err) => res.status(500).json({message: err}));
+            // callback(req, res).catch((err) => {
+            //     console.log(err);
+            //     res.status(500).json({message: localization[req.language].middleware.error})
+            // });
             callback(req, res);
         };
     }

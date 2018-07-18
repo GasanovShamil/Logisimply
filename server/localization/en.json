@@ -28,7 +28,8 @@
         "subject": "Download your invoice -",
         "hello": "Hello",
         "wording": "You will find attached the invoice :",
-        "wording_2": " to download."
+        "wording_2": " to download.",
+        "wording_3": "To pay, click on the link here :"
       },
       "contact": {
         "subject": "Request contact",

@@ -151,7 +151,7 @@
   <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.save_invoice' | translate }}" (click)="saveData()" [disabled]="!saveButton">
     <mat-icon>save</mat-icon>
   </button>
-  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.show_incomes' | translate }}" (click)="showIncomes()" [disabled]="editMode || saveButton">
+  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.show_incomes' | translate }}" (click)="showIncomes()" [disabled]="!data || data.status != 'lock'">
     <mat-icon svgIcon="income"></mat-icon>
   </button>
   <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()" [disabled]="editMode || saveButton">

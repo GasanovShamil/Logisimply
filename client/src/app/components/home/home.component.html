@@ -50,7 +50,7 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       <mat-form-field class="third-width">
-        <input matInput #siretHint placeholder="{{ 'home.siret' | translate }}" value="{{ me.siret }}" disabled />
+        <input matInput #siretHint placeholder="{{ 'home.siret' | translate }}" value="{{ me.siret | siret }}" disabled />
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions class="center">

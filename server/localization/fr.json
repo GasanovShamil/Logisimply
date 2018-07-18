@@ -22,7 +22,8 @@
         "subject": "Téléchargez votre devis -",
         "hello": "Bonjour",
         "wording": "Vous trouverez ci-joint, le devis :",
-        "wording_2": " à télécharger."
+        "wording_2": " à télécharger.",
+        "wording_3": "Pour payer, cliquez sur le lien suivant :"
       },
       "invoice": {
         "subject": "Téléchargez votre facture -",

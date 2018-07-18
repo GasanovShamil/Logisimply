@@ -113,7 +113,6 @@ export class ItemsComponent implements OnInit {
       if(result){
         this.alertService.success(result.message);
         if(result.editMode){
-          console.log(JSON.stringify(result.data));
           let index: number = this.itemDataSource.data.findIndex(i => i.reference === result.data.reference);
           this.itemDataSource.data.splice(index, 1, result.data);
           this.itemDataSource._updateChangeSubscription();

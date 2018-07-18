@@ -78,7 +78,8 @@
     "legalForm": "Legal form",
     "edit_mode": "Edit",
     "website": "Website",
-    "contacts_form_error_message": "Please fill in all required form fields"
+    "contacts_form_error_message": "Please fill in all required form fields",
+    "assets": "Assets"
   },
   "itemsDialog": {
     "title": "Product/Service",
