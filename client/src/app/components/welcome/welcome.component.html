@@ -61,12 +61,8 @@
   <div class="container">
     <div class="intro-text">
       <div class="intro-heading text-uppercase">LogiSimply</div>
-      <button type="button" class="btn btn-primary" mat-raised-button (click)="openSignupDialog()">{{ 'welcome.create' |
-        translate }}
-      </button>
-      <button type="button" class="btn btn-primary" mat-raised-button (click)="openLoginDialog()">{{'welcome.login' |
-        translate }}
-      </button>
+      <button *ngIf="!isLogged" type="button" class="btn btn-primary" mat-raised-button (click)="openSignupDialog()">{{ 'welcome.create' | translate }}</button>
+      <button type="button" class="btn btn-primary" mat-raised-button (click)="openLoginDialog()">{{ isLogged ? ('welcome.home' | translate) : ('welcome.login' | translate) }}</button>
     </div>
   </div>
 </header>

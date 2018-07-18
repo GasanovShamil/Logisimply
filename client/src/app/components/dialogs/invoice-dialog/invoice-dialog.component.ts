@@ -276,7 +276,9 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
         sumToPay: new FormControl({value: this.data.sumToPay, disabled: true}, []),
         totalPriceET: new FormControl({value: this.data.totalPriceET, disabled: true}, []),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
+        incomes: new FormControl({value: this.data.incomes, disabled: true}, []),
         status: new FormControl({value: this.data.status, disabled: true}, []),
+        user: new FormControl({value: this.data.user, disabled: true}, []),
         itemRow: new FormControl({value: '', disabled: true}, [])
       });
     } else {
@@ -294,7 +296,9 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
         sumToPay: new FormControl({value: '', disabled: true}, []),
         totalPriceET: new FormControl({value: '', disabled: true}, []),
         comment: new FormControl('', []),
+        incomes: new FormControl('', []),
         status: new FormControl('', []),
+        user: new FormControl('', []),
         itemRow: new FormControl('', [])
       });
     }
