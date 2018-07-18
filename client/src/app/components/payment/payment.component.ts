@@ -5,7 +5,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {AlertService} from '../../services/alert.service';
 import {MatTableDataSource} from '@angular/material';
-import {DatePipe} from "@angular/common";
 
 declare let paypal: any;
 
@@ -39,7 +38,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
       color: 'blue'
     },
     payment: (data, actions) => {
-      return actions.request.post('/api/payment/create', {
+      return actions.request.post('/api/payment/paypal/create', {
         user: this.paramUser,
         code: this.paramInvoice,
         amount: this.payingAmount
@@ -48,7 +47,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
       });
     },
     onAuthorize: (result, actions) => {
-      return actions.request.post('/api/payment/execute', {
+      return actions.request.post('/api/payment/paypal/execute', {
         user: this.paramUser,
         code: this.paramInvoice,
         amount: this.payingAmount,

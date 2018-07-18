@@ -1,7 +1,6 @@
 let config = require("../config");
 let localization = require("../localization/localize");
 let utils = require("./utils");
-let pdf = require("./pdf");
 let nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({
     service: config.email.service,
