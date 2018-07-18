@@ -183,7 +183,7 @@ export class BillsComponent implements OnInit {
         if (item.status !== 'draft') {
           cancel = true;
         }
-      })
+      });
       if (cancel) {
         this.alertService.error(this.errorMessageLockedInvoices);
       } else {
@@ -192,7 +192,7 @@ export class BillsComponent implements OnInit {
             this.invoiceSelection.selected.forEach(item => {
               let index: number = this.invoiceDataSource.data.findIndex(i => i === item);
               this.invoiceDataSource.data.splice(index, 1);
-            })
+            });
             this.invoiceDataSource._updateChangeSubscription();
             this.invoiceSelection.clear();
             this.alertService.success(data.message);
@@ -205,13 +205,13 @@ export class BillsComponent implements OnInit {
     }
   }
 
-  updateQuoteDataTable(quote: Quote) {
+  updateQuoteDataTable(quote) {
     let index: number = this.quoteDataSource.data.findIndex(i => i.code === quote.code);
     this.quoteDataSource.data.splice(index, 1, quote);
     this.quoteDataSource._updateChangeSubscription();
   }
 
-  updateInvoiceDataTable(invoice: Invoice) {
+  updateInvoiceDataTable(invoice) {
     let index: number = this.invoiceDataSource.data.findIndex(i => i.code === invoice.code);
     this.invoiceDataSource.data.splice(index, 1, invoice);
     this.invoiceDataSource._updateChangeSubscription();
@@ -234,8 +234,8 @@ export class BillsComponent implements OnInit {
           this.quoteDataSource.data.push(result.data);
           this.quoteDataSource._updateChangeSubscription();
         } else if(result.generateInvoiceMode){
-          this.invoiceDataSource.data.push(result.data);
-          this.invoiceDataSource._updateChangeSubscription();
+          this.getQuotes();
+          this.updateInvoiceDataTable(result.data);
         }
         this.alertService.success(result.message);
       }
@@ -293,12 +293,12 @@ export class BillsComponent implements OnInit {
   }
 
   downloadQuote(quote: Quote) {
-    this.dataService.downloadQuote(quote.code).subscribe(
-      data => {
-      },
-      error => {
-        this.alertService.error(error.error.message);
-      }
-    )
+    // this.dataService.downloadQuote(quote.code).subscribe(
+    //   data => {
+    //   },
+    //   error => {
+    //     this.alertService.error(error.error.message);
+    //   }
+    // )
   }
 }

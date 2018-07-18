@@ -231,8 +231,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
             data => this.dialogRef.close({
               data: data.data,
               message: data.message,
-              editMode: this.editMode,
-              sendMode: false
+              editMode: this.editMode
             }),
             error => this.alertService.error(error.error.message)
           )
