@@ -347,7 +347,7 @@
   },
   "incomesDialog": {
     "incomes": "Incomes",
-    "amount": "Ammount",
+    "amount": "Amount",
     "add_new_income":"Add new income",
     "add_income": "Add income",
     "payment_method": "Payment method",
@@ -356,7 +356,8 @@
       "asset": "Asset",
       "paypal": "PayPal",
       "cash": "Cash",
-      "check": "Check"
+      "check": "Check",
+      "transfer": "Transfer"
     },
     "dateIncome": "Income date"
   }

@@ -11,6 +11,7 @@ import {Invoice} from "../models/invoice";
 import "rxjs/add/operator/share";
 import "rxjs/add/operator/shareReplay";
 import "rxjs/add/operator/publish";
+import {Income} from "../models/income";
 
 @Injectable()
 export class DataService {
@@ -230,6 +231,17 @@ export class DataService {
       catchError(this.handleError)
     );
   }
+
+
+  ///////////////////////////// INCOME SECTION /////////////////////////////
+
+  addIncome(income: Income) {
+    return this.http.post<any>('api/payment/add', income).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

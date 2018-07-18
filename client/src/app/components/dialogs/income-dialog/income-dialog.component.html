@@ -9,10 +9,9 @@
   </div>
 </div>
 <div mat-dialog-content>
-  <form [formGroup]="incomeForm">
+  <form [formGroup]="incomeForm" (submit)="addIncome()">
     <mat-form-field class="third">
-      <mat-select placeholder="{{ 'incomesDialog.payment_method' | translate }}" #methodSelect formControlName="method"
-                  (change)="onSelectChange(methodSelect.value)" required cdkFocusInitial>
+      <mat-select placeholder="{{ 'incomesDialog.payment_method' | translate }}" #methodSelect formControlName="method" required cdkFocusInitial>
         <mat-option *ngFor="let item of methodTypes" [value]="item.value">
           {{ item.name | translate }}
         </mat-option>
@@ -27,39 +26,27 @@
     <mat-form-field class="third">
       <input matInput type="number" placeholder="{{ 'incomesDialog.amount' | translate }}" formControlName="amount">
     </mat-form-field>
-    <button mat-button mat-icon-button type="button" matSuffix (click)="addIncome()" color="primary"
-            matTooltip="{{ 'incomesDialog.add_new_income' | translate }}">
-      <mat-icon>add</mat-icon>
-    </button>
+    <div class="button-row">
+      <button mat-mini-fab type="submit" color="primary" matTooltip="{{ 'incomesDialog.add_new_income' | translate }}">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
   </form>
   <mat-table #table [dataSource]="incomeDataSource">
-    <!-- Reference Column -->
-    <ng-container matColumnDef="reference">
-      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.reference' | translate }}</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'incomesDialog.reference' | translate }}" [value]="element.reference"
-               [(ngModel)]="element.reference" [disabled]="disable() || mobileQuery.matches">
-      </mat-cell>
+    <!-- Method Column -->
+    <ng-container matColumnDef="method">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.payment_method' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ 'incomesDialog.payment_methods.'+element.method | translate }} </mat-cell>
     </ng-container>
-    <!-- Type Column -->
-    <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.type' | translate }}</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <mat-select placeholder="{{ 'incomesDialog.type' | translate }}" #typeSelect [value]="element.type"
-                    [(ngModel)]="element.type" [disabled]="disable() || mobileQuery.matches">
-          <mat-option *ngFor="let item of types" [value]="item.value">
-            {{ item.name | translate }}
-          </mat-option>
-        </mat-select>
-      </mat-cell>
+    <!-- Date Column date: 'dd/MM/yyyy'-->
+    <ng-container matColumnDef="dateIncome">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.dateIncome' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.dateIncome | date: 'dd/MM/yyyy'}} </mat-cell>
     </ng-container>
-    <!-- Label Column -->
-    <ng-container matColumnDef="label">
-      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.label' | translate }}</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <input matInput placeholder="{{ 'incomesDialog.label' | translate }}" [value]="element.label"
-               [(ngModel)]="element.label" [disabled]="disable() || mobileQuery.matches">
-      </mat-cell>
+    <!-- amount Column -->
+    <ng-container matColumnDef="amount">
+      <mat-header-cell *matHeaderCellDef> {{ 'incomesDialog.amount' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.amount}}</mat-cell>
     </ng-container>
     <!-- unitPriceET Column -->
     <ng-container matColumnDef="unitPriceET">
@@ -99,19 +86,8 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 </div>
-<div mat-dialog-actions class="button-row">
-  <button mat-mini-fab color="primary" matTooltip="{{ 'incomesDialog.save_invoice' | translate }}" (click)="saveData()"
-          [disabled]="!saveButton">
-    <mat-icon>save</mat-icon>
-  </button>
-  <button mat-mini-fab color="primary" matTooltip="{{ 'incomesDialog.show_incomes' | translate }}"
-          (click)="showIncomes()" [disabled]="editMode || saveButton">
-    <mat-icon svgIcon="income"></mat-icon>
-  </button>
-  <button mat-mini-fab color="primary" matTooltip="{{ 'billsDialog.send_invoice' | translate }}" (click)="sendInvoice()"
-          [disabled]="editMode || saveButton">
-    <mat-icon>send</mat-icon>
-  </button>
+<div mat-dialog-actions>
+
 </div>
 
 
