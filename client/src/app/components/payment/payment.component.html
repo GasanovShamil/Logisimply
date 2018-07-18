@@ -2,10 +2,9 @@
   <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
 </div>
 
-<div id="error-invoice" class="red" *ngIf="!isLoadingResults && !isInvoiceReady">
-  <div id="error-invoice-container" class="form-group">
-    {{ errorMessage }}
-  </div>
+<div id="error-invoice" *ngIf="!isLoadingResults && !isInvoiceReady">
+  <h1><i class="material-icons">error</i></h1>
+  <h2>{{ errorMessage }}</h2>
 </div>
 
 <div id="error-mobile" class="red" *ngIf="!isLoadingResults && isInvoiceReady && mobileQuery.matches">
