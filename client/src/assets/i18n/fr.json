@@ -51,7 +51,7 @@
     "legal_form": "Forme juridique",
     "details_edit": "Détails/Modifier",
     "code": "Code",
-    "private": "Privé",
+    "private": "Particulier",
     "professional": "Professionnel",
     "select_at_least_one": "Vous devez selectionner au moins un élément!",
     "customer_delete_warning": "Tous les devis/factures de ce client seront supprimés!"
@@ -68,7 +68,7 @@
     "town": "Ville",
     "country": "Pays",
     "zipcode": "Code postal",
-    "private": "Privé",
+    "private": "Particulier",
     "professional": "Professionnel",
     "phone": "Phone",
     "siret": "Siret",
@@ -92,7 +92,7 @@
     "edit_mode": "Modifier"
   },
   "dataSelect": {
-    "private_customer": "Privé",
+    "private_customer": "Particulier",
     "professional_customer": "Professionnel",
     "product": "Produit",
     "service": "Service"
@@ -173,7 +173,7 @@
     "save_invoice": "Sauvegarder facture",
     "generate_invoice": "Générer une facture",
     "dateExecution": "Date d’execution",
-    "advancedPayment": "Pré-paiement",
+    "advancedPayment": "Acompte",
     "show_incomes": "Afficher les revenus",
     "total_discount": "Remise",
     "sumToPay": "Non payé",

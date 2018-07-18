@@ -51,6 +51,7 @@ export class PaymentComponent implements OnInit, AfterViewChecked {
         user: this.paramUser,
         code: this.paramInvoice,
         amount: this.payingAmount,
+        max: this.maxAmount,
         payment: result.paymentID,
         payer: result.payerID,
         data: result

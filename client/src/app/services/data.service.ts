@@ -235,8 +235,8 @@ export class DataService {
 
   ///////////////////////////// INCOME SECTION /////////////////////////////
 
-  addIncome(income: Income) {
-    return this.http.post<any>('api/payment/add', income).pipe(
+  addIncome(data) {
+    return this.http.post<any>('api/payment/add', data).pipe(
       catchError(this.handleError)
     );
   }

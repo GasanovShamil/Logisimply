@@ -42,12 +42,15 @@ export class IncomeDialogComponent implements OnInit {
   addIncome() {
     if (!this.close) {
       if (this.incomeForm.valid) {
-        this.dataService.addIncome(this.incomeForm.getRawValue()).subscribe(
+        let income = this.incomeForm.getRawValue();
+        this.dataService.addIncome({income: income, max: this.data.sumToPay}).subscribe(
           data => {
             this.alertService.success(data.message);
             this.incomeDataSource.data.push(data.data.income);
             this.incomeDataSource._updateChangeSubscription();
-            this.data = data.data.invoice;
+            this.data.sumToPay = data.data.max;
+            console.log(data.data.max);
+            this.data.status = data.data.status;
             this.incomesUpdated = true;
           },
           error => this.alertService.error(error.error.message)

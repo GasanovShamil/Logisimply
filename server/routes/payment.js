@@ -171,6 +171,7 @@ router.post("/paypal/execute", middleware.wrapper(async (req, res) => {
     let paramUser = req.body.user;
     let paramCode = req.body.code;
     let paramAmount = req.body.amount;
+    let paramMax = req.body.max;
     let paramPayment = req.body.payment;
     let paramPayer = req.body.payer;
     let invoice = await invoiceModel.findOne({code: paramCode, status: "lock", user: paramUser});
@@ -186,31 +187,30 @@ router.post("/paypal/execute", middleware.wrapper(async (req, res) => {
             payer_id: paramPayer,
             transactions: utils.paypal.getTransactions(invoice, paramAmount)
         }
-    }, function(err, response) {
+    }, async (err, response) => {
         if (err)
-            return res.sendStatus(500);
+            res.json({executeStatus: 500});
 
-        let executeStatus = response.statusCode;
-        request({
-            url: config.url + "/api/payment/add/",
-            method: "post",
-            headers: utils.forward.getHeaders(req, false),
-            json: {
-                method: "paypal",
-                amount: paramAmount,
-                invoice: invoice.code,
-                user: invoice.user,
-                customer: invoice.customer,
-                dateIncome: new Date()
-            }
-        }, function(err, response, body) {
-            if (err)
-                return res.sendStatus(500);
-
-            res.json({executeStatus: executeStatus, incomeStatus: response.statusCode, message: body.message, data: body.data.income});
+        let income = await incomeModel.create({
+            method: "paypal",
+            amount: paramAmount,
+            invoice: invoice.code,
+            user: invoice.user,
+            customer: invoice.customer,
+            dateIncome: new Date(),
+            createdAt: new Date()
         });
+
+        if (paramAmount >= paramMax) {
+            invoice.status = "payed";
+            invoice.save();
+        }
+
+        res.json({executeStatus: 200, incomeStatus: 200, message: localization[req.language].invoices.income.success, data: income});
     });
 }));
+
+router.use(middleware.isLogged);
 
 /**
  * @swagger
@@ -218,7 +218,7 @@ router.post("/paypal/execute", middleware.wrapper(async (req, res) => {
  *   post:
  *     tags:
  *       - Payment
- *     description: Anonymous - Add an income to an invoice
+ *     description: Logged - Add an income to an invoice
  *     produces:
  *       - application/json
  *     parameters:
@@ -237,7 +237,8 @@ router.post("/paypal/execute", middleware.wrapper(async (req, res) => {
  *           $ref: '#/definitions/Income'
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
-    let paramIncome = req.body;
+    let paramIncome = req.body.income;
+    let paramMax = req.body.max;
 
     if (!utils.fields.isIncomeMethodValid(paramIncome.method) || paramIncome.amount <= 0)
         return res.status(400).json({message: localization[req.language].fields.prohibited});
@@ -245,11 +246,12 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.fields.isIncomeComplete(paramIncome))
         return res.status(400).json({message: localization[req.language].fields.required});
 
-    let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
+    let countInvoice = await invoiceModel.countDocuments({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: req.loggedUser._id});
     if (countInvoice === 0)
         return res.status(400).json({message: localization[req.language].invoices.income.impossible});
 
     paramIncome.createdAt = new Date();
+
     if (paramIncome.method === "asset") {
         let customer = await customerModel.findOne({code: paramIncome.customer, user: paramIncome.user});
         if (!customer)
@@ -262,20 +264,17 @@ router.post("/add", middleware.wrapper(async (req, res) => {
         customer.save();
     }
 
-    let invoice = await invoiceModel.findOne({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
-    let check = await invoice.fullFormat({owner: paramIncome.user, incomes: true});
-    if (paramIncome.amount > check.sumToPay)
+    if (paramIncome.amount > paramMax)
         return res.status(400).json({message: localization[req.language].fields.prohibited});
 
-    if (paramIncome.amount === check.sumToPay) {
+    let invoice = await invoiceModel.findOne({code: paramIncome.invoice, customer: paramIncome.customer, status: "lock", user: paramIncome.user});
+    if (paramIncome.amount === paramMax) {
         invoice.status = "payed";
         invoice.save();
     }
 
     let income = await incomeModel.create(paramIncome);
-    let resultIncome = await income.fullFormat();
-    let resultInvoice = await invoice.fullFormat({owner: paramIncome.user, infos: true});
-    res.status(200).json({message: localization[req.language].invoices.income.success, data: {income: resultIncome, invoice: resultInvoice}});
+    res.status(200).json({message: localization[req.language].invoices.income.success, data: {income: income, status: invoice.status, max: paramMax - paramIncome.amount}});
 }));
 
 module.exports = router;

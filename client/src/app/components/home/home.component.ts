@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
   incomesPerCustomerTypeChart = [];
   isIncomesPerMethodLoading: boolean = true;
   incomesPerMethodChart = [];
-  isPaymentStateOfInvoicesLoading: boolean = true;
+  isPaymentStateOfInvoicesLoading: boolean = false;
   paymentStateOfInvoicesChart = [];
 
   constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, private authService: AuthService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
     this.getMe();
     this.getIncomesPerCustomerType();
     this.getIncomesPerMethod();
-    this.getPaymentStateOfInvoices();
+    //this.getPaymentStateOfInvoices();
   }
 
   getMe() {

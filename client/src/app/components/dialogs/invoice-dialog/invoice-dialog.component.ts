@@ -40,6 +40,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
   itemSelectSubscription: Subscription;
   displayedColumns: string[];
   myContents: Content[] = [];
+  incomesUpdated:boolean =  false;
   mobile_content_error_message: string;
   contentDataSource = new MatTableDataSource(this.myContents);
   types = [{
@@ -306,7 +307,15 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
 
   onCloseClick(): void {
     this.close = true;
-    this.dialogRef.close();
+    if(this.incomesUpdated){
+      this.dialogRef.close({
+        data: this.data,
+        editMode: true
+      })
+    }else{
+      this.dialogRef.close();
+    }
+
   }
 
   openCustomerDialog(customer?: Customer): void {
@@ -346,6 +355,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.data = result;
+          this.incomesUpdated = true;
           this.setFormGroup();
         }
       });
