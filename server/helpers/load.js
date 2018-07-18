@@ -10,7 +10,7 @@ module.exports = {
         if (object.customer)
             object.customer = (await customerModel.findOne({code: object.customer, user: user}).exec()).fullFormat();
 
-        if (object.incomes && object.sumToPay && object.payed) {
+        if (object.incomes && (typeof(object.sumToPay) === "number") && (typeof(object.payed) === "number")) {
             let incomes = await incomeModel.find({invoice: object.code, user: user, method: {$ne: "advanced"}}).exec();
             object.incomes = [];
             for (let i = 0; i < incomes.length; i++) {
