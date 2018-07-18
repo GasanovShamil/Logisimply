@@ -3,6 +3,6 @@
   <p>{{data.message}}</p>
 </div>
 <div mat-dialog-actions class="button-row">
-  <button mat-mini-fab color="warn" (click)="onNoClick()" cdkFocusInitial>{{'confirmDialog.cancel' | translate}}</button>
-  <button mat-mini-fab color="primary" (click)="onYesClick()" >{{'confirmDialog.confirm' | translate}}</button>
+  <button mat-mini-fab color="warn" (click)="onNoClick()" cdkFocusInitial><mat-icon>cancel</mat-icon></button>
+  <button mat-mini-fab color="primary" (click)="onYesClick()" ><mat-icon>check</mat-icon></button>
 </div>

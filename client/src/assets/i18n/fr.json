@@ -78,7 +78,8 @@
     "legalForm": "Forme juridique",
     "edit_mode": "Modifier",
     "website": "Website",
-    "contacts_form_error_message": " Veuillez remplir tous les champs de formulaire requis"
+    "contacts_form_error_message": " Veuillez remplir tous les champs de formulaire requis",
+    "assets": "Avoirs"
   },
   "itemsDialog": {
     "title": "Produit/Service",

@@ -110,22 +110,26 @@ router.use(middleware.isLogged);
  */
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramInvoice = req.body;
+    console.log("1");
     if (!utils.fields.isInvoiceComplete(paramInvoice))
         return res.status(400).json({message: localization[req.language].fields.required});
-
+    console.log("2");
     let countCustomer = await customerModel.countDocuments({code: paramInvoice.customer, user: req.loggedUser._id});
     if (countCustomer === 0)
         return res.status(400).json({message: localization[req.language].customers.code.failed});
-
+    console.log("3");
     let user = await userModel.findOne({_id: req.loggedUser._id});
     user.parameters.invoices += 1;
     user.save();
+    console.log("4");
     paramInvoice.code = "FA" + utils.format.getDateCode() + utils.format.getCode(user.parameters.invoices);
     paramInvoice.status = "draft";
     paramInvoice.user = req.loggedUser._id;
     paramInvoice.createdAt = new Date();
+    console.log("5");
     let invoice = await invoiceModel.create(paramInvoice);
     let result = await invoice.fullFormat({owner: req.loggedUser._id, customer: true});
+    console.log("6");
     res.status(200).json({message: localization[req.language].invoices.add, data: result});
 }));
 

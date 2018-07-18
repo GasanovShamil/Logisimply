@@ -100,7 +100,8 @@ export class CustomerDialogComponent implements OnInit {
         zipCode: new FormControl({value: this.data.zipCode, disabled: true}, [Validators.required, Validators.maxLength(5), Validators.minLength(5)]),
         town: new FormControl({value: this.data.town, disabled: true}, [Validators.required]),
         country: new FormControl({value: this.data.country, disabled: true}, [Validators.required]),
-        comment: new FormControl({value: this.data.comment, disabled: true}, [])
+        comment: new FormControl({value: this.data.comment, disabled: true}, []),
+        assets: new FormControl({value: this.data.assets, disabled: true}, [Validators.required])
       });
     } else {
       this.customerForm = new FormGroup({
@@ -118,7 +119,8 @@ export class CustomerDialogComponent implements OnInit {
         zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5),Validators.pattern('^\\d+$')]),
         town: new FormControl('', [Validators.required]),
         country: new FormControl('', [Validators.required]),
-        comment: new FormControl('', [])
+        comment: new FormControl('', []),
+        assets: new FormControl({value: 0, disabled: false}, [Validators.required])
       });
     }
   }

@@ -259,7 +259,7 @@ export class BillsComponent implements OnInit {
           this.invoiceDataSource.data.push(result.data);
           this.invoiceDataSource._updateChangeSubscription();
         }
-        this.alertService.success(result.message);
+        if (result.message) this.alertService.success(result.message);
       }
     });
   }

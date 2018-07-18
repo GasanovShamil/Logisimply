@@ -28,6 +28,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
   saveButton: boolean = (this.data) ? false : true;
   editLablePosition = 'before';
   invoiceForm: FormGroup;
+  incomesUpdated:boolean = false;
   editMode: boolean = false;
   close: boolean = false;
   myCustomers: Customer[] = [];
@@ -306,7 +307,14 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
 
   onCloseClick(): void {
     this.close = true;
-    this.dialogRef.close();
+    if(this.incomesUpdated){
+      this.dialogRef.close({
+        data: this.data,
+        editMode: this.editMode
+      })
+    }else{
+      this.dialogRef.close();
+    }
   }
 
   openCustomerDialog(customer?: Customer): void {
@@ -346,6 +354,7 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.data = result;
+          this.incomesUpdated = true;
           this.setFormGroup();
         }
       });

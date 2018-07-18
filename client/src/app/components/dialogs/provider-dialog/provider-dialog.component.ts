@@ -71,6 +71,7 @@ export class ProviderDialogComponent implements OnInit {
     }
   }
 
+
   setFormGroup(){
     if(this.data){
       this.saveButton = false;
@@ -81,7 +82,7 @@ export class ProviderDialogComponent implements OnInit {
         siret: new FormControl({value: this.data.siret, disabled: true}, [Validators.maxLength(14), Validators.minLength(14), Validators.pattern('^\\d+$'),Validators.required]),
         phone: new FormControl({value: this.data.phone, disabled: true}, []),
         email: new FormControl({value: this.data.email, disabled: true}, [Validators.required, Validators.email]),
-        website: new FormControl({value: this.data.website, disabled: true}, [Validators.pattern('(http(s)?://)?([\\w-]+\\.)+[\\w-]+[.com]+(/[/?%&=]*)?')]),
+        website: new FormControl({value: this.data.website, disabled: true}, []),
         address: new FormControl({value: this.data.address, disabled: true}, [Validators.required]),
         zipCode: new FormControl({value: this.data.zipCode, disabled: true}, [Validators.required, Validators.maxLength(5), Validators.minLength(5),Validators.pattern('^\\d+$'),Validators.pattern('^\\d+$')]),
         town: new FormControl({value: this.data.town, disabled: true}, [Validators.required]),
@@ -95,7 +96,7 @@ export class ProviderDialogComponent implements OnInit {
         siret: new FormControl('', [Validators.maxLength(14), Validators.minLength(14), Validators.pattern('^\\d+$'),Validators.required]),
         phone: new FormControl('', []),
         email: new FormControl('', [Validators.required, Validators.email]),
-        website: new FormControl('', [Validators.pattern('(http(s)?://)?([\\w-]+\\.)+[\\w-]+[.com]+(/[/?%&=]*)?')]),
+        website: new FormControl('', []),
         address: new FormControl('', [Validators.required]),
         zipCode: new FormControl('', [Validators.required, Validators.maxLength(5), Validators.minLength(5),Validators.pattern('^\\d+$')]),
         town: new FormControl('', [Validators.required]),
