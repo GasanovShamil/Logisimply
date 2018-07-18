@@ -32,10 +32,12 @@ module.exports = {
         return object;
     },
     incomes: async (object, user) => {
-        if (object.incomes && object.sumToPay && object.payed) {
+        if (object.incomes && (typeof(object.sumToPay) === "number") && (typeof(object.payed) === "number")) {
             let incomes = await incomeModel.find({invoice: object.code, user: user, method: {$ne: "advanced"}}).exec();
             object.incomes = incomes;
             for (let i = 0; i < incomes.length; i++) {
+                console.log(typeof incomes[i]);
+                console.log(incomes[i]);
                 object.incomes.push(incomes[i].fullFormat());
                 object.sumToPay -= incomes[i].amount;
                 object.payed += incomes[i].amount;

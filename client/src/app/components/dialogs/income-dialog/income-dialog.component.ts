@@ -19,8 +19,8 @@ export class IncomeDialogComponent implements OnInit {
   incomeForm: FormGroup;
   close: boolean = false;
   incomeDataSource: MatTableDataSource<Income>;
-  displayedColumns:string[];
-
+  displayedColumns: string[];
+  incomesUpdated:boolean = false;
   methodTypes = [
     {
       "name": "incomesDialog.payment_methods.asset",
@@ -40,15 +40,19 @@ export class IncomeDialogComponent implements OnInit {
     }];
 
   addIncome() {
-    if(this.incomeForm.valid){
-      this.dataService.addIncome(this.incomeForm.getRawValue()).subscribe(
-        data => {
-          this.alertService.success(data.message);
-          this.incomeDataSource.data.push(data.data);
-          this.incomeDataSource._updateChangeSubscription();
-        },
-        error => this.alertService.error(error.error.message)
-      )
+    if (!this.close) {
+      if (this.incomeForm.valid) {
+        this.dataService.addIncome(this.incomeForm.getRawValue()).subscribe(
+          data => {
+            this.alertService.success(data.message);
+            this.incomeDataSource.data.push(data.data.income);
+            this.incomeDataSource._updateChangeSubscription();
+            this.data = data.data.invoice;
+            this.incomesUpdated = true;
+          },
+          error => this.alertService.error(error.error.message)
+        )
+      }
     }
   }
 
@@ -73,7 +77,7 @@ export class IncomeDialogComponent implements OnInit {
 
   onCloseClick(): void {
     this.close = true;
-    this.dialogRef.close();
+    this.dialogRef.close(this.incomesUpdated? this.data:null);
   }
 
   setFormGroup() {
