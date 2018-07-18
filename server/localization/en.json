@@ -56,13 +56,13 @@
       "reference": "Ref",
       "label": "Label",
       "description": "Description",
-      "unit_price_ET": "U.P. E.T.",
+      "unit_price_ET": "UP ET",
       "quantity": "Qty",
       "discount": "Discount (€)",
-      "total_price_ET": "Total E.T."
+      "total_price_ET": "Total ET"
     },
     "discount": "Discount",
-    "total": "Total E.T.",
+    "total": "Total ET",
     "payed": "Total payed",
     "sum_to_pay": "Remaining to pay",
     "tva": "Translate | TVA non applicable, art. 293 B du CGI",
