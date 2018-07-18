@@ -18,12 +18,13 @@ import {DataService} from "../../services/data.service";
 export class WelcomeComponent implements OnInit, AfterViewChecked {
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
-  addScript:boolean = true;
+  addScript: boolean = true
+  isLogged: boolean = this.authService.isLogedIn();
   contactName: string = '';
   contactEmail: string = '';
   contactMessage: string = '';
 
-  constructor(private auth: AuthService, private router: Router, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public dialog: MatDialog, private alertService: AlertService, private dataService: DataService) {
+  constructor(private auth: AuthService, private router: Router, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public dialog: MatDialog, private authService: AuthService, private alertService: AlertService, private dataService: DataService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
