@@ -273,7 +273,8 @@
     "siret": "Siret",
     "update": "Update",
     "credentials": "PayPal credentials",
-    "name": "Name",
+    "turnover_current": "Current turnover",
+    "turnover_future": "Future turnover",
     "stats": {
       "month": {
         "jan": "January",

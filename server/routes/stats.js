@@ -74,9 +74,13 @@ router.get("/paymentStateOfInvoices", middleware.wrapper(async (req, res) => {
     let today = new Date();
     let invoices = await invoiceModel.find({user: req.loggedUser._id, status: 'lock', dateInvoice: {$gte: new Date(today.getFullYear(), 1, 1), $lt: new Date(today.getFullYear() + 1, 1, 1)}});
     for (let i = 0; i < invoices.length; i++) {
-        let invoice = await invoices[i].fullFormat({owner: req.loggedUser._id, incomes: true});
-        payedData[invoice.dateInvoice.getMonth()] += invoice.payed;
-        sumToPayData[invoice.dateInvoice.getMonth()] += invoice.sumToPay;
+        let invoice = await invoices[i].fullFormat();
+        let incomes = await incomeModel.find({user: req.loggedUser._id, invoice: invoice.code});
+        let total = 0;
+        for (let j = 0; j < incomes.length; j++)
+            total += incomes[j].amount;
+        payedData[invoices[i].dateInvoice.getMonth()] = total;
+        sumToPayData[invoice.dateInvoice.getMonth()] += total - invoice.totalPriceET;
         sumToPayData[invoice.dateInvoice.getMonth()] *= -1;
     }
 

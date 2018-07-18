@@ -49,7 +49,6 @@ export class IncomeDialogComponent implements OnInit {
             this.incomeDataSource.data.push(data.data.income);
             this.incomeDataSource._updateChangeSubscription();
             this.data.sumToPay = data.data.max;
-            console.log(data.data.max);
             this.data.status = data.data.status;
             this.incomesUpdated = true;
           },

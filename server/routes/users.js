@@ -309,7 +309,18 @@ router.use(middleware.isLogged);
  *           $ref: '#/definitions/User'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    res.status(200).json(req.loggedUser);
+    let today = new Date();
+    let turnoverCurrent = 0
+    let incomes = await incomeModel.find({user: req.loggedUser._id, dateIncome: {$gte: new Date(today.getFullYear(), 1, 1), $lt: new Date(today.getFullYear() + 1, 1, 1)}});
+    for (let i = 0; i < incomes.length; i++)
+        turnoverCurrent += incomes[i].amount;
+
+    let turnoverFuture = 0;
+    let invoices = await invoiceModel.find({user: req.loggedUser._id, status: {$ne: 'draft'}, dateInvoice: {$gte: new Date(today.getFullYear(), 1, 1), $lt: new Date(today.getFullYear() + 1, 1, 1)}});
+    for (let i = 0; i < invoices.length; i++)
+        turnoverFuture += invoices[i].fullFormat().totalPriceET
+
+    res.status(200).json({me: req.loggedUser, turnover: {current: turnoverCurrent, future: turnoverFuture}});
 }));
 
 /**

@@ -21,12 +21,13 @@ export class HomeComponent implements OnInit {
   isUserReady: boolean = false;
   isPaypalAllowed: boolean = false;
   me: any;
+  turnover: any;
   errorMessage = '';
   isIncomesPerCustomerTypeLoading: boolean = true;
   incomesPerCustomerTypeChart = [];
   isIncomesPerMethodLoading: boolean = true;
   incomesPerMethodChart = [];
-  isPaymentStateOfInvoicesLoading: boolean = false;
+  isPaymentStateOfInvoicesLoading: boolean = true;
   paymentStateOfInvoicesChart = [];
 
   constructor(public translate: TranslateService, private alertService : AlertService, private userService : UserService, private authService: AuthService, public dialog: MatDialog, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
@@ -39,7 +40,7 @@ export class HomeComponent implements OnInit {
     this.getMe();
     this.getIncomesPerCustomerType();
     this.getIncomesPerMethod();
-    //this.getPaymentStateOfInvoices();
+    this.getPaymentStateOfInvoices();
   }
 
   getMe() {
@@ -47,8 +48,9 @@ export class HomeComponent implements OnInit {
       data => {
         this.isUserLoading = false;
         this.isUserReady = true;
-        this.me = data;
-        this.isPaypalAllowed = data.credentials;
+        this.me = data.me;
+        this.isPaypalAllowed = data.me.credentials;
+        this.turnover = data.turnover;
       },
       error => {
         this.isUserLoading = false;

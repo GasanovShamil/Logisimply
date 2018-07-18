@@ -273,7 +273,8 @@
     "siret": "Siret",
     "update": "Mettre à jour",
     "credentials": "Informations PayPal",
-    "name": "Nom",
+    "turnover_current": "Chiffre d'affaire actuel",
+    "turnover_future": "Chiffre d'affaire prévisionnel",
     "stats": {
       "month": {
         "jan": "Janvier",
