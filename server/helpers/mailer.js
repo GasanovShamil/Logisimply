@@ -17,7 +17,7 @@ module.exports = {
         let mailOptions = {
             from: config.email.user,
             to: user.email,
-            subject: localization[language].email.template.activation.subject,
+            subject: localization[language].email.template.activate.subject,
             text: localization[language].email.template.activation.hello + " " + user.firstname + ",\n" + localization[language].email.template.activation.wording + " " + url + "\n" + localization[language].email.template.courtesy.courtesy_form + "\n" + localization[language].email.template.courtesy.signature,
             html: "<p>" + localization[language].email.template.activation.hello + " " + user.firstname + "</p><p>" + localization[language].email.template.activation.wording + "<b> <a href='" + url + "' target='_blank'>" + localization[language].email.template.activation.click + "</a></p><p>" + localization[language].email.template.courtesy.courtesy_form + "</p><p>" + localization[language].email.template.courtesy.signature + "</p>"
         };
