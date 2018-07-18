@@ -83,7 +83,7 @@ router.get("/:user/:code/display", middleware.wrapper(async (req, res) => {
 
 /**
  * @swagger
- * /payment/create:
+ * /payment/paypal/create:
  *   post:
  *     tags:
  *       - Payment
@@ -108,7 +108,7 @@ router.get("/:user/:code/display", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: The payment's id
  */
-router.post("/create", middleware.wrapper(async (req, res) => {
+router.post("/paypal/create", middleware.wrapper(async (req, res) => {
     let paramUser = req.body.user;
     let paramCode = req.body.code;
     let paramAmount = req.body.amount;
@@ -138,7 +138,7 @@ router.post("/create", middleware.wrapper(async (req, res) => {
 
 /**
  * @swagger
- * /payment/execute:
+ * /payment/paypal/execute:
  *   post:
  *     tags:
  *       - Payment
@@ -167,7 +167,7 @@ router.post("/create", middleware.wrapper(async (req, res) => {
  *       200:
  *         description: Result of the execution
  */
-router.post("/execute", middleware.wrapper(async (req, res) => {
+router.post("/paypal/execute", middleware.wrapper(async (req, res) => {
     let paramUser = req.body.user;
     let paramCode = req.body.code;
     let paramAmount = req.body.amount;
@@ -239,7 +239,7 @@ router.post("/execute", middleware.wrapper(async (req, res) => {
 router.post("/add", middleware.wrapper(async (req, res) => {
     let paramIncome = req.body;
 
-    if (!utils.fields.isIncomeMethodValid(paramIncome.method))
+    if (!utils.fields.isIncomeMethodValid(paramIncome.method) || paramIncome.amount <= 0)
         return res.status(400).json({message: localization[req.language].fields.prohibited});
 
     if (!utils.fields.isIncomeComplete(paramIncome))

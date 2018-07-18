@@ -205,12 +205,13 @@ export class HomeComponent implements OnInit {
             translation.home.stats.method.advanced,
             translation.home.stats.method.asset,
             translation.home.stats.method.paypal,
+            translation.home.stats.method.transfer,
             translation.home.stats.method.cash,
             translation.home.stats.method.check
           ],
           datasets: [{
-            data: [data.advanced, data.asset, data.paypal, data.cash, data.check],
-            backgroundColor: ['rgba(136, 137, 141, 1)', 'rgba(122, 177, 154, 1)', 'rgba(0, 112, 186, 1)', 'rgba(235, 175 ,87, 1)', 'rgba(146, 154, 219, 1)'],
+            data: [data.advanced, data.asset, data.paypal, data.transfer, data.cash, data.check],
+            backgroundColor: ['rgba(136, 137, 141, 1)', 'rgba(122, 177, 154, 1)', 'rgba(0, 112, 186, 1)', 'rgba(94, 192, 249, 1)', 'rgba(235, 175 ,87, 1)', 'rgba(146, 154, 219, 1)'],
             fill: true
           }]
         },

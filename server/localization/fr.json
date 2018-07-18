@@ -4,41 +4,43 @@
     "prohibited": "Impossible d'insérer ces valeurs car incorrectes"
   },
   "email": {
-    "invalid": "Le format de l'adresse email n'est pas correct",
+    "invalid": "L'email est invalide",
     "template": {
-      "activation": "Activation de votre compte Logisimply",
-      "password": "Votre nouveau mot de passe Logisimply"
-    },
-    "activation": {
-      "hello": "Bonjour",
-      "wording": "Veuillez cliquer sur le lien suivant pour activer votre compte Logisimply :",
-      "click": "Cliquez-ici"
-    },
-    "password": {
-      "hello": "Bonjour",
-      "wording": "Vous trouverez dans cet email votre nouveau mot de passe, celui-ci va vour permettre de vous connecter à LogiSimply.",
-      "new_password": "Votre nouveau mot de passe est :"
-    },
-    "quote": {
-      "hello": "Bonjour",
-      "wording": "Vous trouverez ci-joint le devis :",
-      "wording_2": " à télécharger."
-    },
-    "invoice": {
-      "hello": "Bonjour",
-      "wording": "Vous trouverez ci-joint la facture :",
-      "wording_2": " à télécharger."
-    },
-    "contact": {
-      "subject": "Demande de contact",
-      "hello": "Cher administrateur,",
-      "contact": "Demande de contact de la part de :",
-      "email": "Répondre à l'adresse suivante :",
-      "message": "Le message de l'utilisateur :"
-    },
-    "courtesy": {
-      "courtesy_form": "Bien cordialement,",
-      "signature": "LogiSimply"
+      "activate": {
+        "subject": "Activation de votre compte LogiSimply",
+        "hello": "Bonjour",
+        "wording": "Veuillez cliquer sur le lien suivant pour activer votre compte :",
+        "click": "Cliquez-ici"
+      },
+      "password": {
+        "subject": "Votre nouveau mot de passe LogiSimply",
+        "hello": "Bonjour",
+        "wording": "Vous trouverez ici votre nouveau mot de passe, cela vous permettra de vous connecter à LogiSimply.",
+        "new_password": "Votre nouveau mot de passe est :"
+      },
+      "quote": {
+        "subject": "Téléchargez votre devis -",
+        "hello": "Bonjour",
+        "wording": "Vous trouverez ci-joint, le devis :",
+        "wording_2": " à télécharger."
+      },
+      "invoice": {
+        "subject": "Téléchargez votre facture -",
+        "hello": "Bonjour",
+        "wording": "Vous trouverez ci-joint, la facture :",
+        "wording_2": " à télécharger."
+      },
+      "contact": {
+        "subject": "Demande de contact",
+        "hello": "Cher administrateur,",
+        "contact": "Demande de contact de la part de :",
+        "email": "Répondez à l'adresse email suivante :",
+        "message": "Message de l'utilisateur :"
+      },
+      "courtesy": {
+        "courtesy_form": "Cordialement",
+        "signature": "LogiSimply"
+      }
     }
   },
   "pdf": {
