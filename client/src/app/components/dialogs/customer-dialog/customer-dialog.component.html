@@ -27,10 +27,10 @@
         <input matInput placeholder="{{ 'contactsDialog.civility' | translate }}" formControlName="civility">
       </mat-form-field>
       <mat-form-field class="third">
-        <input matInput placeholder="{{ 'contactsDialog.lastname' | translate }}" formControlName="lastname" required>
+        <input matInput placeholder="{{ 'contactsDialog.firstname' | translate }}" formControlName="firstname">
       </mat-form-field>
       <mat-form-field class="third">
-        <input matInput placeholder="{{ 'contactsDialog.firstname' | translate }}" formControlName="firstname">
+        <input matInput placeholder="{{ 'contactsDialog.lastname' | translate }}" formControlName="lastname" required>
       </mat-form-field>
     </div>
     <div *ngIf="customerForm.controls['type'].value === 'professional'">
