@@ -257,7 +257,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
 
         if (paramIncome.amount > customer.assets)
             return res.status(403).json({message: localization[req.language].customers.assets.failed});
-
+        console.log(typeof paramIncome.amount);
         customer.assets -= paramIncome.amount;
         customer.save();
     }
