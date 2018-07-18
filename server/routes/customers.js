@@ -138,9 +138,9 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     if (!utils.fields.isCustomerTypeValid(paramCustomer.type))
         return res.status(400).json({message: localization[req.language].fields.prohibited});
 
+    paramCustomer.assets = 0;
     if (paramCustomer.type === "private")
         paramCustomer.name = (paramCustomer.firstname + " " + paramCustomer.lastname).trim();
-
     if (!utils.fields.isCustomerComplete(paramCustomer))
         return res.status(400).json({message: localization[req.language].fields.required});
 
@@ -153,7 +153,7 @@ router.post("/add", middleware.wrapper(async (req, res) => {
     paramCustomer.code = "C" + utils.format.getCode(user.parameters.customers);
     paramCustomer.user = req.loggedUser._id;
     paramCustomer.createdAt = new Date();
-    paramCustomer.assets = 0;
+
     let customer = await customerModel.create(paramCustomer);
     let result = await customer.fullFormat();
     res.status(200).json({message: localization[req.language].customers.add, data: result});
