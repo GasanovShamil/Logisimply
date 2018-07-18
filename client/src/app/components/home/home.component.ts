@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
       data => {
         this.isUserLoading = false;
         this.isUserReady = true;
-        this.me = data;
+        this.me = data.me;
         this.isPaypalAllowed = data.credentials;
       },
       error => {

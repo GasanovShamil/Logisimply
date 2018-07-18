@@ -309,7 +309,10 @@ router.use(middleware.isLogged);
  *           $ref: '#/definitions/User'
  */
 router.get("/me", middleware.wrapper(async (req, res) => {
-    res.status(200).json(req.loggedUser);
+    let today = new Date();
+    let incomes = await incomeModel.find({user: req.loggedUser._id, dateIncome: {$gte: new Date(today.getFullYear(), 1, 1), $lt: new Date(today.getFullYear() + 1, 1, 1)}});
+
+    res.status(200).json({me: req.loggedUser});
 }));
 
 /**
