@@ -279,10 +279,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
         subject: new FormControl({value: this.data.subject, disabled: true}, []),
         content: new FormControl({value: this.data.content, disabled: true}, []),
         datePayment: new FormControl({value: this.data.datePayment, disabled: true}, [Validators.required]),
-        validity: new FormControl({
-          value: this.data.validity,
-          disabled: true
-        }, [Validators.required]),
+        validity: new FormControl({ value: this.data.validity, disabled: true }, [Validators.required]),
         collectionCost: new FormControl({value: this.data.collectionCost, disabled: true}, [Validators.required]),
         comment: new FormControl({value: this.data.comment, disabled: true}, []),
         status: new FormControl({value: this.data.status, disabled: true}, []),
