@@ -97,6 +97,7 @@ let router = express.Router();
  *       - zipCode
  *       - town
  *       - country
+ *       - assets
  */
 
 router.use(middleware.localize);

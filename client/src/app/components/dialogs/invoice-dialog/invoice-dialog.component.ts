@@ -345,7 +345,8 @@ export class InvoiceDialogComponent implements AfterViewInit, OnInit, OnDestroy 
       let dialogRef = this.dialog.open(IncomeDialogComponent, config);
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-
+          this.data = result;
+          this.setFormGroup();
         }
       });
     }

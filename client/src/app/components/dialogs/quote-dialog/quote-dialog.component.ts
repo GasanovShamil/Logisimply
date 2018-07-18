@@ -92,7 +92,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.displayedColumns = this.mobileQuery.matches ? ['delete','label', 'quantity'] : ['delete','reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
+    this.displayedColumns = this.mobileQuery.matches ? ['delete', 'label', 'quantity'] : ['delete', 'reference', 'label', 'type', 'unitPriceET', 'quantity', 'discount'];
     this.setFormGroup();
     this.filteredOptions = this.quoteForm.controls['customer'].valueChanges
       .pipe(
@@ -255,17 +255,19 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  generateInvoice(){
-    this.data.customer = this.data.customer.code;
-    this.dataService.generateInvoiceFromQuote(this.data).subscribe(
-      data => this.dialogRef.close({
-        generateInvoiceMode: true,
-        data: data.data,
-        message: data.data.code+' : '+data.message
-      }),
-      error => this.alertService.error(error.error.message)
-    )
-
+  generateInvoice() {
+    if (!this.close) {
+      let quote: Quote = this.data;
+      quote.customer = quote.customer.code;
+      this.dataService.generateInvoiceFromQuote(quote).subscribe(
+        data => this.dialogRef.close({
+          generateInvoiceMode: true,
+          data: data.data,
+          message: data.data.code + ' : ' + data.message
+        }),
+        error => this.alertService.error(error.error.message)
+      )
+    }
   }
 
   setFormGroup() {
@@ -328,7 +330,7 @@ export class QuoteDialogComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  deleteItemRow(content:Content){
+  deleteItemRow(content: Content) {
     let index: number = this.contentDataSource.data.findIndex(i => i.reference === content.reference);
     this.contentDataSource.data.splice(index, 1);
     this.contentDataSource._updateChangeSubscription();
