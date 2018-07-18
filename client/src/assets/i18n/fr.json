@@ -51,10 +51,10 @@
     "legal_form": "Forme juridique",
     "details_edit": "Détails/Modifier",
     "code": "Code",
-    "private": "Privé",
+    "private": "Particulier",
     "professional": "Professionnel",
-    "select_at_least_one": "Vous devez selectionner au moins un élément!",
-    "customer_delete_warning": "Tous les devis/factures de ce client seront supprimés!"
+    "select_at_least_one": "Vous devez selectionner au moins un élément !",
+    "customer_delete_warning": "Tous les devis/factures de ce client seront supprimés !"
   },
   "contactsDialog": {
     "customer": "Client",
@@ -68,7 +68,7 @@
     "town": "Ville",
     "country": "Pays",
     "zipcode": "Code postal",
-    "private": "Privé",
+    "private": "Particulier",
     "professional": "Professionnel",
     "phone": "Phone",
     "siret": "Siret",
@@ -92,7 +92,7 @@
     "edit_mode": "Modifier"
   },
   "dataSelect": {
-    "private_customer": "Privé",
+    "private_customer": "Particulier",
     "professional_customer": "Professionnel",
     "product": "Produit",
     "service": "Service"
