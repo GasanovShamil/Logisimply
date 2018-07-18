@@ -144,15 +144,10 @@ export class DataService {
     );
   }
 
-  // async downloadQuote(quoteCode: string) {
-  //   "Devis - " + quote.code + ".pdf"
-  //   return await this.http.get<Blob>('api/quotes/download/' + quoteCode, {responseType: 'blob' as 'json'}).toPromise();
-  // }
 
   downloadQuote(quoteCode: string) {
-    return this.http.get<any>('api/quotes/download/'+quoteCode).pipe(
-      catchError(this.handleError)
-    );
+    // "Devis - " + quote.code + ".pdf"
+    return  this.http.get('api/quotes/download/' + quoteCode, {responseType: 'blob' as 'json'});
   }
 
   generateInvoiceFromQuote(quote: Quote){
@@ -222,6 +217,10 @@ export class DataService {
     return this.http.put<any>('api/invoices/update', invoiceData).pipe(
       catchError(this.handleError)
     );
+  }
+
+  downloadInvoice(invoiceCode: string) {
+    return  this.http.get('api/invoices/download/' + invoiceCode, {responseType: 'blob' as 'json'});
   }
 
   ///////////////////////////// CONTACT SECTION /////////////////////////////

@@ -289,16 +289,20 @@ export class BillsComponent implements OnInit {
   }
 
   downloadInvoice(invoice: Invoice) {
-
+    this.dataService.downloadInvoice(invoice.code).subscribe(
+      (res) => {
+        var file = new Blob([res], { type: 'application/pdf' });
+        var fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      })
   }
 
   downloadQuote(quote: Quote) {
-    // this.dataService.downloadQuote(quote.code).subscribe(
-    //   data => {
-    //   },
-    //   error => {
-    //     this.alertService.error(error.error.message);
-    //   }
-    // )
+    this.dataService.downloadQuote(quote.code).subscribe(
+      (res) => {
+        var file = new Blob([res], { type: 'application/pdf' });
+        var fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      })
   }
 }

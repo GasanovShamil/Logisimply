@@ -3,91 +3,87 @@
     {{ errorMessage }}
   </div>
 </div>
+  <mat-card >
+    <div class="loading-shade" *ngIf="isUserLoading">
+      <mat-spinner *ngIf="isUserLoading"></mat-spinner>
+    </div>
 
-<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'" *ngIf="isUserReady">
-  <div class="loading-shade" *ngIf="isUserLoading">
-    <mat-spinner *ngIf="isUserLoading"></mat-spinner>
-  </div>
-
-  <div *ngIf="isUserReady">
-    <mat-card-header>
-      <mat-card-title>{{ 'home.profile' | translate }}</mat-card-title>
-    </mat-card-header>
+    <div *ngIf="isUserReady">
+      <mat-card-header>
+        <mat-card-title>{{ 'home.profile' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field class="third-width">
+          <input matInput placeholder="{{ 'home.email' | translate }}" value="{{ me.email }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput placeholder="{{ 'home.firstname' | translate }}" value="{{ me.firstname }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput placeholder="{{ 'home.lastname' | translate }}" value="{{ me.lastname }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <input matInput placeholder="{{ 'home.address' | translate }}" value="{{ me.address }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput #postalCode placeholder="{{ 'home.zip_code' | translate }}" value="{{ me.zipCode }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput placeholder="{{ 'home.town' | translate }}" value="{{ me.town }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput placeholder="{{ 'home.country' | translate }}" value="{{ me.country }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="half-width">
+          <input matInput placeholder="{{ 'home.activity_type' | translate }}" value="{{ me.activityType }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="half-width">
+          <input matInput placeholder="{{ 'home.category_type' | translate }}" value="{{ me.categoryType }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput placeholder="{{ 'home.activity_entitled' | translate }}" value="{{ me.activityEntitled }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput [matDatepicker]="picker" placeholder="{{ 'home.activity_started' | translate }}" value="{{ me.activityStarted }}" disabled />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="third-width">
+          <input matInput #siretHint placeholder="{{ 'home.siret' | translate }}" value="{{ me.siret | siret }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="half-width">
+          <input matInput placeholder="{{ 'home.turnover_current' | translate }}" value="{{ turnover.current + ' €' }}" disabled />
+        </mat-form-field>
+        <mat-form-field class="half-width">
+          <input matInput placeholder="{{ 'home.turnover_future' | translate }}" value="{{ turnover.future + ' €' }}" disabled />
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions class="center">
+        <button mat-raised-button color="primary" (click)="openUserDialog()">{{ 'home.update' | translate }}</button>
+        <button mat-raised-button color="primary" (click)="openCredentialsDialog()">{{ 'home.credentials' | translate }}</button>
+        <div id="paypal-allowed">
+          <mat-icon svgIcon="paypal"></mat-icon><mat-icon [ngClass]="isPaypalAllowed ? 'green' : 'red'">check_circle_outline</mat-icon>
+        </div>
+      </mat-card-actions>
+    </div>
+  </mat-card>
+  <mat-card>
+    <div class="loading-shade" *ngIf="isIncomesPerCustomerTypeLoading">
+      <mat-spinner *ngIf="isIncomesPerCustomerTypeLoading"></mat-spinner>
+    </div>
     <mat-card-content>
-      <mat-form-field class="third-width">
-        <input matInput placeholder="{{ 'home.email' | translate }}" value="{{ me.email }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput placeholder="{{ 'home.firstname' | translate }}" value="{{ me.firstname }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput placeholder="{{ 'home.lastname' | translate }}" value="{{ me.lastname }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="full-width">
-        <input matInput placeholder="{{ 'home.address' | translate }}" value="{{ me.address }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput #postalCode placeholder="{{ 'home.zip_code' | translate }}" value="{{ me.zipCode }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput placeholder="{{ 'home.town' | translate }}" value="{{ me.town }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput placeholder="{{ 'home.country' | translate }}" value="{{ me.country }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="half-width">
-        <input matInput placeholder="{{ 'home.activity_type' | translate }}" value="{{ me.activityType }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="half-width">
-        <input matInput placeholder="{{ 'home.category_type' | translate }}" value="{{ me.categoryType }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput placeholder="{{ 'home.activity_entitled' | translate }}" value="{{ me.activityEntitled }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput [matDatepicker]="picker" placeholder="{{ 'home.activity_started' | translate }}" value="{{ me.activityStarted }}" disabled />
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field class="third-width">
-        <input matInput #siretHint placeholder="{{ 'home.siret' | translate }}" value="{{ me.siret | siret }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="half-width">
-        <input matInput placeholder="{{ 'home.turnover_current' | translate }}" value="{{ turnover.current + ' €' }}" disabled />
-      </mat-form-field>
-      <mat-form-field class="half-width">
-        <input matInput placeholder="{{ 'home.turnover_future' | translate }}" value="{{ turnover.future + ' €' }}" disabled />
-      </mat-form-field>
+      <canvas id="incomes-per-customer-type">{{ incomesPerCustomerTypeChart }}</canvas>
     </mat-card-content>
-    <mat-card-actions class="center">
-      <button mat-raised-button color="primary" (click)="openUserDialog()">{{ 'home.update' | translate }}</button>
-      <button mat-raised-button color="primary" (click)="openCredentialsDialog()">{{ 'home.credentials' | translate }}</button>
-      <div id="paypal-allowed">
-        <mat-icon svgIcon="paypal"></mat-icon><mat-icon [ngClass]="isPaypalAllowed ? 'green' : 'red'">check_circle_outline</mat-icon>
-      </div>
-    </mat-card-actions>
-  </div>
-</mat-card>
-
-<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
-  <div class="loading-shade" *ngIf="isIncomesPerCustomerTypeLoading">
-    <mat-spinner *ngIf="isIncomesPerCustomerTypeLoading"></mat-spinner>
-  </div>
-  <mat-card-content>
-    <canvas id="incomes-per-customer-type">{{ incomesPerCustomerTypeChart }}</canvas>
-  </mat-card-content>
-</mat-card>
-
-<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
-  <div class="loading-shade" *ngIf="isIncomesPerMethodLoading">
-    <mat-spinner *ngIf="isIncomesPerMethodLoading"></mat-spinner>
-  </div>
-  <mat-card-content>
-    <canvas id="incomes-per-method">{{ incomesPerMethodChart }}</canvas>
-  </mat-card-content>
-</mat-card>
-
-<mat-card [ngClass]="mobileQuery.matches ? 'card card-mobile' : 'card card-desktop'">
+  </mat-card>
+  <mat-card>
+    <div class="loading-shade" *ngIf="isIncomesPerMethodLoading">
+      <mat-spinner *ngIf="isIncomesPerMethodLoading"></mat-spinner>
+    </div>
+    <mat-card-content>
+      <canvas id="incomes-per-method">{{ incomesPerMethodChart }}</canvas>
+    </mat-card-content>
+  </mat-card>
+<mat-card>
   <div class="loading-shade" *ngIf="isPaymentStateOfInvoicesLoading">
     <mat-spinner *ngIf="isPaymentStateOfInvoicesLoading"></mat-spinner>
   </div>
