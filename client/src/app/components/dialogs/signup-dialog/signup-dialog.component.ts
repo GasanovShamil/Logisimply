@@ -7,6 +7,7 @@ import {CustomerDialogComponent} from "../customer-dialog/customer-dialog.compon
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../../services/user.service";
 
+
 @Component({
   selector: 'app-signup-dialog',
   templateUrl: './signup-dialog.component.html',
@@ -23,8 +24,6 @@ export class SignupDialogComponent implements OnInit {
               private userService : UserService,
               @Inject(MAT_DIALOG_DATA) public data: any) {
   }
-
-
 
   onCloseClick(): void {
     this.close = true;
@@ -54,7 +53,6 @@ export class SignupDialogComponent implements OnInit {
   ngOnInit(): void {
     this.setFormGroup();
   }
-
 
   setFormGroup() {
     this.registerForm = new FormGroup ({

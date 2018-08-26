@@ -727,3 +727,9 @@ ul.social-buttons li a {
 ul.social-buttons li a:active, ul.social-buttons li a:focus, ul.social-buttons li a:hover {
   background-color: #3f51b5;
 }
+
+#history_button {
+  margin: auto;
+  margin-top: 5%;
+  width: 9%;
+}

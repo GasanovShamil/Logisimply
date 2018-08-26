@@ -74,7 +74,6 @@ export class LoginDialogComponent implements OnInit {
           this.alertService.error(error.error.message);
         }
       )
-
     }
   }
 

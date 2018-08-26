@@ -225,19 +225,22 @@
   "welcome": {
     "menu": {
       "features": "Fonctionnalités",
-      "about": "À propos de nous",
+      "about": "Notre histoire",
       "team": "L'Équipe",
       "contact": "Contact"
     },
-    "feature1": "Construisez vos factures",
-    "feature2": "Créer votre portefeuille client",
-    "feature3": "Envoyez vos factures par email",
+    "feature1": "Gérez votre portefeuille clients",
+    "feature2": "Gestion d'un catalogue produits",
+    "feature3": "Gestion de vos devis",
+    "feature4": "Gestion des factures",
+    "feature5": "Paiement client facilité",
+    "feature6": "Application multilingue",
     "create": "S'inscrire",
     "date1": "Naissance de l'idée",
     "date2": "Conception du business modèle",
     "date3": "Début du développement",
     "date4": "Produit commercialisé",
-    "be_history": "Rejoignez notre histoire !",
+    "be_history": "Rejoignez nous !",
     "login": "Se connecter",
     "home": "Accédez à mon espace",
     "team": "Notre équipe incroyable ",
@@ -249,7 +252,8 @@
     "placeholder": {
       "name": "Votre Nom",
       "email": "Votre Email",
-      "message": "Votre Message"
+      "message": "Votre Message",
+      "subject": "Sujet Du Message"
     },
     "message_name": "Veuillez saisir votre nom.",
     "message_email": "Veuillez saisir votre adresse email.",

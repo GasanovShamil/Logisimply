@@ -51,6 +51,12 @@
         <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="/welcome#contact">{{'welcome.menu.contact' | translate}}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" (click)="openSignupDialog()">{{ 'welcome.create' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" (click)="openLoginDialog()">{{ isLogged ? ('welcome.home' | translate) : ('welcome.login' | translate) }}</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -83,7 +89,7 @@
               <i class="fas fa-file-invoice fa-stack-1x fa-inverse"></i>
             </span>
         <h4 class="service-heading">{{'welcome.feature1' | translate}}</h4>
-      </div>
+      </div><br /><br />
       <div class="col-md-4">
             <span class="fa-stack fa-4x">
               <i class="fa fa-circle fa-stack-2x text-primary"></i>
@@ -97,6 +103,29 @@
               <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
             </span>
         <h4 class="service-heading">{{'welcome.feature3' | translate}}</h4>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-file-invoice fa-stack-1x fa-inverse"></i>
+            </span>
+        <h4 class="service-heading">{{'welcome.feature4' | translate}}</h4>
+      </div>
+      <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-address-book fa-stack-1x fa-inverse"></i>
+            </span>
+        <h4 class="service-heading">{{'welcome.feature5' | translate}}</h4>
+      </div>
+      <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+            </span>
+        <h4 class="service-heading">{{'welcome.feature6' | translate}}</h4>
       </div>
     </div>
   </div>
@@ -164,6 +193,9 @@
           </li>
         </ul>
       </div>
+    </div>
+    <div class="row" id="history_button">
+      <button *ngIf="!isLogged" type="button" class="btn btn-primary team-member" mat-raised-button (click)="openSignupDialog()">{{ 'welcome.create' | translate }}</button>
     </div>
   </div>
 </section>
@@ -276,7 +308,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <span class="copyright">Copyright &copy; LogiSimply 2018</span>
+        <span class="copyright">Tous droits réservés LogiSimply 2018</span>
       </div>
       <div class="col-md-4 offset-md-4">
         <ul class="list-inline quicklinks">
